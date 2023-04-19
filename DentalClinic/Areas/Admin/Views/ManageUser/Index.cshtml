@@ -1,0 +1,179 @@
+﻿
+@{
+    ViewBag.Title = "Danh sách người dùng";
+}
+
+@section styles{
+    <style>
+        .bg-sm {
+            font-size: 11px;
+        }
+
+        .table .avatar {
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            border-radius: 50%;
+            -moz-border-radius: 50%;
+            -webkit-border-radius: 50%;
+        }
+
+        .product-page-list {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+            .product-page-list > a {
+                width: 25px;
+                height: 25px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                border-radius: 100%;
+                font-size: 13px;
+            }
+
+            .product-page-list .product-page.active {
+                background-color: #3f87f5;
+                color: white;
+            }
+
+        .card .pro-search {
+            padding: 20px;
+            display: flex;
+        }
+
+            .card .pro-search .search-keyword {
+                width: 400px;
+                margin-right: 20px;
+            }
+    </style>
+}
+
+<div class="card">
+    <div class="pro-search">
+        <div class="search-keyword" id="email-form">
+            <input type="text" class="form-control" id="keyword" placeholder="Nhập từ khoá tìm kiếm" onkeypress="SearchKeyPress(event);">
+        </div>
+        <a class="btn btn-primary" onclick="SearchUser();">Tìm kiếm</a>
+
+    </div>
+    <div style="padding:15px;">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th class="">Avatar</th>
+                    <th class="name">Tên người dùng</th>
+                    <th class="account">Tên đăng nhập</th>
+                    <th class="email">Email</th>
+                    <th class="phone">Số điện thoại</th>
+                    <th class="">Trạng thái</th>
+                    <th> </th>
+                </tr>
+            </thead>
+            <tbody id="list-user">
+            </tbody>
+        </table>
+
+
+    </div>
+</div>
+
+<div class="product-page-list">
+</div>
+
+@section scripts{
+    <script>
+                let _currentPage = 1;
+
+                const LoadListUser = async function (page = 1) {
+                    _currentPage = page;
+
+                    var keyword = $('.search-keyword').find('input').val();
+
+                    console.log(keyword);
+
+                    let rq = await fetch('/api/ManageUser/GetListUser?page=' + page + '&keyword=' + keyword, {
+                        method: 'get',
+                        headers: Enum.OptionAdminHeaderDefault
+                    });
+                    let rs = await rq.json();
+
+                    if (AdminCheckErrorResponse(rs) == false) return;
+
+
+                    $('.product-page-list').html('');
+                    for (let page = 1; page <= rs.data.TotalPage; page++) {
+                        $('.product-page-list').append(`<a onclick="LoadListUser(${page});" data-page="${page}" class="product-page ${_currentPage === page ? 'active' : ''}" id="page-num">${page}</a>`);
+                    }
+
+                    $('#list-user').html('')
+
+                    for (let i = 0; i < rs.data.ListUser.length; i++) {
+                        $('#list-user').append(`
+                                        <tr>
+                                        <td><div class="avatar" style="background-image:url(${rs.data.ListUser[i].Avatar})"></div></td>
+                                        <td>${rs.data.ListUser[i].Name}</td>
+                                        <td>${rs.data.ListUser[i].Account}</td>
+                                        <td>${GetObjectProperty(rs.data.ListUser[i], 'Email')}</td >
+                                        <td>${GetObjectProperty(rs.data.ListUser[i], 'Phone') }</td>
+                                        <td>${rs.data.ListUser[i].Enable ? '<span class="badge bg-success bg-sm">Kích hoạt</span>' :'<span class="badge bg-danger bg-sm">Đã ngừng</span>'}</td>
+                                        <td>
+                                            <button class="btn btn-warning" data-id="${rs.data.ListUser[i].UserId}" onclick="UpdateUser(this);"><i class="fa-regular fa-pen-to-square"></i></button>
+                                            <button class="btn btn-danger" data-id="${rs.data.ListUser[i].UserId}" onclick="DeleteUser(this);"><i class="fa-solid fa-power-off"></i></button>
+                                        </td>
+                                        </tr>
+                                `)
+                    }
+
+                }
+
+
+                const UpdateUser = async function (el) {
+                    const userId = $(el).data('id');
+                    window.location.href = ('/Admin/ManageUser/UpdateUserInfo/' + userId);
+                }
+
+                const DeleteUser = async function (el) {
+                    if (confirm('Bạn có chắc muốn xóa người dùng này không?') === false) return;
+                    const id = $(el).data('id');
+                    console.log(id);
+
+                    let rq = await fetch('/api/ManageUser/ChangeUserEnable?id=' + id, {
+                        method: 'get',
+                        headers: Enum.OptionAdminHeaderDefault,
+                    });
+                    let rs = await rq.json();
+
+                    if (AdminCheckErrorResponse(rs) === false) return;
+                    if (GetObjectProperty(rs, 'status') === Enum.ResponseStatus.SUCCESS) {
+                        alert('Xóa người dùng thành công.')
+                        LoadListUser();
+                    }
+                }
+
+                const SearchUser = function () {
+                    LoadListUser();
+                }
+
+                const SearchKeyPress = function (event) {
+                    if (event.keyCode == 13) {
+                        LoadListUser();
+                    }
+                }
+
+                const initPage = async function () {
+                    await LoadListUser();
+                }
+
+
+                initPage();
+
+
+    </script>
+}
+
