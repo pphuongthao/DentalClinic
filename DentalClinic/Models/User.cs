@@ -19,6 +19,8 @@ namespace DentalClinic.Models
         public string Token { get; set; }
         public long CreateTime { get; set; }
         public bool Enable { get; set; }
+        public string Address { get; set; }
+        public bool Gender { get; set; }
     }
     public class UserLoginModel
     {
@@ -36,5 +38,10 @@ namespace DentalClinic.Models
     {
         public string Password { get; set; }
         public string NewPassword { get; set; }
+    }
+    public class UserLoginPost
+    {
+        public string Account { get; set; }
+        public string Password { get; set; }
     }
 }

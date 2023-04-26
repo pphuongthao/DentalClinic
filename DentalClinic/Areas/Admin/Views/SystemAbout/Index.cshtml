@@ -53,7 +53,7 @@
 
             if (AdminCheckErrorResponse(rs) === false) return;
             if (GetObjectProperty(rs, 'status') === Enum.ResponseStatus.SUCCESS) {
-                editor.setData(rs.data.HtmlContent);
+                editor.setData(rs.data.HtmlContents);
                 $('#SystemAboutId').val(rs.data.SystemAboutId);
             }
         }
@@ -62,7 +62,7 @@
 
             let model = {
                 SystemAboutId: $('#SystemAboutId').val(),
-                HtmlContent: editor.getData(),
+                HtmlContents: editor.getData(),
             }
 
 

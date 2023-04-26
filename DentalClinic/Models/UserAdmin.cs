@@ -21,11 +21,11 @@ namespace DentalClinic.Models
         }
 
     }
-    public class UserLoginPost
-    {
-        public string Account { get; set; }
-        public string Password { get; set; }
-    }
+    //public class UserLoginPost
+    //{
+    //    public string Account { get; set; }
+    //    public string Password { get; set; }
+    //}
     public class UserAdminChangePasswordModel
     {
         public string OldPassword { get; set; }

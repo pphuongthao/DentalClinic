@@ -8,7 +8,7 @@ using System.Web;
 
 namespace DentalClinic.Services
 {
-    public class UserService :BaseService
+    public class UserService : BaseService
     {
         public UserService() : base() { }
         public UserService(IDbConnection db) : base(db) { }
@@ -24,8 +24,8 @@ namespace DentalClinic.Services
         }
         public User GetUserById(string UserId, IDbTransaction transaction = null)
         {
-            string query = "select [UserId],[Name], [Avatar], [Account],[Email], [Phone], [CreateTime], [Enable] from [user] where UserId = @UserId";
-            return this._connection.Query<User>(query, new { UserId }).FirstOrDefault();
+            string query = "select [UserId],[Name], [Avatar], [Account],[Email], [Phone], [Gender] [CreateTime], [Enable] from [user] where UserId = @UserId";
+            return this._connection.Query<User>(query, new { UserId }, transaction).FirstOrDefault();
         }
         public User GetUserByAccountOrPhone(UserLoginModel model, IDbTransaction transaction = null)
         {
@@ -44,6 +44,11 @@ namespace DentalClinic.Services
         {
             string query = "select top 1 * from [user] where Phone=@phone";
             return this._connection.Query<User>(query, new { phone }).FirstOrDefault();
+        }
+        public User GetUserByUserName(string userName, IDbTransaction transaction = null)
+        {
+            string query = "select * from [user] where Account = @userName or Phone = @userName";
+            return this._connection.Query<User>(query, new { userName }).FirstOrDefault();
         }
         public User GetUserByToken(string Token, IDbTransaction transaction = null)
         {
@@ -205,5 +210,6 @@ namespace DentalClinic.Services
             string query = "select top 10 * from [user] where Account like @keyword or Phone like @keyword";
             return this._connection.Query<object>(query, new { keyword }).ToList();
         }
+
     }
 }

@@ -13,5 +13,10 @@ namespace DentalClinic.Areas.Admin.Controllers
         {
             return View();
         }
+        public ActionResult UpdateUserInfo(string id)
+        {
+            ViewBag.Id = id;
+            return View();
+        }
     }
 }
