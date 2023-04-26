@@ -326,15 +326,18 @@
     <Content Include="Content\assets\js\bootstrap.min.js" />
     <Content Include="Content\assets\js\ckeditor.js" />
     <Content Include="Content\assets\js\counterup.min.js" />
+    <Content Include="Content\assets\js\datepicker.min.js" />
     <Content Include="Content\assets\js\extensions\rater-js.js" />
     <Content Include="Content\assets\js\extensions\sweetalert2.js" />
     <Content Include="Content\assets\js\extensions\toastify.js" />
     <Content Include="Content\assets\js\fullcalendar.init.js" />
+    <Content Include="Content\assets\js\helper.js" />
     <Content Include="Content\assets\js\imagesloaded.pkgd.min.js" />
     <Content Include="Content\assets\js\isotope.min.js" />
     <Content Include="Content\assets\js\jquery-3.6.0.min.js" />
     <Content Include="Content\assets\js\magnific-popup.min.js" />
     <Content Include="Content\assets\js\main.js" />
+    <Content Include="Content\assets\js\moment.js" />
     <Content Include="Content\assets\js\pages\dashboard.js" />
     <Content Include="Content\assets\js\pages\form-editor.js" />
     <Content Include="Content\assets\js\pages\ui-apexchart.js" />
@@ -2276,6 +2279,8 @@
     <Content Include="Content\ckeditor\skins\moono-lisa\images\spinner.gif" />
     <Content Include="Content\ckeditor\styles.js" />
     <Content Include="Content\ckeditor\vendor\promise.js" />
+    <Content Include="Content\css\login.css" />
+    <Content Include="Content\datepicker.min.css" />
     <Content Include="Content\fontawesome\css\all.css" />
     <Content Include="Content\fontawesome\css\all.min.css" />
     <Content Include="Content\fontawesome\css\brands.css" />
@@ -4330,6 +4335,12 @@
     <Content Include="Content\fontawesome\svgs\solid\yin-yang.svg" />
     <Content Include="Content\fontawesome\svgs\solid\z.svg" />
     <Content Include="Content\Site.css" />
+    <Content Include="Content\slick\ajax-loader.gif" />
+    <Content Include="Content\slick\fonts\slick.svg" />
+    <Content Include="Content\slick\slick-theme.css" />
+    <Content Include="Content\slick\slick.css" />
+    <Content Include="Content\slick\slick.js" />
+    <Content Include="Content\slick\slick.min.js" />
     <Content Include="Global.asax" />
     <Content Include="Scripts\helper.js" />
     <Content Include="Areas\Admin\Views\ManageDoctor\Index.cshtml" />
@@ -4448,6 +4459,15 @@
     <Content Include="Content\assets\fonts\flaticon\flaticon.woff" />
     <Content Include="Content\assets\fonts\flaticon\flaticon.woff2" />
     <Content Include="Content\assets\js\bootstrap.min.js.map" />
+    <Content Include="Content\slick\config.rb" />
+    <Content Include="Content\slick\fonts\slick.eot" />
+    <Content Include="Content\slick\fonts\slick.ttf" />
+    <Content Include="Content\slick\fonts\slick.woff" />
+    <Content Include="Content\slick\slick-theme.less" />
+    <Content Include="Content\slick\slick-theme.scss" />
+    <Content Include="Content\slick\slick.less" />
+    <Content Include="Content\slick\slick.scss" />
+    <Content Include="Areas\Admin\Views\ManageUser\UpdateUserInfo.cshtml" />
     <None Include="Scripts\jquery-1.6.4-vsdoc.js" />
     <Content Include="Scripts\jquery-1.6.4.js" />
     <Content Include="Scripts\jquery-1.6.4.min.js" />
@@ -4458,6 +4478,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApiControllers\ApiBaseController.cs" />
+    <Compile Include="ApiControllers\ManageDoctorController.cs" />
+    <Compile Include="ApiControllers\ManageServicesController.cs" />
+    <Compile Include="ApiControllers\UserController.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
@@ -4520,10 +4543,14 @@
     <Compile Include="Services\AdminServiceCategoryService.cs" />
     <Compile Include="Services\AdminServiceService.cs" />
     <Compile Include="Services\AdminSlideService.cs" />
-    <Compile Include="Services\AdminUserService.cs" />
     <Compile Include="Services\BaseService.cs" />
+    <Compile Include="Services\DoctorService.cs" />
+    <Compile Include="Services\ManageUserService.cs" />
+    <Compile Include="Services\NewsService.cs" />
+    <Compile Include="Services\ServiceService.cs" />
     <Compile Include="Services\SystemAboutService.cs" />
     <Compile Include="Services\UserAdminService.cs" />
+    <Compile Include="Services\UserAppointmentService.cs" />
     <Compile Include="Services\UserService.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -4685,8 +4712,15 @@
     <Content Include="Areas\Admin\Views\ManageNews\AddNews.cshtml" />
     <Content Include="Areas\Admin\Views\ManageNews\UpdateNews.cshtml" />
     <None Include="packages.config" />
-    <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Home\About.cshtml" />
+    <Content Include="Views\Home\Doctors.cshtml" />
+    <Content Include="Views\Home\Contact.cshtml" />
+    <Content Include="Views\Home\LogIn.cshtml" />
+    <Content Include="Views\Home\Register.cshtml" />
+    <Content Include="Views\Home\GetAppointment.cshtml" />
+    <Content Include="Views\Home\UserAppointment.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

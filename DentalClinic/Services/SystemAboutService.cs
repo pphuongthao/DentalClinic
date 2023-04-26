@@ -20,7 +20,7 @@ namespace DentalClinic.Services
         }
         public bool UpdateSystemAbout(SystemAbout model, IDbTransaction transaction = null)
         {
-            string query = "UPDATE [dbo].[system_about] SET [HtmlContent]=@HtmlContent WHERE SystemAboutId=@SystemAboutId";
+            string query = "UPDATE [dbo].[system_about] SET [HtmlContents]=@HtmlContents WHERE SystemAboutId=@SystemAboutId";
             int status = this._connection.Execute(query, model, transaction);
             return status > 0;
         }

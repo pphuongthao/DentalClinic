@@ -34,7 +34,7 @@ namespace DentalClinic.Areas.Admin.ApiControllers
             return Success(adminServiceService.GetServiceById(id));
         }
         [HttpPost]
-        public JsonResult InsertService(Service model)
+        public JsonResult InsertService(ServiceDental model)
         {
             try
             {
@@ -44,7 +44,7 @@ namespace DentalClinic.Areas.Admin.ApiControllers
                     using (var transaction = connection.BeginTransaction())
                     {
                         AdminServiceService adminServiceService = new AdminServiceService(connection);
-                        Service service = new Service();
+                        ServiceDental service = new ServiceDental();
                         service.ServiceId = Guid.NewGuid().ToString();
                         service.Name = model.Name;
                         service.SearchName = model.SearchName;
@@ -75,7 +75,7 @@ namespace DentalClinic.Areas.Admin.ApiControllers
 
 
         [HttpPost]
-        public JsonResult UpdateService(Service model)
+        public JsonResult UpdateService(ServiceDental model)
         {
             try
             {
@@ -85,7 +85,7 @@ namespace DentalClinic.Areas.Admin.ApiControllers
                     using (var transaction = connection.BeginTransaction())
                     {
                         AdminServiceService adminService = new AdminServiceService(connection);
-                        Service service = adminService.GetServiceById(model.ServiceId, transaction);
+                        ServiceDental service = adminService.GetServiceById(model.ServiceId, transaction);
                         if (service == null) return Error("Dịch vụ này không tồn tại.");
                         service.ServiceCategoryId = model.ServiceCategoryId;
                         service.Name = model.Name;
@@ -126,7 +126,7 @@ namespace DentalClinic.Areas.Admin.ApiControllers
                     using (var transaction = connection.BeginTransaction())
                     {
                         AdminServiceService adminService = new AdminServiceService(connection);
-                        Service service = adminService.GetServiceById(serviceId, transaction);
+                        ServiceDental service = adminService.GetServiceById(serviceId, transaction);
                         if (service == null) return Error("Dịch vụ này không tồn tại.");
                         if (!string.IsNullOrEmpty(service.Thumbnail))
                         {

@@ -5,7 +5,7 @@ using System.Web;
 
 namespace DentalClinic.Models
 {
-    public class Service
+    public class ServiceDental
     {
         public string ServiceId { get; set; }
         public string Name { get; set; }
@@ -20,7 +20,7 @@ namespace DentalClinic.Models
     }
     public class ServiceListViewModel
     {
-        public List<Service> ListService { get; set; }
+        public List<ServiceDental> ListService { get; set; }
         public int TotalPage { get; set; }
     }
 }

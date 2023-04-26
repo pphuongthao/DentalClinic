@@ -16,7 +16,7 @@ namespace DentalClinic.Services
         public ServiceListViewModel GetListService(int page, string keyword, IDbTransaction transaction = null)
         {
             ServiceListViewModel serviceListViewModel = new ServiceListViewModel();
-            serviceListViewModel.ListService = new List<Service>();
+            serviceListViewModel.ListService = new List<ServiceDental>();
             serviceListViewModel.TotalPage = 0;
 
             string querySelect = "select * ";
@@ -37,20 +37,20 @@ namespace DentalClinic.Services
 
             int skip = (page - 1) * Constant.ADMIN_PAGE_SIZE;
             query += " order by CreateTime desc offset " + skip + " rows fetch next " + Constant.ADMIN_PAGE_SIZE + " rows only";
-            serviceListViewModel.ListService = this._connection.Query<Service>(querySelect + query, new { keyword = keyword }, transaction).ToList();
+            serviceListViewModel.ListService = this._connection.Query<ServiceDental>(querySelect + query, new { keyword = keyword }, transaction).ToList();
             return serviceListViewModel;
         }
-        public Service GetServiceById(string serviceId, IDbTransaction transaction = null)
+        public ServiceDental GetServiceById(string serviceId, IDbTransaction transaction = null)
         {
             string query = "select * from service where ServiceId=@serviceId ";
-            return _connection.Query<Service>(query, new { serviceId }, transaction).FirstOrDefault();
+            return _connection.Query<ServiceDental>(query, new { serviceId }, transaction).FirstOrDefault();
         }
-        public bool InsertService(Service service, IDbTransaction transaction = null)
+        public bool InsertService(ServiceDental service, IDbTransaction transaction = null)
         {
             string query = "INSERT INTO [dbo].[service] ([ServiceId],[Name],[SearchName],[Thumbnail],[ExpectTime],[Description],[ServiceCategoryId],[Price],[CreateTime]) VALUES ( @ServiceId, @Name, @SearchName, @Thumbnail, @ExpectTime, @Description, @ServiceCategoryId, @Price, @CreateTime)";
             return _connection.Execute(query, service, transaction) > 0;
         }
-        public bool UpdateService(Service service, IDbTransaction transaction = null)
+        public bool UpdateService(ServiceDental service, IDbTransaction transaction = null)
         {
             string query = "UPDATE [service] SET [Name]=@Name, [SearchName]=@SearchName, [Thumbnail]=@Thumbnail, [ExpectTime]=@ExpectTime, [Description]=@Description,[ServiceCategoryId]=@ServiceCategoryId,[Price]=@Price,[CreateTime]=@CreateTime  WHERE ServiceId=@ServiceId";
             return _connection.Execute(query, service, transaction) > 0; ;
@@ -60,10 +60,10 @@ namespace DentalClinic.Services
             string query = "DELETE FROM service where ServiceId=@serviceId";
             return _connection.Execute(query, new { serviceId }, transaction) > 0;
         }
-        public List<Service> GetListTopService(IDbTransaction transaction = null)
+        public List<ServiceDental> GetListTopService(IDbTransaction transaction = null)
         {
             string query = "select TOP(4) ServiceId, Name, Thumbnail,Description, Price from service Order by CreateTime desc";
-            return this._connection.Query<Service>(query, new { enable = true }, transaction).ToList();
+            return this._connection.Query<ServiceDental>(query, new { enable = true }, transaction).ToList();
         }
     }
 }

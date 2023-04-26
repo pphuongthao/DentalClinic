@@ -1,0 +1,124 @@
+﻿
+@{
+    ViewBag.Title = "UserAppointment";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section styles{
+    <style>
+        .account-page-content .main-content {
+            padding: 10px 10px 10px 10px !important;
+            width: 80%;
+            margin: auto;
+        }
+
+        #tab-order .search-order {
+            display: flex;
+            background-color: white;
+            padding: 20px 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+        }
+
+        #tab-order .search-keyword {
+            width: 400px;
+            margin-right: 10px;
+        }
+
+        #tab-order .date-create {
+            flex: 2;
+            margin-left: 10px;
+        }
+
+            #tab-order .date-create .date-pick {
+                display: flex;
+                gap: 10px;
+            }
+
+
+                #tab-order .date-create .date-pick input {
+                    width: 45%;
+                }
+
+        #tab-order .search-tab-3 {
+            display: flex;
+            align-items: center;
+            padding-top: 10px;
+        }
+
+            #tab-order .search-tab-3 .search-btn {
+                padding: 5px 25px;
+                border-radius: 10px;
+                font-size: 16px;
+                font-weight: 500;
+                cursor: pointer;
+                background-color: #162938;
+                border-color: #162938;
+                margin-top: 22px;
+                color: white;
+            }
+
+        .list-order {
+            background-color: white;
+        }
+
+        .table-custom th {
+            text-align: center;
+        }
+
+        .table-custom td {
+            text-align: center;
+        }
+
+        #list-order tr {
+            cursor: pointer;
+        }
+
+        #list-order-mobile tr div {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            padding: 2px;
+        }
+    </style>
+}
+
+
+<div class="account-page-content">
+    <div class="main-content">
+        <div class="">
+            <div class="tab-content m-t-15">
+                <div class="tab-pane fade show active" id="tab-order">
+                    <div class="search-order">
+                        <div class="form-group search-keyword" id="email-form">
+                            <label class="font-weight-semibold" for="keyword">Từ khoá</label>
+                            <input type="text" class="form-control" id="keywordOrder" placeholder="Nhập từ khoá tìm kiếm" required>
+                        </div>
+                        <div class="search-tab-3"><a onclick="SearchOrder();" class="search-btn btn-primary">Tìm kiếm</a></div>
+
+                    </div>
+                    <div class="list-order desktop">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-custom">
+                                <thead>
+                                    <tr>
+                                        <th style="width:100px">Mã lịch hẹn</th>
+                                        <th style="width:200px">Bác sĩ</th>
+                                        <th style="width:150px">Ngày hẹn</th>
+                                        <th style="width:150px">Giờ hẹn</th>
+                                        <th style="width:150px">Trạng thái</th>
+                                        <th style="width:150px">Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="list-order">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="product-page-list" id="page-order">
+</div>
