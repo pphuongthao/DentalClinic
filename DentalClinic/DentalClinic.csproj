@@ -210,7 +210,9 @@
     <Content Include="Content\assets\images\logo-light.png" />
     <Content Include="Content\assets\images\logo\logo-default.png" />
     <Content Include="Content\assets\images\logo\logo-white.png" />
+    <Content Include="Content\assets\images\logo\logo.jpg" />
     <Content Include="Content\assets\images\logo\logo.png" />
+    <Content Include="Content\assets\images\logo\logo_dental.png" />
     <Content Include="Content\assets\images\others\banner.jpg" />
     <Content Include="Content\assets\images\others\caption-img-1.jpg" />
     <Content Include="Content\assets\images\others\caption-img-2.jpg" />
@@ -322,6 +324,7 @@
     <Content Include="Content\assets\images\testimonial\testimonial-top-2.png" />
     <Content Include="Content\assets\js\admin-apexchart.init.js" />
     <Content Include="Content\assets\js\app.js" />
+    <Content Include="Content\assets\js\base64.js" />
     <Content Include="Content\assets\js\bootstrap.bundle.min.js" />
     <Content Include="Content\assets\js\bootstrap.min.js" />
     <Content Include="Content\assets\js\ckeditor.js" />
@@ -2279,6 +2282,7 @@
     <Content Include="Content\ckeditor\skins\moono-lisa\images\spinner.gif" />
     <Content Include="Content\ckeditor\styles.js" />
     <Content Include="Content\ckeditor\vendor\promise.js" />
+    <Content Include="Content\css\home.css" />
     <Content Include="Content\css\login.css" />
     <Content Include="Content\datepicker.min.css" />
     <Content Include="Content\fontawesome\css\all.css" />
@@ -4480,6 +4484,7 @@
     <Compile Include="ApiControllers\ApiBaseController.cs" />
     <Compile Include="ApiControllers\ManageDoctorController.cs" />
     <Compile Include="ApiControllers\ManageServicesController.cs" />
+    <Compile Include="ApiControllers\UserAppointmentController.cs" />
     <Compile Include="ApiControllers\UserController.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
@@ -4509,6 +4514,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Filters\APIAdminTokenAttribute.cs" />
     <Compile Include="Filters\APIAuthenticationFilterAttribute.cs" />
+    <Compile Include="Filters\ApiTokenRequireAttribute.cs" />
     <Compile Include="Filters\PermissionAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -4520,7 +4526,7 @@
     <Compile Include="Models\GoodsReceiptDetail.cs" />
     <Compile Include="Models\Medicine.cs" />
     <Compile Include="Models\News.cs" />
-    <Compile Include="Models\Service.cs" />
+    <Compile Include="Models\ServiceDental.cs" />
     <Compile Include="Models\ServiceCategory.cs" />
     <Compile Include="Models\Slide.cs" />
     <Compile Include="Models\SystemAbout.cs" />
@@ -4550,7 +4556,7 @@
     <Compile Include="Services\ServiceService.cs" />
     <Compile Include="Services\SystemAboutService.cs" />
     <Compile Include="Services\UserAdminService.cs" />
-    <Compile Include="Services\UserAppointmentService.cs" />
+    <Compile Include="Services\UserMakeAppointmentService.cs" />
     <Compile Include="Services\UserService.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -4721,6 +4727,8 @@
     <Content Include="Views\Home\Register.cshtml" />
     <Content Include="Views\Home\GetAppointment.cshtml" />
     <Content Include="Views\Home\UserAppointment.cshtml" />
+    <Content Include="Views\Home\ChangePassword.cshtml" />
+    <Content Include="Views\Home\UserInformation.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

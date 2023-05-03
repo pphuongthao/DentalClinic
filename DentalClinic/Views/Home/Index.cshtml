@@ -2,9 +2,11 @@
 @using DentalClinic.Providers;
 @{
     List<News> lsNews = (List<News>)ViewBag.ListNews;
+    List<Doctor> lsDoctor = (List<Doctor>)ViewBag.ListDoctor;
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
 @section Slider{
     <section class="wrd-home-slider-area">
         <div class="wrd-home-slider-wrapper">
@@ -27,14 +29,6 @@
 
                                     <div class="wrd-slider-content-text" data-animation="fadeInUp" data-delay="1.75s">
                                         We’ve 25 Years of experience in Medical Services.
-                                    </div>
-
-                                    <div class="slider-button-wrapper">
-                                        <a data-animation="fadeInUp" data-delay="2.5s" href="department.html" class="wrd-button wrd-slider-btn-one">Our Services<i class="fas fa-plus"></i></a>
-
-                                        <a data-animation="fadeInUp" data-delay="2.75s" href="https://vimeo.com/100902001" class="wrd-video-button mfp-iframe">
-                                            <i class="fas fa-play"></i>
-                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -64,13 +58,7 @@
                                         We’ve 25 Years of experience in Medical Services.
                                     </div>
 
-                                    <div class="slider-button-wrapper">
-                                        <a data-animation="fadeInUp" data-delay="2.5s" href="department.html" class="wrd-button wrd-slider-btn-one">Our Services<i class="fas fa-plus"></i></a>
 
-                                        <a data-animation="fadeInUp" data-delay="2.75s" href="https://vimeo.com/100902001" class="wrd-video-button mfp-iframe">
-                                            <i class="fas fa-play"></i>
-                                        </a>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -78,7 +66,7 @@
                 </div>
             </div>
         </div>
-    </section>    
+    </section>
 }
 <!-- Service Section -->
 <section class="wrd-service-one-section">
@@ -161,129 +149,6 @@
     </div>
 </section>
 <!-- Service Section End -->
-
-<!-- Service With Center Image Section -->
-<section class="service-with-center-image wrd-cover-bg" data-background="/Content/assets/images/others/section-bg.jpg">
-    <div class="wrd-service-and-center-image-wrapper">
-        <div class="container">
-            <div class="row">
-                <div class="wrd-section-title-wrapper">
-                    <div class="wrd-section-title-content wrd-secondary-font">
-                        <div class="wrd-section-title-bg-text">Services</div>
-                        <div class="wrd-section-subtitle wrd-primary-color">Our Services</div>
-                        <div class="wrd-section-title">
-                            <h2>Dịch vụ nha khoa</h2>
-                        </div>
-                        <div class="title-bottom-line" data-background="/Content/assets/images/others/line.png"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-xl-4 col-lg-12">
-                    <div class="service-image-left-side">
-                        <div class="row">
-                            <div class="col-xl-12 col-lg-6 col-md-6">
-                                <div class="service-style-two-wrapper">
-                                    <div class="service-style-two-item">
-                                        <div class="wrd-service-two-icon wrd-primary-color">
-                                            <i aria-hidden="true" class="wrd-icon flaticon-neurology"></i>
-                                        </div>
-
-                                        <a href="department-details.html" class="service-two-title wrd-secondary-font">Neuro Surgery</a>
-
-                                        <div class="service-two-desc">
-                                            Sit consectetur adipiscin elit sed do eiusmod tempor
-                                        </div>
-
-                                        <div class="service-two-details-btn">
-                                            <a class="wrd-text-button" href="department-details.html">Read More <i class="fas fa-angle-double-right"></i></a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-xl-12 col-lg-6 col-md-6">
-                                <div class="service-style-two-wrapper">
-                                    <div class="service-style-two-item">
-                                        <div class="wrd-service-two-icon wrd-primary-color">
-                                            <i aria-hidden="true" class="wrd-icon flaticon-face"></i>
-                                        </div>
-
-                                        <a href="department-details.html" class="service-two-title wrd-secondary-font">Plastic Surgery</a>
-
-                                        <div class="service-two-desc">
-                                            Sit consectetur adipiscin elit sed do eiusmod tempor
-                                        </div>
-
-                                        <div class="service-two-details-btn">
-                                            <a class="wrd-text-button" href="department-details.html">Read More <i class="fas fa-angle-double-right"></i></a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-xl-4 wrd-service-image-col">
-                    <div class="wrd-service-image-wrapper">
-                        <div class="wrd-service-image">
-                            <img src="/Content/assets/images/services/service-center-image.png" alt="service center image" title="service-center-image">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-xl-4 col-lg-12">
-                    <div class="service-image-right-side">
-                        <div class="row">
-                            <div class="col-xl-12 col-lg-6 col-md-6">
-                                <div class="service-style-two-wrapper">
-                                    <div class="service-style-two-item">
-                                        <div class="wrd-service-two-icon wrd-primary-color">
-                                            <i aria-hidden="true" class="wrd-icon flaticon-dental-care"></i>
-                                        </div>
-
-                                        <a href="department-details.html" class="service-two-title wrd-secondary-font">Dental Surgery</a>
-
-                                        <div class="service-two-desc">
-                                            Sit consectetur adipiscin elit sed do eiusmod tempor
-                                        </div>
-
-                                        <div class="service-two-details-btn">
-                                            <a class="wrd-text-button" href="department-details.html">Read More <i class="fas fa-angle-double-right"></i></a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-xl-12 col-lg-6 col-md-6">
-                                <div class="service-style-two-wrapper">
-                                    <div class="service-style-two-item">
-                                        <div class="wrd-service-two-icon wrd-primary-color">
-                                            <i aria-hidden="true" class="wrd-icon flaticon-heart-1"></i>
-                                        </div>
-
-                                        <a href="department-details.html" class="service-two-title wrd-secondary-font">Heart Surgery</a>
-
-                                        <div class="service-two-desc">
-                                            Sit consectetur adipiscin elit sed do eiusmod tempor
-                                        </div>
-
-                                        <div class="service-two-details-btn">
-                                            <a class="wrd-text-button" href="department-details.html">Read More <i class="fas fa-angle-double-right"></i></a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-<!-- Service With Center Image Section End -->
 <!-- Doctors / Team Member Section -->
 <section class="doctors-slider-section">
     <div class="wrd-team-one-wrapper">
@@ -302,308 +167,62 @@
             </div>
 
             <div id="wrd-doctors-one-slider" class="row">
-                <div class="col-lg-12">
-                    <div class="wrd-single-team-member">
-                        <div class="member-image-wrapper">
-                            <a class="wrd-member-details-url" href="doctors-details.html">
-                                <div class="wrd-member-btn-text"><span>Explore More</span></div>
-                                <div class="member-image">
-                                    <img src="/Content/assets/images/team/team-member-1.jpg" alt="Team">
+                    @for (int index = 0; index < lsDoctor.Count; index++)
+                    {
+                        <div class="col-lg-12">
+                            <div class="wrd-single-team-member">
+                                <div class="member-image-wrapper">
+                                    <a class="wrd-member-details-url" href="doctors-details.html">
+                                        <div class="wrd-member-btn-text"><span>Xem thêm</span></div>
+                                        <div class="member-image">
+                                            <img  src="/Content/assets/images/team/team-member-3.jpg" alt="Team">
+                                        </div>
+                                    </a>
                                 </div>
-                            </a>
-                        </div>
 
-                        <div class="wrd-member-content">
-                            <a href="doctors-details.html">
-                                <h3 class="wrd-member-name">M Rongila Rongs</h3>
-                            </a>
-                            <span class="wrd-member-designation wrd-secondary-font">Medicine Specialist</span>
+                                <div class="wrd-member-content">
+                                    <a href="doctors-details.html">
+                                        <h3 class="wrd-member-name"> @lsDoctor[index].Name</h3>
+                                    </a>
+                                    <span class="wrd-member-designation wrd-secondary-font">@lsDoctor[index].Description</span>
+                                </div>
+                            </div>
                         </div>
+                    }
+
+                </div>
+            @*<div id="wrd-doctors-one-slider" class="row">
+                <div class="customer-section section">
+                    <div class="customerFeedback">
+                        @for (int i = 0; i < lsDoctor.Count; i++)
+                        {
+                            <div>
+                                <div class="card feedbackDetail">
+                                    <div class="avatarCustomer">
+                                        <div class="avt-img" style="background-image:url('@lsDoctor[i].Avatar')"></div>
+                                    </div>
+                                    <div class="star">
+                                        @for (int index = 0; index < lsDoctor[i].Rate; index++)
+                                        {
+                                            <span class="fa fa-star"></span>
+                                        }
+
+
+                                    </div>
+                                    <div class="feedback">
+                                        @lsDoctor[i].Description
+                                    </div>
+                                    <div class="customerName">@lsDoctor[i].Name</div>
+                                </div>
+                            </div>
+                        }
                     </div>
                 </div>
-
-                <div class="col-lg-12">
-                    <div class="wrd-single-team-member">
-                        <div class="member-image-wrapper">
-                            <a class="wrd-member-details-url" href="doctors-details.html">
-                                <div class="wrd-member-btn-text"><span>Explore More</span></div>
-                                <div class="member-image">
-                                    <img src="/Content/assets/images/team/team-member-2.jpg" alt="Team">
-                                </div>
-                            </a>
-                        </div>
-
-                        <div class="wrd-member-content">
-                            <a href="doctors-details.html">
-                                <h3 class="wrd-member-name">M Rongila Rongs</h3>
-                            </a>
-                            <span class="wrd-member-designation wrd-secondary-font">Medicine Specialist</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-12">
-                    <div class="wrd-single-team-member">
-                        <div class="member-image-wrapper">
-                            <a class="wrd-member-details-url" href="doctors-details.html">
-                                <div class="wrd-member-btn-text"><span>Explore More</span></div>
-                                <div class="member-image">
-                                    <img src="/Content/assets/images/team/team-member-3.jpg" alt="Team">
-                                </div>
-                            </a>
-                        </div>
-
-                        <div class="wrd-member-content">
-                            <a href="doctors-details.html">
-                                <h3 class="wrd-member-name">M Rongila Rongs</h3>
-                            </a>
-                            <span class="wrd-member-designation wrd-secondary-font">Medicine Specialist</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-12">
-                    <div class="wrd-single-team-member">
-                        <div class="member-image-wrapper">
-                            <a class="wrd-member-details-url" href="doctors-details.html">
-                                <div class="wrd-member-btn-text"><span>Explore More</span></div>
-                                <div class="member-image">
-                                    <img src="/Content/assets/images/team/team-member-4.jpg" alt="Team">
-                                </div>
-                            </a>
-                        </div>
-
-                        <div class="wrd-member-content">
-                            <a href="doctors-details.html">
-                                <h3 class="wrd-member-name">M Rongila Rongs</h3>
-                            </a>
-                            <span class="wrd-member-designation wrd-secondary-font">Medicine Specialist</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            </div>*@
         </div>
     </div>
 </section>
 <!-- Doctors / Team Member Section End -->
-
-<!-- CountUp And Form Section -->
-<div class="wrd-countup-and-form-section">
-    <div class="container">
-        <div class="row">
-            <div class="col-xl-6 col-lg-6 col-md-6 my-auto">
-                <div class="counter-up-wrapper">
-                    <div class="wrd-section-title-bg-text wrd-secondary-font">Statistics</div>
-                    @*<div class="row">
-                        <div class="col-xl-6 col-lg-6 col-md-6 col-6">
-                            <div class="wrd-counter-box">
-                                <div class="wrd-counter-content">
-                                    <div class="wrd-count-icon">
-                                        <i aria-hidden="true" class="flaticon-doctor-1"></i>
-                                    </div>
-
-                                    <div class="wrd-count-number-and-unit wrd-secondary-font">
-                                        <span class="wrd-count-number">3568</span>+
-                                    </div>
-
-                                    <div class="wrd-count-title">Professional Doctors</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-xl-6 col-lg-6 col-md-6 col-6">
-                            <div class="wrd-counter-box">
-                                <div class="wrd-counter-content">
-                                    <div class="wrd-count-icon">
-                                        <i aria-hidden="true" class="wrd-icon flaticon-laboratory"></i>
-                                    </div>
-
-                                    <div class="wrd-count-number-and-unit wrd-secondary-font">
-                                        <span class="wrd-count-number">9632</span>+
-                                    </div>
-
-                                    <div class="wrd-count-title">Digital Laboratory</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-xl-6 col-lg-6 col-md-6 col-6">
-                            <div class="wrd-counter-box">
-                                <div class="wrd-counter-content">
-                                    <div class="wrd-count-icon">
-                                        <i aria-hidden="true" class="wrd-icon flaticon-laurel-wreath"></i>
-                                    </div>
-
-                                    <div class="wrd-count-number-and-unit wrd-secondary-font">
-                                        <span class="wrd-count-number">38</span>+
-                                    </div>
-
-                                    <div class="wrd-count-title">Years Of Experience</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-xl-6 col-lg-6 col-md-6 col-6">
-                            <div class="wrd-counter-box">
-                                <div class="wrd-counter-content">
-                                    <div class="wrd-count-icon">
-                                        <i aria-hidden="true" class="wrd-icon flaticon-award-1"></i>
-                                    </div>
-
-                                    <div class="wrd-count-number-and-unit wrd-secondary-font">
-                                        <span class="wrd-count-number">463</span>+
-                                    </div>
-
-                                    <div class="wrd-count-title">Winning Awards</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>*@
-                </div>
-            </div>
-
-            <div class="col-xl-6 col-lg-6 col-md-6">
-                <div class="wrd-contact-form-container">
-                    <div class="form-icon">
-                        <i class="flaticon-nurse"></i>
-                    </div>
-
-                    <div class="wrd-form-subtitle-title">
-                        <div class="wrd-form-subtitle">Make an</div>
-                        <div class="wrd-form-title"><h2>Appointment</h2></div>
-                    </div>
-
-                    <div class="wrapdiv-contact-form-container">
-                        <form action="https://demo.wrapdiv.com/html/doctio/index.html">
-                            <div class="row">
-                                <div class="col-12">
-                                    <div class="wrd-form-control-wrapper select-arrow">
-                                        <select name="servicetype" aria-label="services">
-                                            <option value="Choose A Service">Choose A Service</option>
-                                            <option value="Health Care">Health Care</option>
-                                            <option value="Neuro Care">Neuro Care</option>
-                                            <option value="ENT Care">ENT Care</option>
-                                            <option value="Gynaecology">Gynaecology</option>
-                                            <option value="Urology">Urology</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="col-12">
-                                    <div class="wrd-form-control-wrapper select-arrow">
-                                        <select name="doctorslist" aria-label="doctorslist">
-                                            <option value="Select Doctors">Select Doctors</option>
-                                            <option value="Md Nadim Khan">Md Nadim Khan</option>
-                                            <option value="Md Imran Khan">Md Imran Khan</option>
-                                            <option value="Shafiqur Rahman">Shafiqur Rahman</option>
-                                            <option value="Shafiul Amin">Shafiul Amin</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="col-12">
-                                    <div class="wrd-form-control-wrapper">
-                                        <input type="date" name="bookingdate" value="" class="wrd-booking-date" aria-label="bookingdate">
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-12">
-                                    <button class="wrd-button" type="submit">SUBMIT NOW<i class="fas fa-plus"></i></button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- CountUp And Form Section End -->
-<!-- Testimonial Section -->
-<section class="wrd-testimonial-section">
-    <div class="container">
-        <div class="row">
-            <div class="col-xl-6 col-lg-8 col-md-10">
-                <div class="wrd-section-title-wrapper left">
-                    <div class="wrd-section-title-content wrd-secondary-font">
-                        <div class="wrd-section-title-bg-text">Feedback</div>
-                        <div class="wrd-section-subtitle wrd-primary-color">Our Testimonials</div>
-                        <div class="wrd-section-title">
-                            <h2>What Our Patient Say About Our Caring</h2>
-                        </div>
-                        <div class="title-bottom-line" data-background="/Content/assets/images/others/line.png"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="wrd-testimonial-one-slider-wrapper">
-            <div id="wrd-testimonial-slider-one" class="row wrd-testimonial-one-slider">
-                <div class="col-12">
-                    <div class="wrd-testimonial-one-item">
-                        <div class="wrd-testimonial-one-author-image wrd-cover-bg" data-background="/Content/assets/images/testimonial/testimonial-1.png"></div>
-
-                        <div class="wrd-testimonial-one-top-image">
-                            <img src="/Content/assets/images/testimonial/testimonial-top-1.png" alt="top image">
-                        </div>
-
-                        <div class="wrd-testimonial-one-desc">
-                            <p>Lorem ipsum is a dolor sitae amet consctet of and the voluptata laboriosam and then null on the ofen delenitie reiciendis as voliuptibu and the laboriosam on and nulla ideleniti and many lore other important quotes.</p>
-                        </div>
-
-                        <div class="wrd-testimonial-one-author-name-designation">
-                            <div class="wrd-testimonial-quote wrd-primary-color"><i class="flaticon-quotation"></i></div>
-                            <h4 class="wrd-testimonial-one-author-name">Md Nadim Khan</h4>
-                            <span class="wrd-testimonial-one-author-designation">Web Developer</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-12">
-                    <div class="wrd-testimonial-one-item">
-                        <div class="wrd-testimonial-one-author-image wrd-cover-bg" data-background="/Content/assets/images/testimonial/testimonial-2.jpg"></div>
-
-                        <div class="wrd-testimonial-one-top-image">
-                            <img src="/Content/assets/images/testimonial/testimonial-top-2.png" alt="top image">
-                        </div>
-
-                        <div class="wrd-testimonial-one-desc">
-                            <p>Lorem ipsum is a dolor sitae amet consctet of and the voluptata laboriosam and then null on the ofen delenitie reiciendis as voliuptibu and the laboriosam on and nulla ideleniti and many lore other important quotes.</p>
-                        </div>
-
-                        <div class="wrd-testimonial-one-author-name-designation">
-                            <div class="wrd-testimonial-quote wrd-primary-color"><i class="flaticon-quotation"></i></div>
-                            <h4 class="wrd-testimonial-one-author-name">Md Nadim Khan</h4>
-                            <span class="wrd-testimonial-one-author-designation">Web Developer</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-12">
-                    <div class="wrd-testimonial-one-item">
-                        <div class="wrd-testimonial-one-author-image wrd-cover-bg" data-background="/Content/assets/images/testimonial/testimonial-1.png"></div>
-
-                        <div class="wrd-testimonial-one-top-image">
-                            <img src="/Content/assets/images/testimonial/testimonial-top-1.png" alt="top image">
-                        </div>
-
-                        <div class="wrd-testimonial-one-desc">
-                            <p>Lorem ipsum is a dolor sitae amet consctet of and the voluptata laboriosam and then null on the ofen delenitie reiciendis as voliuptibu and the laboriosam on and nulla ideleniti and many lore other important quotes.</p>
-                        </div>
-
-                        <div class="wrd-testimonial-one-author-name-designation">
-                            <div class="wrd-testimonial-quote wrd-primary-color"><i class="flaticon-quotation"></i></div>
-                            <h4 class="wrd-testimonial-one-author-name">Md Nadim Khan</h4>
-                            <span class="wrd-testimonial-one-author-designation">Web Developer</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-<!-- Testimonial Section End -->
-
 <!-- Recent Posts Section -->
 <section class="wrd-recent-post-section">
     <div class="container">
@@ -624,103 +243,73 @@
             </div>
         </div>
 
-        <div class="wrd-recent-post-wrapper">
-            <div class="row">
+        @*<div class="wrd-recent-post-wrapper">
+                <div class="row">
+                    @for (int index = 0; index < lsNews.Count; index++)
+                    {
+                        <div class="col-xl-4 col-lg-6 col-md-6">
+                            <article class="wrd-recent-post-item">
+                                <a href="blog-details.html" class="wrd-recent-post-thumbnail wrd-cover-bg" data-background="/Content/assets/images/blog/blog-2.jpg"></a>
+
+                                <div class="wrd-recent-post-content">
+                                    <div class="wrd-post-meta post-meta">
+                                        <ul class="wrd-list-style wrd-list-inline">
+                                            <li>
+                                                <span class="byline"><i class="far fa-user"></i><span class="author vcard">@lsNews[index].Title</span></span>
+                                            </li>
+
+                                            <li>
+                                                <span class="posted-on">
+                                                    <i class="far fa-calendar-check"></i> <a href="blog-details.html">@HelperProvider.GetDateTime(lsNews[index].CreateTime)</a>
+                                                </span>
+                                            </li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="wrd-recent-post-title">
+                                        <a href="blog-details.html">
+                                            <h4 class="post-title">@lsNews[index].NewsContent</h4>
+                                        </a>
+                                    </div>
+
+                                    <div class="wrd-post-read-more">
+                                        <a class="wrd-text-button" href="blog-details.html">Read More <i class="fas fa-angle-double-right"></i></a>
+                                    </div>
+                                </div>
+                            </article>
+                        </div>
+                    }
+                </div>
+            </div>*@
+        <div class="home-latest-news-section section">
+            <div class="header-latest-news">
+                @*<div class="header-title">
+                        Tin tức
+                    </div>*@
+                <a href="/tin-tuc/danh-sach?page=1" class="header-more-latest-news">
+                    Xem thêm
+                </a>
+            </div>
+            <hr style="display:none" />
+            <div class="list-latest-news">
                 @for (int index = 0; index < lsNews.Count; index++)
                 {
-                    <div class="col-xl-4 col-lg-6 col-md-6">
-                        <article class="wrd-recent-post-item">
-                            <a href="blog-details.html" class="wrd-recent-post-thumbnail wrd-cover-bg" data-background="/Content/assets/images/blog/blog-2.jpg"></a>
-
-                            <div class="wrd-recent-post-content">
-                                <div class="wrd-post-meta post-meta">
-                                    <ul class="wrd-list-style wrd-list-inline">
-                                        <li>
-                                            <span class="byline"><i class="far fa-user"></i><span class="author vcard">@lsNews[index].Title</span></span>
-                                        </li>
-
-                                        <li>
-                                            <span class="posted-on">
-                                                <i class="far fa-calendar-check"></i> <a href="blog-details.html">@HelperProvider.GetDateTime(lsNews[index].CreateTime)</a>
-                                            </span>
-                                        </li>
-                                    </ul>
-                                </div>
-
-                                <div class="wrd-recent-post-title">
-                                    <a href="blog-details.html">
-                                        <h4 class="post-title">@lsNews[index].NewsContent</h4>
-                                    </a>
-                                </div>
-
-                                <div class="wrd-post-read-more">
-                                    <a class="wrd-text-button" href="blog-details.html">Read More <i class="fas fa-angle-double-right"></i></a>
-                                </div>
-                            </div>
-                        </article>
-                    </div>
+                    <a href="/tin-tuc/bai-viet/@HelperProvider.CreateSlugFromTitle(lsNews[index].Title)/@lsNews[index].NewsId" class="item-latest-news">
+                        <div class="item-thumbnail" style="background-image:url('@lsNews[index].Thumbnail')">
+                        </div>
+                        <div class="item-title">
+                            @lsNews[index].Title
+                        </div>
+                        <div class="item-description">
+                            @lsNews[index].Description
+                        </div>
+                        <div class="item-time">
+                            @HelperProvider.GetDateTime(lsNews[index].CreateTime).ToString("HH:mm dd/MM/yyyy")
+                        </div>
+                    </a>
                 }
             </div>
         </div>
     </div>
 </section>
 <!-- Recent Posts Section End -->
-<!-- Brand Slider Section -->
-<div class="wrd-brand-img-wrapper">
-    <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <div class="wrd-brand-image-slider">
-                    <div class="wrd-brand-item">
-                        <div class="wrd-table">
-                            <div class="wrd-table-cell">
-                                <img src="/Content/assets/images/brand/brand-1.png" alt="Brand" title="brand">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="wrd-brand-item">
-                        <div class="wrd-table">
-                            <div class="wrd-table-cell">
-                                <img src="/Content/assets/images/brand/brand-2.png" alt="Brand" title="brand">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="wrd-brand-item">
-                        <div class="wrd-table">
-                            <div class="wrd-table-cell">
-                                <img src="/Content/assets/images/brand/brand-3.png" alt="Brand" title="brand">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="wrd-brand-item">
-                        <div class="wrd-table">
-                            <div class="wrd-table-cell">
-                                <img src="/Content/assets/images/brand/brand-4.png" alt="Brand" title="brand">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="wrd-brand-item">
-                        <div class="wrd-table">
-                            <div class="wrd-table-cell">
-                                <img src="/Content/assets/images/brand/brand-5.png" alt="Brand" title="brand">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="wrd-brand-item">
-                        <div class="wrd-table">
-                            <div class="wrd-table-cell">
-                                <img src="/Content/assets/images/brand/brand-6.png" alt="Brand" title="brand">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Brand Slider Section End -->

@@ -120,6 +120,7 @@ namespace DentalClinic.Areas.Admin.ApiControllers
                         }
                         user.Address = model.Address;
                         user.Gender = model.Gender;
+                        user.Phone = model.Phone;
                         if (!manageUserService.UpdateUser(user, transaction)) return Error();
 
 

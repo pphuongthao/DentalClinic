@@ -250,7 +250,7 @@
                             <div class="label-custom">
                                 <label class="font-weight-semibold" for="phoneNum">Số điện thoại:</label>
                             </div>
-                            <input type="text" class="" id="phoneNum" placeholder="Số điện thoại" value="" disabled>
+                            <input type="text" class="" id="phoneNum" placeholder="Số điện thoại" value="" >
                         </div>
 
                         <div class="form-custom">
@@ -312,7 +312,7 @@
                 $('#Name').val(rs.data.Name);
                 $('#Account').val(rs.data.Account);
                 $('#Email').val(rs.data.Email);
-                $('#phoneNum').val('******'+rs.data.Phone.substr(rs.data.Phone.length-4,4));
+                $('#phoneNum').val(rs.data.Phone);
                 $('#fullAddress').val(rs.data.Address);
                 let html2 = '<div class="tab-function">';
                 html2 += '<a class="btn btn-outline-primary" onclick="updateUserInfo(this);">Cập nhật</a>';
@@ -337,6 +337,7 @@
                 Password: $('#password').val(),
                 Email: $('#Email').val(),
                 Address: $('#fullAddress').val(),
+                Phone: $('#phoneNum').val(),
                 SearchName: '',
             }
 

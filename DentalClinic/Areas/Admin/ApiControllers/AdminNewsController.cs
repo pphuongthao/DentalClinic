@@ -47,9 +47,10 @@ namespace DentalClinic.Areas.Admin.ApiControllers
                     {
                         AdminNewsService adminNewsService = new AdminNewsService(connection);
                         News news = new News();
-                        news.Title = model.Title;
+                        news.Title = model.Title.Trim();
                         news.Description = model.Description;
                         news.NewsContent = model.NewsContent;
+                        news.SearchTitle = model.SearchTitle.Trim();
                         if (!string.IsNullOrEmpty(model.Thumbnail))
                         {
                             string filename = Guid.NewGuid().ToString() + ".jpg";
@@ -57,6 +58,8 @@ namespace DentalClinic.Areas.Admin.ApiControllers
                             HelperProvider.Base64ToImage(model.Thumbnail, path);
                             news.Thumbnail = Constant.NEWS_THUMBNAIL_URL + filename;
                         }
+                        news.CreateTime = HelperProvider.GetSeconds();
+                        news.Enable = true;
                         if (!adminNewsService.InsertNews(news, transaction)) return Error(JsonResult.Message.ERROR_SYSTEM);
                         transaction.Commit();
                         return Success();

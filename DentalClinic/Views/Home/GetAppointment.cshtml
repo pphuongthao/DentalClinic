@@ -1,11 +1,10 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "GetAppointment";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @section styles{
     <style>
-        body {
+       /* body {
             display: flex;
             justify-content: center;
             align-items: center;
@@ -13,7 +12,7 @@
             background: url('/Content/img/rooms/4.jpg') no-repeat;
             background-size: cover;
             background-position: center;
-        }
+        }*/
 
         select, option {
             cursor: pointer;
@@ -147,7 +146,7 @@
         <div class="form-box register">
             <h2>Đặt lịch hẹn</h2>
             <div>
-                <div class="form-group" id="">
+                @*<div class="form-group" id="">
                     <label class="font-weight-semibold" for="name">Họ và tên</label>
                     <input type="text" class="form-control" id="Name" placeholder="Nhập họ và tên" required>
                 </div>
@@ -162,7 +161,7 @@
                 <div class="form-group" id="">
                     <label class="font-weight-semibold" for="name">Địa chỉ</label>
                     <input type="text" class="form-control" id="Address" placeholder="Nhập địa chỉ" required>
-                </div>
+                </div>*@
                 <div class="form-group">
                     <label class="font-weight-semibold"> Bác sĩ</label>
                     <div>
@@ -180,7 +179,7 @@
                     <div class="form-group">
                         <label class="font-weight-semibold">Giờ khám</label>
                         <div>
-                            <select class="form-select" id="">
+                            <select class="form-select" id="hour">
                                 <option value="">Chọn giờ khám</option>
                                 <option value="">8:00</option>
                                 <option value="">8:30</option>
@@ -200,7 +199,7 @@
                     </div>
                 </div>
                 <div class="footer-form">
-                    <button class="btn-register" onclick="Register_OnClick();">Đặt hẹn</button>
+                    <button class="btn-register" onclick="GetAppointment_OnClick();">Đặt hẹn</button>
                 </div>
 
 
@@ -277,5 +276,56 @@
             await GetListService();
         }
         InitPage();
+
+        const GetAppointment_OnClick() = async function () {
+
+            let datetimePicker = $('#date').val().split('-');
+            let day = parseInt(datetimePicker[0]);
+            let month = parseInt(datetimePicker[1]);
+            let year = parseInt(datetimePicker[2]);
+
+            let timePicker = $('#hour').find(':selected').text().split(':');
+            let hour = parseInt(timePicker[0]);
+            let minute = parseInt(timePicker[1]);
+
+            let listService = [];
+            let listDataPick = $('#list-service-pick').find('.item-pick');
+            for (let i = 0; i < listDataPick.length; i++) {
+                listService.push({
+                    ServiceId: $(listDataPick[i]).data('id')
+                });
+            }
+
+            let model = {
+                //Name: $('#Name').val(),
+                //Phone: $('#Phone').val(),
+                //Email: $('#Email').val(),
+                //Address: $('#Address').val(),
+                DoctorId: $('#DoctorId').find(':selected').val(),
+                Day: day,
+                Month: month,
+                Year: year,
+                Hour: hour,
+                Minute: minute,
+                ListService: listService
+            }
+            console.log(model)
+            let rp = await fetch('/api/UserAppointment/CreateUserAppointment', {
+                method: 'post',
+                headers: Enum.OptionHeaderDefault,
+                body: JSON.stringify(model)
+            });
+            let rs = await rp.json();
+            if (CheckErrorResponse(rs) === false) return;
+            if (GetObjectProperty(rs, 'status') === Enum.ResponseStatus.SUCCESS) {
+                Swal.fire({
+                    icon: "success",
+                    title: "Đặt lịch hẹn thành công.",
+                    preConfirm: function () {
+                        window.location.href = '/lich-hen-user';
+                    }
+                })
+            }
+        }
     </script>
 }
