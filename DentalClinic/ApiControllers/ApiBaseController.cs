@@ -1,4 +1,5 @@
-﻿using DentalClinic.Models;
+﻿using DentalClinic.Filters;
+using DentalClinic.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ using System.Web.Http.Results;
 
 namespace DentalClinic.ApiControllers
 {
+
     public class ApiBaseController : ApiController
     {
         public JsonResult Success(object data = null, string message = null)

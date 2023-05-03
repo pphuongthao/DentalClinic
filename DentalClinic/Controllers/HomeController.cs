@@ -17,6 +17,11 @@ namespace DentalClinic.Controllers
             NewsService newsService = new NewsService();
             List<News> lsnewsUpdates = newsService.GetListNewsForHomePage();
             ViewBag.ListNews = lsnewsUpdates;
+
+            // Danh sách 10 bac si noi bat nhat
+            DoctorService doctorService = new DoctorService();
+            List<Doctor> lsDoctorUpdates = doctorService.GetListDoctorForHomePage();
+            ViewBag.ListDoctor = lsDoctorUpdates;
             return View();
         }
         [Route("gioi-thieu")]
@@ -54,6 +59,16 @@ namespace DentalClinic.Controllers
         }
         [Route("lich-hen-user")]
         public ActionResult UserAppointment()
+        {
+            return View();
+        }
+        [Route("doi-mat-khau")]
+        public ActionResult ChangePassword()
+        {
+            return View();
+        }
+        [Route("thong-tin-ca-nhan")]
+        public ActionResult UserInformation()
         {
             return View();
         }

@@ -18,6 +18,7 @@ namespace DentalClinic.Models
         public long CreateTime { get; set; }
 
     }
+
     public class ServiceListViewModel
     {
         public List<ServiceDental> ListService { get; set; }

@@ -48,7 +48,7 @@ namespace DentalClinic.Areas.Admin.ApiControllers
                         doctor.DoctorId = Guid.NewGuid().ToString();
                         doctor.Name = model.Name;
                         doctor.SearchName = model.SearchName;
-                        doctor.Description = model.Description;
+                        doctor.Description = model.Description.Trim();
                         doctor.Rate = model.Rate;
                         if (!string.IsNullOrEmpty(model.Avatar))
                         {

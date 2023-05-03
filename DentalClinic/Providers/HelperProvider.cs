@@ -140,7 +140,7 @@ namespace DentalClinic.Providers
                     token = Base64Encode(token);
                 }
 
-                token = "SmartLife " + token;
+                token = "DentalClinic " + token;
                 return token;
             }
             catch (Exception ex)

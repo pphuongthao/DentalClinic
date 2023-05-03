@@ -92,9 +92,9 @@
                     <div class="search-order">
                         <div class="form-group search-keyword" id="email-form">
                             <label class="font-weight-semibold" for="keyword">Từ khoá</label>
-                            <input type="text" class="form-control" id="keywordOrder" placeholder="Nhập từ khoá tìm kiếm" required>
+                            <input type="text" class="form-control" id="keyword" placeholder="Nhập từ khoá tìm kiếm" required>
                         </div>
-                        <div class="search-tab-3"><a onclick="SearchOrder();" class="search-btn btn-primary">Tìm kiếm</a></div>
+                        <div class="search-tab-3"><a onclick="SearchAppointment();" class="search-btn btn-primary">Tìm kiếm</a></div>
 
                     </div>
                     <div class="list-order desktop">
@@ -102,7 +102,7 @@
                             <table class="table table-hover table-custom">
                                 <thead>
                                     <tr>
-                                        <th style="width:100px">Mã lịch hẹn</th>
+                                        <th style="width:100px">Dịch vụ</th>
                                         <th style="width:200px">Bác sĩ</th>
                                         <th style="width:150px">Ngày hẹn</th>
                                         <th style="width:150px">Giờ hẹn</th>
@@ -110,7 +110,7 @@
                                         <th style="width:150px">Thao tác</th>
                                     </tr>
                                 </thead>
-                                <tbody id="list-order">
+                                <tbody id="list-appointment">
                                 </tbody>
                             </table>
                         </div>
@@ -122,3 +122,69 @@
 </div>
 <div class="product-page-list" id="page-order">
 </div>
+@section scripts{
+    <script>
+        const SearchAppointment = function () {
+            getListAppointment();
+        }
+        let _currentPage = 1;
+        const getListAppointment = async function (page = 1) {
+            _currentPage = page;
+            let keyword = $('#keyword').val();
+
+            let rq = await fetch(Enum.ApiUrl + '/api/UserAppointment/GetListAppointmentOfUser?page=' + page + '&keyword=' + keyword, {
+                method: 'get',
+                headers: Enum.OptionHeaderDefault
+            });
+            let rs = await rq.json();
+
+            if (CheckErrorResponse(rs) === false) return;
+            $('#list-appointment').html('');
+            if (GetObjectProperty(rs, 'status') === Enum.ResponseStatus.SUCCESS) {
+                $('#page-order').html('');
+                for (let page = 1; page <= rs.data.TotalPage; page++) {
+                    $('#page-order').append(`<a onclick="getListAppointment(${page});" data-page="${page}" class="product-page ${_currentPage === page ? 'active' : ''}" id="page-num">${page}</a>`);
+                }
+                for (let index = 0; index < rs.data.ListAppointment.length; index++) {
+                    var x = rs.data.ListAppointment[index]
+                    let html = '<tr data-id=' + x.UserAppointmentId + ' onclick="openOrderDetail(this)" >';
+                    html += '<td>[' + x.UserAppointmentId + ']</td>';
+                    html += '<td>' + x.Name + ' </td>';
+                    html += '<td>' + DateStringFormat({ stringDate: new Date(x.CreateTime) }) + '</td>';
+
+                    let button = '';
+                    let status = '';
+                    switch (x.Status) {
+                        case 'PENDING':
+                            status = '<span class="badge bg-light-warning"> Chờ xác nhận </span>';
+
+                            button += '<button class="btn btn-danger btn-tone m-r-5 btn-sm" onclick="userCancel(this,event)" data-id="' + x.UserAppointmentId + '"> Huỷ </button>';
+                            break;
+                        case 'DONE':
+                            status = '<span class="badge bg-light-success"> Đã xong </span>';
+
+                            break;
+                        case 'USER_CANCEL':
+                            status = '<span class="badge bg-light-danger"> Người dùng huỷ </span>';
+
+                            break;
+                        case 'SYSTEM_CANCEL':
+                            status = '<span class="badge bg-light-danger"> Hệ thống huỷ </span>';
+
+                            break;
+                        default: break;
+                    }
+
+                    html += '<td>' + status + '</td>';
+                    html += '<td>' + button + '</td></tr>';
+                    $('#list-appointment').append(html);
+                }
+            }
+        }
+        const initPage = async function () {
+            await getListAppointment();
+        }
+
+        initPage();
+    </script>    
+}

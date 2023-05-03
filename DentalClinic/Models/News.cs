@@ -23,4 +23,5 @@ namespace DentalClinic.Models
         public int TotalPage { get; set; }
 
     }
+
 }
