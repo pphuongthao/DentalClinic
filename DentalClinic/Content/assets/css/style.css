@@ -1210,7 +1210,7 @@ ul.slick-dots {
 ====================================*/
 .wrd-section-title-wrapper {
     position: relative;
-    margin-bottom: 45px;
+    /*margin-bottom: 45px;*/
     text-align: center;
 }
 

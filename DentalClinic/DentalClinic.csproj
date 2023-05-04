@@ -4472,6 +4472,9 @@
     <Content Include="Content\slick\slick.less" />
     <Content Include="Content\slick\slick.scss" />
     <Content Include="Areas\Admin\Views\ManageUser\UpdateUserInfo.cshtml" />
+    <Content Include="Areas\Admin\Views\CustomerFeedback\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\CustomerFeedback\AddFeedback.cshtml" />
+    <Content Include="Areas\Admin\Views\CustomerFeedback\UpdateFeedback.cshtml" />
     <None Include="Scripts\jquery-1.6.4-vsdoc.js" />
     <Content Include="Scripts\jquery-1.6.4.js" />
     <Content Include="Scripts\jquery-1.6.4.min.js" />
@@ -4489,6 +4492,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
+    <Compile Include="Areas\Admin\ApiControllers\AdminCustomerFeedbackController.cs" />
     <Compile Include="Areas\Admin\ApiControllers\AdminDoctorController.cs" />
     <Compile Include="Areas\Admin\ApiControllers\AdminHomeController.cs" />
     <Compile Include="Areas\Admin\ApiControllers\AdminNewsController.cs" />
@@ -4501,6 +4505,7 @@
     <Compile Include="Areas\Admin\ApiControllers\ApiAdminTokenRequireAttribute.cs" />
     <Compile Include="Areas\Admin\ApiControllers\ManageUserAdminController.cs" />
     <Compile Include="Areas\Admin\ApiControllers\ManageUserController.cs" />
+    <Compile Include="Areas\Admin\Controllers\CustomerFeedbackController.cs" />
     <Compile Include="Areas\Admin\Controllers\HomeController.cs" />
     <Compile Include="Areas\Admin\Controllers\ManageDoctorController.cs" />
     <Compile Include="Areas\Admin\Controllers\ManageNewsController.cs" />
@@ -4511,7 +4516,9 @@
     <Compile Include="Areas\Admin\Controllers\SlideController.cs" />
     <Compile Include="Areas\Admin\Controllers\SystemAboutController.cs" />
     <Compile Include="Areas\Admin\Controllers\SystemController.cs" />
+    <Compile Include="Controllers\DoctorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\NewsController.cs" />
     <Compile Include="Filters\APIAdminTokenAttribute.cs" />
     <Compile Include="Filters\APIAuthenticationFilterAttribute.cs" />
     <Compile Include="Filters\ApiTokenRequireAttribute.cs" />
@@ -4521,6 +4528,7 @@
     </Compile>
     <Compile Include="Models\BaseModel.cs" />
     <Compile Include="Models\CodeConfirm.cs" />
+    <Compile Include="Models\CustomerFeedback.cs" />
     <Compile Include="Models\Doctor.cs" />
     <Compile Include="Models\GoodsReceipt.cs" />
     <Compile Include="Models\GoodsReceiptDetail.cs" />
@@ -4550,6 +4558,7 @@
     <Compile Include="Services\AdminServiceService.cs" />
     <Compile Include="Services\AdminSlideService.cs" />
     <Compile Include="Services\BaseService.cs" />
+    <Compile Include="Services\CustomerFeedbackService.cs" />
     <Compile Include="Services\DoctorService.cs" />
     <Compile Include="Services\ManageUserService.cs" />
     <Compile Include="Services\NewsService.cs" />
@@ -4721,14 +4730,17 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Home\About.cshtml" />
-    <Content Include="Views\Home\Doctors.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\LogIn.cshtml" />
     <Content Include="Views\Home\Register.cshtml" />
-    <Content Include="Views\Home\GetAppointment.cshtml" />
     <Content Include="Views\Home\UserAppointment.cshtml" />
     <Content Include="Views\Home\ChangePassword.cshtml" />
     <Content Include="Views\Home\UserInformation.cshtml" />
+    <Content Include="Views\Home\GetAppointment.cshtml" />
+    <Content Include="Views\News\Index.cshtml" />
+    <Content Include="Views\News\Detail.cshtml" />
+    <Content Include="Views\Doctor\Index.cshtml" />
+    <Content Include="Views\Doctor\Detail.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

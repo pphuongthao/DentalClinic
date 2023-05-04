@@ -16,7 +16,6 @@ namespace DentalClinic.Services
         public DoctorListViewModel GetListDoctor(int page, string keyword, IDbTransaction transaction = null)
         {
             DoctorListViewModel doctorListViewModel = new DoctorListViewModel();
-            doctorListViewModel.ListDoctor = new List<Doctor>();
             doctorListViewModel.TotalPage = 0;
 
             string querySelect = "select * ";

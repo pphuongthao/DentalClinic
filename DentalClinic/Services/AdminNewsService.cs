@@ -48,12 +48,12 @@ namespace DentalClinic.Services.Admin
         }
         public bool InsertNews(News news, IDbTransaction transaction = null)
         {
-            string query = "INSERT INTO [dbo].[news] ([Title],[Slug],[SearchTitle],[Description],[Thumbnail],[NewsContent],[CreateTime]) VALUES ( @Title, @Slug, @SearchTitle, @Description, @Thumbnail, @NewsContent, @CreateTime)";
+            string query = "INSERT INTO [dbo].[news] ([Title],[Slug],[SearchTitle],[Description],[Thumbnail],[NewsContent],[CreateTime],[Enable]) VALUES ( @Title, @Slug, @SearchTitle, @Description, @Thumbnail, @NewsContent, @CreateTime,@Enable)";
             return _connection.Execute(query, news, transaction) > 0;
         }
         public bool UpdateNews(News news, IDbTransaction transaction = null)
         {
-            string query = "UPDATE [news] SET Title = @Title, Slug=@Slug, SearchTitle=@SearchTitle, Description=@Description, Thumbnail=@Thumbnail, NewsContent=@NewsContent, CreateTime=@CreateTime WHERE NewsId = @NewsId";
+            string query = "UPDATE [news] SET Title = @Title, Slug=@Slug, SearchTitle=@SearchTitle, Description=@Description, Thumbnail=@Thumbnail, NewsContent=@NewsContent, CreateTime=@CreateTime, Enable=@Enable WHERE NewsId = @NewsId";
             return _connection.Execute(query, news, transaction) > 0; ;
         }
         public bool DeleteNews(int newsId, IDbTransaction transaction = null)

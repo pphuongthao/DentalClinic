@@ -62,7 +62,7 @@
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    height: 60px;
+    height: 80px;
     align-items: flex-end;
 }
 
@@ -146,3 +146,27 @@
             left: 0;
             right: 0;
         }
+       /* Chi tiet tin tuc*/
+.img-fix {
+    height: 250px;
+    object-fit: cover;
+}
+
+.news-header {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 20px 0 10px;
+    color: #232323;
+}
+.wrd-section-title-wrapper{
+    margin-bottom: 0 !important;
+}
+.wrd-service-one-section {
+    padding: 120px 0 0px !important;
+}
+.doctors-slider-section {
+    padding: 120px 0 0px !important;
+}
+.wrd-testimonial-section {
+    padding: 120px 0 0px !important;
+}
