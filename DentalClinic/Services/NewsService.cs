@@ -45,7 +45,7 @@ namespace DentalClinic.Services
 
         public News GetNewsDetail(string newsId, IDbTransaction transaction = null)
         {
-            string query = "select n.* , ua.Name AS NameAdmin from news n left join user_admin ua on n.UserAdminId=ua.UserAdminId where n.Enable=@enable and n.NewsId=@newsId";
+            string query = "select * from [news] where Enable=@enable and NewsId=@newsId";
             return this._connection.Query<News>(query, new { enable = true, newsId }, transaction).FirstOrDefault();
         }
 

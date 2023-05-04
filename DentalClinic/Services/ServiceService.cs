@@ -18,11 +18,20 @@ namespace DentalClinic.Services
             string query = "select * from [service]";
             return this._connection.Query<ServiceDental>(query).ToList();
         }
-
+        public List<ServiceDental> GetListServiceForHomePage(IDbTransaction transaction = null)
+        {
+            string query = "select TOP(10) * from [service]";
+            return this._connection.Query<ServiceDental>(query, transaction).ToList();
+        }
         public ServiceDental GetServiceById(string ServiceId, IDbTransaction transaction = null)
         {
             string query = "select * from [service] where ServiceId = @ServiceId";
             return this._connection.Query<ServiceDental>(query, new { ServiceId }, transaction).FirstOrDefault();
+        }
+        public List<ServiceDental> GetServiceByUserAppointmentId(string UserAppointmentId, IDbTransaction transaction = null)
+        {
+            string query = "select s.* from [user_appointment_service] uas right join [service] s on uas.ServiceId = s.ServiceId where uas.UserAppointmentId = @UserAppointmentId";
+            return this._connection.Query<ServiceDental>(query, new { UserAppointmentId }, transaction).ToList();
         }
     }
 }

@@ -79,7 +79,21 @@ namespace DentalClinic.ApiControllers
                 User user = SecurityProvider.GetUserByToken(Request);
                 if (user == null) return Unauthorized();
                 UserMakeAppointmentService userMakeAppointmentService = new UserMakeAppointmentService();
-                return Success(userMakeAppointmentService.GetListAppointmentOfUser(page, keyword, user.UserId));
+                ServiceService serviceService = new ServiceService();
+
+                ListUserAppointmentView listUserAppointmentView = userMakeAppointmentService.GetListAppointmentOfUser(page, keyword, user.UserId);
+                for (int i=0; i < listUserAppointmentView.ListUserAppointmentInfor.Count; i++) {
+                    var item = listUserAppointmentView.ListUserAppointmentInfor[i];
+                    List<ServiceDental> lsServiceDental = serviceService.GetServiceByUserAppointmentId(item.UserAppointmentId);
+                    decimal totalPriceService = 0;
+                    foreach (var _item in lsServiceDental) {
+                        totalPriceService += _item.Price;
+                    }
+                    item.lsServiceDental = new List<ServiceDental>();
+                    item.lsServiceDental.AddRange(lsServiceDental);
+                    item.TotalAmount = totalPriceService;
+                }
+                return Success(listUserAppointmentView);
             }
             catch (Exception ex)
             {

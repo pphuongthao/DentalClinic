@@ -22,6 +22,16 @@ namespace DentalClinic.Controllers
             DoctorService doctorService = new DoctorService();
             List<Doctor> lsDoctorUpdates = doctorService.GetListDoctorForHomePage();
             ViewBag.ListDoctor = lsDoctorUpdates;
+
+            // Danh sách 10 dich vu noi bat nhat
+            ServiceService  serviceService = new ServiceService();
+            List<ServiceDental> lsServiceUpdates = serviceService.GetListServiceForHomePage();
+            ViewBag.ListService = lsServiceUpdates;
+
+            // Danh sách phan hoi khach hang
+            CustomerFeedbackService customerFeedbackService = new CustomerFeedbackService();
+            List<CustomerFeedback> lsCustomerFeedbackUpdates = customerFeedbackService.GetListCustomerFeedback();
+            ViewBag.ListCustomerFeedback = lsCustomerFeedbackUpdates;
             return View();
         }
         [Route("gioi-thieu")]
@@ -30,11 +40,6 @@ namespace DentalClinic.Controllers
             SystemAboutService systemAboutService = new SystemAboutService();
             SystemAbout systemAbout = systemAboutService.GetSystemAbout();
             ViewBag.SystemAbout = systemAbout;
-            return View();
-        }
-        [Route("bac-si")]
-        public ActionResult Doctors()
-        {
             return View();
         }
         [Route("lien-he")]

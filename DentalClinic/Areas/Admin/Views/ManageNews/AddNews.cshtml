@@ -96,9 +96,11 @@
                 NewsId: '',
                 Thumbnail: $('#Thumbnail').val(),
                 Title: $('#Title').val(),
+                SearchTitle: '',
                 Description: $('#Description').val(),
                 NewsContent: contentEditor.getData()
             };
+            model.SearchTitle = RemoveVietnameseTones(model.Title);
             if (model.Thumbnail === '') {
                 alert("Bạn cần thêm ảnh"); return;
             }
