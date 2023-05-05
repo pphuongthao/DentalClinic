@@ -154,14 +154,14 @@
                         let y = x.lsServiceDental[indexChild]
                         html += '<div style="display:flex;justify-content:space-between">';
                         html += '<div style="text-align:left">- ' + y.Name + '</div>';
-                        html += '<div style="text-align:right">' + NumberFormat(y.Price)+ ' đ </div>';
+                        html += '<div style="text-align:right">' + NumberFormat(y.Price) + ' đ </div>';
                         html += '</div>';
                     }
                     html += '</div></td>';
                     html += '<td style="text-align:right">' + NumberFormat(x.TotalAmount) + ' (VND)</td>';
                     html += '<td>' + x.NameDoctor + ' </td>';
-                    html += '<td>' + x.Day +"-"+x.Month +"-"+x.Year+ ' </td>';
-                    html += '<td>' + x.Hour +":"+ x.Minute + '</td>';
+                    html += '<td>' + x.Day + "-" + x.Month + "-" + x.Year + ' </td>';
+                    html += '<td>' + x.Hour + ":" + x.Minute + '</td>';
 
                     let button = '';
                     let status = '';
@@ -197,5 +197,5 @@
         }
 
         initPage();
-    </script>    
+    </script>
 }
