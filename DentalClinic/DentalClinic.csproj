@@ -4487,6 +4487,7 @@
     <Compile Include="ApiControllers\ApiBaseController.cs" />
     <Compile Include="ApiControllers\ManageDoctorController.cs" />
     <Compile Include="ApiControllers\ManageServicesController.cs" />
+    <Compile Include="ApiControllers\ServiceCategoryController.cs" />
     <Compile Include="ApiControllers\UserAppointmentController.cs" />
     <Compile Include="ApiControllers\UserController.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
@@ -4519,6 +4520,7 @@
     <Compile Include="Controllers\DoctorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\NewsController.cs" />
+    <Compile Include="Controllers\ServiceController.cs" />
     <Compile Include="Filters\APIAdminTokenAttribute.cs" />
     <Compile Include="Filters\APIAuthenticationFilterAttribute.cs" />
     <Compile Include="Filters\ApiTokenRequireAttribute.cs" />
@@ -4562,6 +4564,7 @@
     <Compile Include="Services\DoctorService.cs" />
     <Compile Include="Services\ManageUserService.cs" />
     <Compile Include="Services\NewsService.cs" />
+    <Compile Include="Services\ServiceCategoryService.cs" />
     <Compile Include="Services\ServiceService.cs" />
     <Compile Include="Services\SystemAboutService.cs" />
     <Compile Include="Services\UserAdminService.cs" />
@@ -4741,6 +4744,8 @@
     <Content Include="Views\News\Detail.cshtml" />
     <Content Include="Views\Doctor\Index.cshtml" />
     <Content Include="Views\Doctor\Detail.cshtml" />
+    <Content Include="Views\Service\Index.cshtml" />
+    <Content Include="Views\Service\Detail.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

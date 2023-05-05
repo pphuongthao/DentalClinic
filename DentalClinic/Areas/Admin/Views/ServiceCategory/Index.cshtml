@@ -116,6 +116,16 @@
                 opacity: 1;
             }
         }
+        .form-add {
+            display: flex;
+        }
+
+        .check-show-in-home-page {
+            flex: 1;
+            padding-top: 40px;
+            padding-left: 20px;
+            font-size: 18px;
+        }
     </style>
 }
 <div class="content">
@@ -124,9 +134,13 @@
         <div class="body">
 
             <div class="form-add">
-                <div class="form-group add-category" id="">
+                <div class="form-group add-category" id="" style="flex: 2;">
                     <label class="font-weight-semibold category-name" for="name">Tên danh mục</label>
                     <input type="text" class="form-control" id="Name" placeholder="Nhập tên danh mục cần tạo" required>
+                </div>
+                <div class="check-show-in-home-page">
+                    <input type="checkbox" id="showInHomePage" name="">
+                    <label for=""> Hiển thị ở trang chủ</label>
                 </div>
             </div>
 
@@ -182,7 +196,7 @@
                 $('#list-category').append(`<tr>
                                                 <td>${x.Name}</td>
                                                 <td style="" >
-                                                     <a data-id="${x.ServiceCategoryId}" data-label="${x.Name}" onclick="openUpdateModal(this);">
+                                                     <a data-id="${x.ServiceCategoryId}" data-label="${x.Name}" data-showInHomePageUpdate=${x.ShowInHomePage} onclick="openUpdateModal(this);">
                                                         <button class="btn btn-primary  btn-xs">
                                                             <i class="fa-solid fa-pen-to-square"></i>
                                                         </button>
@@ -201,12 +215,17 @@
         const openUpdateModal = function (el) {
             let id = $(el).data('id');
             let name = $(el).data('label');
+            let check = $(el).data('showinhomepageupdate');
             $('.change-category').html('');
             $('.change-category').append(`<form>
                     <div class="form-group">
                         <label for="category-name">Tên danh mục</label>
-                        <input type="text" class="form-control" id="category-name" placeholder="Tên danh mục" value="${name}">
-                        <input type="text" class="form-control" id="category-id" value="${id}" style="display:none">
+                        <div>
+                                <input type="text" class="form-control" id="category-name" placeholder="Tên danh mục" value="${name}">
+                                <input type="checkbox" id="showInHomePageUpdate" name="" ${check === true ? 'checked="true"' : ''}>
+                                <label for=""> Hiển thị ở trang chủ</label>
+                        </div>
+                         <input type="text" class="form-control" id="category-id" value="${id}" style="display:none">
                     </div>
                 </form>`)
             $('#modal-update').css('display', 'flex');
@@ -218,7 +237,8 @@
             if (confirm('Bạn có chắc muốn cập nhật danh mục này?')) {
                 let model = {
                     Name: $('#category-name').val(),
-                    ServiceCategoryId: $('#category-id').val()
+                    ServiceCategoryId: $('#category-id').val(),
+                    ShowInHomePage: $('#showInHomePageUpdate').is(":checked")
                 };
                 if (model.Name !== '') {
                     const rp = await fetch('/api/AdminServiceCategory/UpdateServiceCategory', {
@@ -255,6 +275,7 @@
         const CreateServiceCategory = async function () {
             let model = {
                 Name: $('#Name').val(),
+                ShowInHomePage: $('#showInHomePage').is(":checked")
             };
             if (model.NameCategory !== '') {
                 const rp = await fetch('/api/AdminServiceCategory/InsertServiceCategory', {

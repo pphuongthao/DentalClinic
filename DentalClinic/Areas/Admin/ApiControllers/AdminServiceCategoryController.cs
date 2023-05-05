@@ -54,6 +54,8 @@ namespace DentalClinic.Areas.Admin.ApiControllers
                         ServiceCategory serviceCategory = new ServiceCategory();
                         serviceCategory.ServiceCategoryId = Guid.NewGuid().ToString();
                         serviceCategory.Name = model.Name;
+                        serviceCategory.Enable = true;
+                        serviceCategory.ShowInHomePage = model.ShowInHomePage;
 
                         if (adminServiceCategoryService.InsertServiceCategory(serviceCategory, transaction) < 0) return Error();
                         transaction.Commit();
@@ -118,6 +120,7 @@ namespace DentalClinic.Areas.Admin.ApiControllers
                             ServiceCategory serviceCategory = new ServiceCategory();
                             serviceCategory.ServiceCategoryId = model.ServiceCategoryId;
                             serviceCategory.Name = model.Name;
+                            serviceCategory.ShowInHomePage = model.ShowInHomePage;
                             if (adminServiceCategoryService.UpdateServiceCategory(serviceCategory, transaction) < 0) return Error("Sửa thất bại!");
                             adminServiceCategoryService.UpdateServiceCategory(serviceCategory, transaction);
                             transaction.Commit();

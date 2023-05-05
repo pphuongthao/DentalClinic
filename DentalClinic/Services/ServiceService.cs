@@ -33,5 +33,51 @@ namespace DentalClinic.Services
             string query = "select s.* from [user_appointment_service] uas right join [service] s on uas.ServiceId = s.ServiceId where uas.UserAppointmentId = @UserAppointmentId";
             return this._connection.Query<ServiceDental>(query, new { UserAppointmentId }, transaction).ToList();
         }
+        public ServiceListViewModel GetListService(ServiceSearchModel serviceSearchModel, IDbTransaction transaction = null)
+        {
+            string querySelect = "select * ";
+            string queryCount = "select count(*) as Total ";
+            string query = " from service where Enable=@Enable";
+            if (!string.IsNullOrEmpty(serviceSearchModel.KeyWord))
+            {
+                serviceSearchModel.KeyWord = "%" + serviceSearchModel.KeyWord.Replace(" ", "%") + "%";
+                query += " and SearchName like @KeyWord";
+            }
+            if (serviceSearchModel.ServiceCategoryId != null)
+            {
+                query += " and ServiceCategoryId=@ServiceCategoryId";
+            }
+
+            ServiceListViewModel serviceListViewModel = new ServiceListViewModel();
+            serviceListViewModel.ListService = new List<ServiceDental>();
+            serviceListViewModel.TotalPage = 0;
+
+            int totalRows = this._connection.Query<int>(queryCount + query, serviceSearchModel, transaction).FirstOrDefault();
+            if (totalRows > 0)
+            {
+                serviceListViewModel.TotalPage = (int)Math.Ceiling((decimal)totalRows / Constant.PAGE_SIZE);
+            }
+            if (serviceSearchModel.CurrentPage == 0)
+            {
+                serviceSearchModel.CurrentPage = 1;
+            }
+            int skip = (serviceSearchModel.CurrentPage - 1) * Constant.PAGE_SIZE;
+            if (serviceSearchModel.OrderBy == "TIME_ASC")
+            {
+                query += " order by CreateTime";
+            }
+            if (serviceSearchModel.OrderBy == null || serviceSearchModel.OrderBy == "" || serviceSearchModel.OrderBy != "TIME_ASC")
+            {
+                query += " order by CreateTime desc";
+            }
+            query += " offset " + skip + " rows fetch next " + Constant.PAGE_SIZE + " rows only";
+            serviceListViewModel.ListService = this._connection.Query<ServiceDental>(querySelect + query, serviceSearchModel, transaction).ToList();
+            return serviceListViewModel;
+        }
+        public List<ServiceDental> GetListServiceByServiceCategoryId(string serviceCategoryId, IDbTransaction transaction = null)
+        {
+            string query = "select * from service where ServiceCategoryId=@serviceCategoryId and Enable=@enable";
+            return this._connection.Query<ServiceDental>(query, new { serviceCategoryId, enable = "True" }, transaction).ToList();
+        }
     }
 }

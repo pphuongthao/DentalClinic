@@ -47,12 +47,12 @@ namespace DentalClinic.Services
         }
         public bool InsertService(ServiceDental service, IDbTransaction transaction = null)
         {
-            string query = "INSERT INTO [dbo].[service] ([ServiceId],[Name],[SearchName],[Thumbnail],[ExpectTime],[Description],[ServiceCategoryId],[Price],[CreateTime]) VALUES ( @ServiceId, @Name, @SearchName, @Thumbnail, @ExpectTime, @Description, @ServiceCategoryId, @Price, @CreateTime)";
+            string query = "INSERT INTO [dbo].[service] ([ServiceId],[Name],[SearchName],[Thumbnail],[ExpectTime],[Description],[ServiceCategoryId],[Price],[CreateTime], [Enable]) VALUES ( @ServiceId, @Name, @SearchName, @Thumbnail, @ExpectTime, @Description, @ServiceCategoryId, @Price, @CreateTime, @Enable)";
             return _connection.Execute(query, service, transaction) > 0;
         }
         public bool UpdateService(ServiceDental service, IDbTransaction transaction = null)
         {
-            string query = "UPDATE [service] SET [Name]=@Name, [SearchName]=@SearchName, [Thumbnail]=@Thumbnail, [ExpectTime]=@ExpectTime, [Description]=@Description,[ServiceCategoryId]=@ServiceCategoryId,[Price]=@Price,[CreateTime]=@CreateTime  WHERE ServiceId=@ServiceId";
+            string query = "UPDATE [service] SET [Name]=@Name, [SearchName]=@SearchName, [Thumbnail]=@Thumbnail, [ExpectTime]=@ExpectTime, [Description]=@Description,[ServiceCategoryId]=@ServiceCategoryId,[Price]=@Price,[CreateTime]=@CreateTime, [Enable]=@Enable  WHERE ServiceId=@ServiceId";
             return _connection.Execute(query, service, transaction) > 0; ;
         }
         public bool DeleteService(string serviceId, IDbTransaction transaction = null)
