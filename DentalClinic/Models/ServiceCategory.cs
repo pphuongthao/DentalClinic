@@ -9,5 +9,12 @@ namespace DentalClinic.Models
     {
         public string ServiceCategoryId { get; set; }
         public string Name { get; set; }
+        public bool Enable { get; set; }
+        public bool ShowInHomePage { get; set; }
+    }
+    public class ServiceCategoryUpdate
+    {
+        public string ServiceCategoryId { get; set; }
+        public string Name { get; set; }
     }
 }

@@ -16,6 +16,7 @@ namespace DentalClinic.Models
         public decimal Price { get; set; }
         public string SearchName { get; set; }
         public long CreateTime { get; set; }
+        public bool Enable { get; set; }
 
     }
 
@@ -23,5 +24,11 @@ namespace DentalClinic.Models
     {
         public List<ServiceDental> ListService { get; set; }
         public int TotalPage { get; set; }
+    }
+    public class ServiceSearchModel : SearchModel
+    {
+        public string KeyWord { get; set; }
+        public string ServiceCategoryId { get; set; }
+        public bool Enable { get; set; }
     }
 }

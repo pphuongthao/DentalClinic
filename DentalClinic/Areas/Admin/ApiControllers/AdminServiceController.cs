@@ -52,6 +52,7 @@ namespace DentalClinic.Areas.Admin.ApiControllers
                         service.Description = model.Description;
                         service.Price = model.Price;
                         service.ExpectTime = model.ExpectTime;
+                        service.Enable = true;
                         service.CreateTime = HelperProvider.GetSeconds();
                         if (!string.IsNullOrEmpty(model.Thumbnail))
                         {

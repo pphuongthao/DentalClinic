@@ -43,8 +43,9 @@ namespace DentalClinic.Services
             var parameters = new DynamicParameters();
             parameters.Add("ServiceCategoryId", model.ServiceCategoryId, DbType.String);
             parameters.Add("Name", model.Name, DbType.String);
-
-            string query = "insert into service_category (ServiceCategoryId, Name) values (@ServiceCategoryId, @Name)";
+            parameters.Add("Enable", model.Enable, DbType.Boolean);
+            parameters.Add("ShowInHomePage", model.ShowInHomePage, DbType.Boolean);
+            string query = "insert into service_category (ServiceCategoryId, Name, Enable, ShowInHomePage) values (@ServiceCategoryId, @Name, @Enable, @ShowInHomePage)";
             var numberOfEffectedRows = this._connection.Execute(query, parameters, transaction);
             return numberOfEffectedRows;
         }
@@ -57,7 +58,7 @@ namespace DentalClinic.Services
 
         public int UpdateServiceCategory(ServiceCategory model, IDbTransaction transaction = null)
         {
-            string query = "update service_category set Name = @Name where ServiceCategoryId = @ServiceCategoryId";
+            string query = "update service_category set Name = @Name, Enable = @Enable, ShowInHomePage = @ShowInHomePage where ServiceCategoryId = @ServiceCategoryId";
             var numberOfEffectedRows = this._connection.Execute(query, model, transaction);
             return numberOfEffectedRows;
         }
