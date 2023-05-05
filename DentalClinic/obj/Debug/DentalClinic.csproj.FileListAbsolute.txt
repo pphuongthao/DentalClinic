@@ -239,7 +239,6 @@ D:\GitHub\DentalClinic\DentalClinic\bin\System.Net.Http.Formatting.xml
 D:\GitHub\DentalClinic\DentalClinic\bin\System.Web.Http.xml
 D:\GitHub\DentalClinic\DentalClinic\bin\System.Web.Http.WebHost.xml
 D:\GitHub\DentalClinic\DentalClinic\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
-D:\GitHub\DentalClinic\DentalClinic\obj\Debug\DentalClinic.csproj.AssemblyReference.cache
 D:\GitHub\DentalClinic\DentalClinic\obj\Debug\DentalClinic.csproj.CoreCompileInputs.cache
 D:\GitHub\DentalClinic\DentalClinic\obj\Debug\DentalClinic.csproj.CopyComplete
 D:\GitHub\DentalClinic\DentalClinic\obj\Debug\DentalClinic.dll
