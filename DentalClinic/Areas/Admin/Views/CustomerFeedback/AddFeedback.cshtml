@@ -28,6 +28,7 @@
             width: 100px;
             padding: 5px 5px;
             background-color: #435ebe;
+            border-color: #435ebe;
             color: white !important;
             border-radius: 5px;
             cursor: pointer;
@@ -44,21 +45,21 @@
 }
 
 <div class="body" style="display:flex;">
-    <div style="display:flex;flex-direction:column;padding-right:20px;">
+    <div style="display:flex;flex-direction:column;padding-right:20px; flex: 1;">
 
 
-        <div class="form-group" id="">
+        <div class="form-group" id="" >
             <label class="font-weight-semibold" for="name">Tên người đánh giá</label>
             <input type="text" class="form-control" id="CustomerName" placeholder="Nhập tên" required>
         </div>
-        <div class="form-group">
+        <div class="form-group" style="flex: 2;">
             <label class="font-weight-semibold" for="name">Ảnh đại diện </label>
-            <div class="preview" style=" width: 100px; height: 100px; background-position: center; background-repeat: no-repeat; background-size: cover; border: .5px solid #d7d7d7; cursor: pointer; background-image: url('/Content/img/pick-image.png');" onclick="ChooseThumbnail(this);"></div>
+            <div class="preview" style=" width: 150px; height: 150px; background-position: center; background-repeat: no-repeat; background-size: cover; border: .5px solid #d7d7d7; cursor: pointer; background-image: url('/Content/img/pick-image.png');" onclick="ChooseThumbnail(this);"></div>
             <input type="file" style="display:none;" onchange="ChooseThumbnail_OnChange(this);" required />
             <input type="hidden" id="Avatar" />
         </div>
     </div>
-    <div style="display:flex;flex-direction:column; padding-right: 20px;">
+    <div style="display:flex;flex-direction:column; padding-right: 20px; flex: 2;">
 
         <div class="form-group product-property">
             <label class="font-weight-semibold" for="name">Đánh giá</label>
@@ -66,7 +67,7 @@
         </div>
     </div>
 </div>
-<button type="button" onclick="CreateFeedback();" class="create-button" style="width: 130px;">Thêm đánh giá</button>
+<button type="button" onclick="CreateFeedback();" class="btn btn-primary" style="width: 150px;">Thêm đánh giá</button>
 
 @section scripts{
     <script>

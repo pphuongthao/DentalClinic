@@ -49,7 +49,9 @@ namespace DentalClinic.Areas.Admin.ApiControllers
                         doctor.Name = model.Name;
                         doctor.SearchName = model.SearchName;
                         doctor.Description = model.Description.Trim();
-                        doctor.Rate = model.Rate;
+                        doctor.Qualification = model.Qualification;
+                        doctor.CreateTime = HelperProvider.GetSeconds();
+                        doctor.Enable = true;
                         if (!string.IsNullOrEmpty(model.Avatar))
                         {
                             string filename = Guid.NewGuid().ToString() + ".jpg";
@@ -87,7 +89,7 @@ namespace DentalClinic.Areas.Admin.ApiControllers
                         doctor.Name = model.Name;
                         doctor.SearchName = model.SearchName;
                         doctor.Description = model.Description;
-                        doctor.Rate = model.Rate;
+                        doctor.Qualification = model.Qualification;
                         if (!string.IsNullOrEmpty(model.Avatar))
                         {
                             //xóa file cũ

@@ -80,6 +80,29 @@
             font-size: 12px;
             padding: 2px;
         }
+        .product-page-list {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+            .product-page-list > a {
+                width: 25px;
+                height: 25px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                border-radius: 100%;
+                font-size: 13px;
+                cursor: pointer;
+                background-color: #3f87f5 !important;
+                color: white !important;
+            }
+
+            .product-page-list .active {
+                background-color: #3f87f5 !important;
+                color: white !important;
+            }
     </style>
 }
 
@@ -102,12 +125,13 @@
                             <table class="table table-hover table-custom">
                                 <thead>
                                     <tr>
+                                        <th style="width:15%">Mã lịch hẹn</th>
                                         <th style="width:25%">Dịch vụ</th>
                                         <th style="width:15%">Tổng tiền</th>
                                         <th style="width:15%">Bác sĩ</th>
                                         <th style="width:10%">Ngày hẹn</th>
                                         <th style="width:10%">Giờ hẹn</th>
-                                        <th style="width:15%">Trạng thái</th>
+                                        <th style="width:10%">Trạng thái</th>
                                         <th style="width:15%">Thao tác</th>
                                     </tr>
                                 </thead>
@@ -121,7 +145,7 @@
         </div>
     </div>
 </div>
-<div class="product-page-list" id="page-order">
+<div class="product-page-list" id="page-order" style="margin-bottom: 30px;">
 </div>
 @section scripts{
     <script>
@@ -148,7 +172,8 @@
                 }
                 for (let index = 0; index < rs.data.ListUserAppointmentInfor.length; index++) {
                     var x = rs.data.ListUserAppointmentInfor[index];
-                    let html = '<tr data-id=' + x.UserAppointmentId + ' onclick="openOrderDetail(this)" >';
+                    let html = '<tr data-id=' + x.AppointmentCode + ' onclick="openOrderDetail(this)" >';
+                    html += '<td>[' + x.AppointmentCode + ' ]</td>';
                     html += '<td><div>';
                     for (let indexChild = 0; indexChild < x.lsServiceDental.length; indexChild++) {
                         let y = x.lsServiceDental[indexChild]

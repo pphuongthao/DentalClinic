@@ -37,6 +37,7 @@ namespace DentalClinic.ApiControllers
                         UserAppointment userAppointment = new UserAppointment();
                         userAppointment.UserAppointmentId = Guid.NewGuid().ToString();
                         userAppointment.UserId = user.UserId;
+                        userAppointment.AppointmentCode = HelperProvider.MakeCode();
                         userAppointment.Name = user.Name;
                         userAppointment.Phone = user.Phone;
                         userAppointment.Email = user.Email;
@@ -60,7 +61,7 @@ namespace DentalClinic.ApiControllers
                         }
                         if (!userMakeAppointmentService.CreateUserAppointment(userAppointment, transaction)) throw new Exception();
                         transaction.Commit();
-                        return Success();
+                        return Success(new { AppointmentCode = userAppointment.AppointmentCode});
                     }
                 }
             }

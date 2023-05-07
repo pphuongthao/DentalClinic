@@ -292,12 +292,12 @@
             $(button).closest('.item-pick').remove();
             totalPrice();
         }
-        const InitPage = async function () {
+        const InitPages = async function () {
             await GetListDoctor();
             await GetListService();
             totalPrice();
         }
-        InitPage();
+        InitPages();
 
         const GetAppointment_OnClick = async function () {
 

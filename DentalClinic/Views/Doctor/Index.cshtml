@@ -70,7 +70,7 @@
                                         <a href="/bac-si/bai-viet/@HelperProvider.CreateSlugFromTitle(doctorListViewModel.ListDoctor[index].Name)/@doctorListViewModel.ListDoctor[index].DoctorId">
                                             <h3 class="wrd-member-name">@doctorListViewModel.ListDoctor[index].Name</h3>
                                         </a>
-                                        <span class="wrd-member-designation wrd-secondary-font">@Html.Raw(doctorListViewModel.ListDoctor[index].Description)</span>
+                                        <span class="wrd-member-designation wrd-secondary-font">@Html.Raw(doctorListViewModel.ListDoctor[index].Qualification)</span>
                                     </div>
 
                                     <div class="wrd-team-member-social">
@@ -102,3 +102,32 @@
         <!-- Doctors Section End -->
     </div><!-- Content Area End-->
 </div><!-- Site Content Wrapper End -->
+
+
+<div class="m-t-30">
+    <nav class="mg-bottom" style="margin-bottom: 20px;">
+        <ul class="pagination justify-content-center">
+            <li class="page-item"><a class="page-link page-previous" href="#">Trước</a></li>
+            @for (int index = 1; index <= doctorListViewModel.TotalPage; index++)
+            {
+                <li class="page-item @(ViewBag.page == index ? "active":"" ) "><a class="page-link" href="/bac-si/danh-sach?page=@index">@index</a></li>
+            }
+            <li class="page-item"><a class="page-link page-next" href="#">Sau</a></li>
+        </ul>
+    </nav>
+</div>
+
+@section scripts{
+    <script>
+        var getvalueActive = function () {
+           var numberpage = window.location.href.split('/bac-si/danh-sach?page=')[1];
+           if (parseInt(numberpage) > 1) {
+               $('.page-previous').attr('href', `/bac-si/danh-sach?page=${parseInt(numberpage) - 1}`);
+           }
+           if (parseInt(numberpage) < parseInt('@doctorListViewModel.TotalPage')) {
+               $('.page-next').attr('href', `/tin-tuc/danh-sach?page=${parseInt(numberpage) + 1}`);
+           }
+       }
+       getvalueActive();
+    </script>
+}

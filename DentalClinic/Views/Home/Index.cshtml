@@ -127,9 +127,9 @@
                             <a class="wrd-service-one-image wrd-cover-bg" href="/dich-vu/chi-tiet/@HelperProvider.CreateSlugFromTitle(lsService[index].Name)/@lsService[index].ServiceId" data-background="@lsService[index].Thumbnail"></a>
                             <div class="service-one-content">
                                 <a href="/dich-vu/chi-tiet/@HelperProvider.CreateSlugFromTitle(lsService[index].Name)/@lsService[index].ServiceId" class="service-one-title">@lsService[index].Name</a>
-                                <div class="service-one-description">
-                                    <p>@Html.Raw(lsService[index].Description)</p>
-                                </div>
+                                @*<div class="service-one-description">
+                                    <p>@lsService[index].Price</p>
+                                </div>*@
 
                                 <div class="service-one-details-button">
                                     <a class="wrd-text-button" href="/dich-vu/chi-tiet/@HelperProvider.CreateSlugFromTitle(lsService[index].Name)/@lsService[index].ServiceId">
@@ -185,7 +185,7 @@
                                 <a href="/bac-si/bai-viet/@HelperProvider.CreateSlugFromTitle(lsDoctor[index].Name)/@lsDoctor[index].DoctorId">
                                     <h3 class="wrd-member-name"> @lsDoctor[index].Name</h3>
                                 </a>
-                                <span class="wrd-member-designation wrd-secondary-font">@Html.Raw(lsDoctor[index].Description)</span>
+                                <span class="wrd-member-designation wrd-secondary-font">@Html.Raw(lsDoctor[index].Qualification)</span>
                             </div>
                         </div>
                     </div>

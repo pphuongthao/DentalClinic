@@ -11,7 +11,7 @@ namespace DentalClinic.Models
         public string Name { get; set; }
         public string Description { get; set; }
         public string Avatar { get; set; }
-        public int Rate { get; set; }
+        public string Qualification { get; set; }
         public bool Enable { get; set; }
         public long CreateTime { get; set; }
         public string SearchName { get; set; }
