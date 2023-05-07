@@ -9,6 +9,7 @@ namespace DentalClinic.Models
     {
         public string UserAppointmentId { get; set; }
         public string UserId { get; set; }
+        public string AppointmentCode { get; set; }
         public string Name { get; set; }
         public string Phone { get; set; }
         public string Email { get; set; }
@@ -33,6 +34,7 @@ namespace DentalClinic.Models
     {
         public string UserAppointmentId { get; set; }
         public string UserId { get; set; }
+        public string AppointmentCode { get; set; }
         public string Name { get; set; }
         public string Phone { get; set; }
         public string Email { get; set; }

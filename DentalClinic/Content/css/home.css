@@ -507,3 +507,6 @@
 .alert.alert-success.success-custom {
     top: 85px;
 }
+.btn.btn-sm{
+    font-size: 14px !important;
+}

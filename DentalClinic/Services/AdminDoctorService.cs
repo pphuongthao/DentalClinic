@@ -46,12 +46,12 @@ namespace DentalClinic.Services
         }
         public bool InsertDoctor(Doctor doctor, IDbTransaction transaction = null)
         {
-            string query = "INSERT INTO [dbo].[doctor] ([DoctorId],[Name],[SearchName],[Description],[Avatar],[Rate],[Enable],[CreateTime]) VALUES ( @DoctorId, @Name, @SearchName, @Description, @Avatar, @Rate, @Enable, @CreateTime)";
+            string query = "INSERT INTO [dbo].[doctor] ([DoctorId],[Name],[SearchName],[Description],[Avatar],[Qualification],[Enable],[CreateTime]) VALUES ( @DoctorId, @Name, @SearchName, @Description, @Avatar, @Qualification, @Enable, @CreateTime)";
             return _connection.Execute(query, doctor, transaction) > 0;
         }
         public bool UpdateDoctor(Doctor doctor, IDbTransaction transaction = null)
         {
-            string query = "UPDATE [doctor] SET [Name]=@Name, [SearchName]=@SearchName, [Description]=@Description,[Avatar]=@Avatar,[Rate]=@Rate,[Enable]=@Enable,[CreateTime]=@CreateTime  WHERE DoctorId=@DoctorId";
+            string query = "UPDATE [doctor] SET [Name]=@Name, [SearchName]=@SearchName, [Description]=@Description,[Avatar]=@Avatar,[Qualification]=@Qualification,[Enable]=@Enable,[CreateTime]=@CreateTime  WHERE DoctorId=@DoctorId";
             return _connection.Execute(query, doctor, transaction) > 0; ;
         }
         public bool DeleteDoctor(string doctorId, IDbTransaction transaction = null)
@@ -61,7 +61,7 @@ namespace DentalClinic.Services
         }
         public List<Doctor> GetListTopDoctor(IDbTransaction transaction = null)
         {
-            string query = "select TOP(4) DoctorId, Name, Thumbnail,Description,Avatar,Rate from Doctor Order by CreateTime desc";
+            string query = "select TOP(10) DoctorId, Name, Thumbnail,Description,Avatar,Qualification from Doctor Order by CreateTime desc";
             return this._connection.Query<Doctor>(query, new { enable = true }, transaction).ToList();
         }
     }

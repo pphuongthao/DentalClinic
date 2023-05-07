@@ -12,6 +12,29 @@
     <link href="~/Content/slick/slick-theme.css" rel="stylesheet" />
     <link href="~/Content/slick/slick.css" rel="stylesheet" />
     <style>
+        .product-page-list {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+            .product-page-list > a {
+                width: 25px;
+                height: 25px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                border-radius: 100%;
+                font-size: 13px;
+                cursor: pointer;
+                background-color: #3f87f5 !important;
+                color: white !important;
+            }
+
+            .product-page-list .active {
+                background-color: #3f87f5 !important;
+                color: white !important;
+            }
     </style>
 }
 
@@ -93,7 +116,7 @@
     </div>
 </div>
 
-<div class="product-page-list">
+<div class="product-page-list" style="margin-bottom: 30px;">
     @for (int page = 1; page <= serviceListViewModel.TotalPage; page++)
     {
         <a href="/dich-vu/danh-sach?Currentpage=@page" data-page="@page" class="product-page">
@@ -102,25 +125,26 @@
     }
 </div>
 @section scripts{
-    <script>
-        var changeCategory = function (select) {
-            let id = $(select).find(':selected').data('id');
-            let link = '/dich-vu/danh-sach?Currentpage=1';
-            if (id !== '') {
-                link += '&ServiceCategoryId=' + id;
+        <script>
+            var changeCategory = function (select) {
+                let id = $(select).find(':selected').data('id');
+                let link = '/dich-vu/danh-sach?Currentpage=1';
+                if (id !== '') {
+                    link += '&ServiceCategoryId=' + id;
+                }
+                window.location.href = link;
             }
-            window.location.href = link;
-        }
-        var activepage = function () {
-            let link = window.location.href.split('/dich-vu/danh-sach?Currentpage=')[1];
-            let listpage = $('.product-page-list').find('.product-page');
-            for (let page = 0; page < listpage.length; page++) {
-                if ($(listpage[page]).data('page') === parseInt(link)) {
-                    $(listpage[page]).addClass('active');
+            var activepage = function () {
+                let link = window.location.href.split('/dich-vu/danh-sach?Currentpage=')[1];
+                let listpage = $('.product-page-list').find('.product-page');
+                for (let page = 0; page < listpage.length; page++) {
+                    if ($(listpage[page]).data('page') === parseInt(link)) {
+                        $(listpage[page]).addClass('active');
+                    }
                 }
             }
-        }
-        activepage();
-    </script>
-}
+            activepage();
+        </script>
+    }
+
 

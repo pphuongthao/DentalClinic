@@ -14,8 +14,8 @@ namespace DentalClinic.Services
         public UserMakeAppointmentService(IDbConnection db) : base(db) { }
         public bool CreateUserAppointment(UserAppointment model, IDbTransaction transaction = null)
         {
-            string query = "INSERT INTO [dbo].[user_appointment]([UserAppointmentId],[UserId],[Name],[Phone],[Email],[DoctorId],[Hour],[Minute],[Day],[Month],[Year],[Status],[CreateTime]) " +
-                "VALUES (@UserAppointmentId, @UserId, @Name, @Phone, @Email,@DoctorId, @Hour, @Minute,@Day,  @Month, @Year,@Status, @CreateTime )";
+            string query = "INSERT INTO [dbo].[user_appointment]([UserAppointmentId],[UserId], [AppointmentCode], [Name],[Phone],[Email],[Address],[DoctorId],[Hour],[Minute],[Day],[Month],[Year],[Status],[CreateTime]) " +
+                "VALUES (@UserAppointmentId, @UserId, @AppointmentCode,  @Name, @Phone, @Email, @Address, @DoctorId, @Hour, @Minute,@Day,  @Month, @Year,@Status, @CreateTime )";
             int status = this._connection.Execute(query, model, transaction);
             return status > 0;
         }

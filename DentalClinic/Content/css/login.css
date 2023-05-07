@@ -131,3 +131,6 @@
         .login-register p a:hover {
             text-decoration: underline;
         }
+.sidebar-wrapper.sidebar-header img {
+    height: 3.2rem !important;
+}

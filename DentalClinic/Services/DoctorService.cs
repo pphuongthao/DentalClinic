@@ -60,7 +60,7 @@ namespace DentalClinic.Services
         }
         public List<Doctor> GetListRelatedDoctor(IDbTransaction transaction = null)
         {
-            string query = "select TOP(6) * from doctor where Enable=@enable Order by CreateTime desc";
+            string query = "select TOP(10) * from doctor where Enable=@enable Order by CreateTime desc";
             return this._connection.Query<Doctor>(query, new { enable = true }, transaction).ToList();
         }
     }

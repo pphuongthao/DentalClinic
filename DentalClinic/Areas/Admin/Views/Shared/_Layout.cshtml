@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Mazer Admin Dashboard</title>
+    <title>Admin - Nha khoa Phương Thảo</title>
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
@@ -90,7 +90,9 @@
                 background-color: #3f87f5;
                 color: white !important;
             }
-
+        .sidebar-wrapper .sidebar-header img {
+            height: 3.2rem !important;
+        }
     </style>
     @RenderSection("styles", false)
 </head>
@@ -102,7 +104,7 @@
                 <div class="sidebar-header">
                     <div class="d-flex justify-content-between">
                         <div class="logo">
-                            <a href="index.html"><img src="/Content/assets/images/logo/logo.png" alt="Logo" srcset=""></a>
+                            <a href="/admin"><img src="~/Content/assets/images/logo/logo-default.png" alt="Logo" srcset=""></a>
                         </div>
                         <div class="toggler">
                             <a href="#" class="sidebar-hide d-xl-none d-block"><i class="bi bi-x bi-middle"></i></a>
@@ -329,6 +331,7 @@
     </div>
     <script src="~/Content/assets/js/jquery-3.6.0.min.js"></script>
     <script src="/Content/ckeditor/ckeditor.js"></script>
+    @*<script src="~/Content/ckfinder/ckfinder.js"></script>*@
     <script src="~/Content/assets/js/counterup.min.js"></script>
 
     <script src="~/Content/assets/js/slicknav.min.js"></script>

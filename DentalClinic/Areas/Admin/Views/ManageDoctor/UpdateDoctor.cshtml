@@ -63,8 +63,8 @@
                     <input type="text" class="form-control" id="Name" placeholder="Nhập tên bác sĩ" required>
                 </div>
                 <div class="form-group">
-                    <label class="font-weight-semibold" for="name">Sao đánh giá</label>
-                    <input type="text" class="form-control" id="Rate" placeholder="Nhập sao đánh giá" required>
+                    <label class="font-weight-semibold" for="name">Trình độ chuyên môn</label>
+                    <textarea class="form-control" aria-label="With textarea" style="resize:none;" placeholder="Nhập trình độ chuyên môn" rows="3" id="Qualification"></textarea>
                 </div>
             </div>
         </div>
@@ -110,7 +110,7 @@
             console.log(item);
             $('#Name').val(item.Name);
             $('.preview').css('background-image', `url(${item.Avatar})`)
-            $('#Rate').val(item.Rate);
+            $('#Qualification').val(item.Qualification);
             $('#Content').val(item.Description);
 
         }
@@ -121,7 +121,7 @@
                 DoctorId: $('#DoctorId').val(),
                 Name: $('#Name').val(),
                 SearchName: RemoveVietnameseTones($('#Name').val()),
-                Rate: $('#Rate').val(),
+                Qualification: $('#Qualification').val(),
                 Avatar: $('#Avatar').val(),
                 Description: contentEditor.getData(),
             };
