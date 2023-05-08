@@ -75,14 +75,19 @@
 </div>
 @section scripts{
     <script src="/Content/ckeditor/ckeditor.js"></script>
+    @*<script src="~/Content/ckfinder/ckfinder.js"></script>*@
     <script>
         var contentEditor = CKEDITOR.replace('Content', {
             width: '100%',
             resize_minHeight: 150,
             height: '55vh',
             extraPlugins: 'image2',
-            filebrowserBrowseUrl: '../ckfinder/ckfinder.html',
-            filebrowserImageBrowseUrl: '../ckfinder/ckfinder.html?type=Images'
+            //filebrowserBrowseUrl: '/ckfinder/ckfinder.html',
+            //filebrowserImageBrowseUrl: '/ckfinder/ckfinder.html?type=Images',
+            //filebrowserFlashBrowseUrl: '/ckfinder/ckfinder.html?type=Flash',
+            //filebrowserUploadUrl: '/ckfinder/core/connector/aspx/connector.aspx?command=QuickUpload&type=Files',
+            //filebrowserImageUploadUrl: '/ckfinder/core/connector/aspx/connector.aspx?command=QuickUpload&type=Images',
+            //filebrowserFlashUploadUrl: '/ckfinder/core/connector/aspx/connector.aspx?command=QuickUpload&type=Flash'
         });
 
         var ChooseThumbnail = function (el) { $(el).siblings('input[type=file]').click(); }

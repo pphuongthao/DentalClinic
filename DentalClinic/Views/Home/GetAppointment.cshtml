@@ -243,7 +243,7 @@
             $('#ServiceId').html('<option value="" selected>Chọn dịch vụ</option>');
             for (let index = 0; index < rs.data.length; index++) {
                 var x = rs.data[index]
-                $('#ServiceId').append(`<option value="${x.ServiceId}" data-price="${x.Price}">${x.Name}</option>`);
+                $('#ServiceId').append(`<option value="${x.ServiceId}" data-price="${x.Price}" data-time="${x.ExpectTime}">${x.Name}</option>`);
             }
         }
         const onchageService = async function (select) {
@@ -251,6 +251,7 @@
             let id = $(itemPick).val();
             let text = $(itemPick).text();
             let price = $(itemPick).data('price');
+            let expectTime = $(itemPick).data('time');
             let listpick = $('#list-service-pick').find('.item-pick');
             let flag = 0;
             for (let index = 0; index < listpick.length; index++) {
@@ -267,6 +268,7 @@
                                                     </div>
                                                     <div class="content">
                                                         <div>${text}</div>
+                                                        <div>${expectTime} (phút)</div>
                                                         <div>${NumberFormat(parseInt(price))} đ</div>
                                                     </div>
                                                     <div class="button-delete" onclick="deleteButton(this);">

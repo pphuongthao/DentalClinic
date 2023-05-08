@@ -13,5 +13,6 @@ namespace DentalClinic.Areas.Admin.Controllers
         {
             return View();
         }
+        
     }
 }

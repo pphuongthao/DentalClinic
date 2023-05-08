@@ -67,6 +67,12 @@ namespace DentalClinic.Controllers
         {
             return View();
         }
+        [Route("chi-tiet-lich-hen/{id}")]
+        public ActionResult AppointmentInfoDetail(string id)
+        {
+            ViewBag.Id = id;
+            return View();
+        }
         [Route("doi-mat-khau")]
         public ActionResult ChangePassword()
         {
@@ -77,6 +83,7 @@ namespace DentalClinic.Controllers
         {
             return View();
         }
+        
 
     }
 }
