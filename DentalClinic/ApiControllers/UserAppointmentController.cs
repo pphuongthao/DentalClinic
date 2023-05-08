@@ -119,5 +119,27 @@ namespace DentalClinic.ApiControllers
 
             }
         }
+
+        [HttpGet]
+        [ApiTokenRequire]
+        public JsonResult GetAppointmentDetailOfUSer(string appointmentCode)
+        {
+            try
+            {
+                User user = SecurityProvider.GetUserByToken(Request);
+                if (user == null) return Unauthorized();
+
+                UserMakeAppointmentService userMakeAppointmentService = new UserMakeAppointmentService();
+                UserAppointment userAppointment = userMakeAppointmentService.GetAppointmentByAppointmentCode(appointmentCode);
+                if (userAppointment == null) return Error();
+
+                List<UserAppointmentServiceUpdate> listUserAppointmentService = userMakeAppointmentService.GetListUserAppointmentServiceUpdateByUserAppointmentId(userAppointment.UserAppointmentId);
+                return Success(new { userAppointment, listUserAppointmentService });
+            }
+            catch (Exception ex)
+            {
+                return Error(ex.Message);
+            }
+        }
     }
 }

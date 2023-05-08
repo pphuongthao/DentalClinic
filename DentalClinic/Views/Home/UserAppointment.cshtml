@@ -4,6 +4,22 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@section Slider{
+    <!-- Banner Area -->
+    <div class="banner-area" data-background="/Content/assets/images/others/banner.jpg">
+        <div class="container h-100">
+            <div class="row h-100">
+                <div class="col-lg-12 my-auto text-center">
+                    <div class="banner-content">
+                        <h2 class="banner-title">Danh sách lịch hẹn</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Banner Area End-->
+}
+
 @section styles{
     <style>
         .account-page-content .main-content {
@@ -80,6 +96,7 @@
             font-size: 12px;
             padding: 2px;
         }
+
         .product-page-list {
             display: flex;
             justify-content: center;
@@ -126,9 +143,8 @@
                                 <thead>
                                     <tr>
                                         <th style="width:15%">Mã lịch hẹn</th>
-                                        <th style="width:25%">Dịch vụ</th>
-                                        <th style="width:15%">Tổng tiền</th>
-                                        <th style="width:15%">Bác sĩ</th>
+                                        <th style="width:15%">Tổng dịch vụ</th>
+                                        <th style="width:20%">Bác sĩ</th>
                                         <th style="width:10%">Ngày hẹn</th>
                                         <th style="width:10%">Giờ hẹn</th>
                                         <th style="width:10%">Trạng thái</th>
@@ -172,17 +188,17 @@
                 }
                 for (let index = 0; index < rs.data.ListUserAppointmentInfor.length; index++) {
                     var x = rs.data.ListUserAppointmentInfor[index];
-                    let html = '<tr data-id=' + x.AppointmentCode + ' onclick="openOrderDetail(this)" >';
+                    let html = '<tr data-id=' + x.AppointmentCode + ' onclick="openAppointmentDetail(this)" style="cursor: pointer;">';
                     html += '<td>[' + x.AppointmentCode + ' ]</td>';
-                    html += '<td><div>';
-                    for (let indexChild = 0; indexChild < x.lsServiceDental.length; indexChild++) {
-                        let y = x.lsServiceDental[indexChild]
-                        html += '<div style="display:flex;justify-content:space-between">';
-                        html += '<div style="text-align:left">- ' + y.Name + '</div>';
-                        html += '<div style="text-align:right">' + NumberFormat(y.Price) + ' đ </div>';
-                        html += '</div>';
-                    }
-                    html += '</div></td>';
+                    //html += '<td><div>';
+                    //for (let indexChild = 0; indexChild < x.lsServiceDental.length; indexChild++) {
+                    //    let y = x.lsServiceDental[indexChild]
+                    //    html += '<div style="display:flex;justify-content:space-between">';
+                    //    html += '<div style="text-align:left">- ' + y.Name + '</div>';
+                    //    html += '<div style="text-align:right">' + NumberFormat(y.Price) + ' đ </div>';
+                    //    html += '</div>';
+                    //}
+                    //html += '</div></td>';
                     html += '<td style="text-align:right">' + NumberFormat(x.TotalAmount) + ' (VND)</td>';
                     html += '<td>' + x.NameDoctor + ' </td>';
                     html += '<td>' + x.Day + "-" + x.Month + "-" + x.Year + ' </td>';
@@ -216,6 +232,10 @@
                     $('#list-appointment').append(html);
                 }
             }
+        }
+        const openAppointmentDetail = function (el) {
+            let appointmentId = $(el).data('id');
+            window.location.href = ('/chi-tiet-lich-hen/' + appointmentId);
         }
         const initPage = async function () {
             await getListAppointment();

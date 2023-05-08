@@ -54,5 +54,15 @@ namespace DentalClinic.Services
             listUserAppointmentView.TotalPage = TotalPage;
             return listUserAppointmentView;
         }
+        public UserAppointment GetAppointmentByAppointmentCode(string appointmentCode, IDbTransaction transaction = null)
+        {
+            string query = "select * from [dbo].[user_appointment] where AppointmentCode=@appointmentCode";
+            return this._connection.Query<UserAppointment>(query, new { appointmentCode }, transaction).FirstOrDefault();
+        }
+        public List<UserAppointmentServiceUpdate> GetListUserAppointmentServiceUpdateByUserAppointmentId(string userAppointmentId, IDbTransaction transaction = null)
+        {
+            string query = "Select uas.*,s.Name As NameService,s.ExpectTime, s.Price As PriceService from [user_appointment_service] uas left join [service] s on uas.ServiceId=s.ServiceId where UserAppointmentId =@userAppointmentId";
+            return this._connection.Query<UserAppointmentServiceUpdate>(query, new { userAppointmentId }, transaction).ToList();
+        }
     }
 }
