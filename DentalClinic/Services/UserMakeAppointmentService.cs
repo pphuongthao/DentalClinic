@@ -14,15 +14,15 @@ namespace DentalClinic.Services
         public UserMakeAppointmentService(IDbConnection db) : base(db) { }
         public bool CreateUserAppointment(UserAppointment model, IDbTransaction transaction = null)
         {
-            string query = "INSERT INTO [dbo].[user_appointment]([UserAppointmentId],[UserId], [AppointmentCode], [Name],[Phone],[Email],[Address],[DoctorId],[Hour],[Minute],[Day],[Month],[Year],[Status],[CreateTime]) " +
-                "VALUES (@UserAppointmentId, @UserId, @AppointmentCode,  @Name, @Phone, @Email, @Address, @DoctorId, @Hour, @Minute,@Day,  @Month, @Year,@Status, @CreateTime )";
+            string query = "INSERT INTO [dbo].[user_appointment]([UserAppointmentId],[UserId], [AppointmentCode], [Name],[Phone],[Email],[Address],[DoctorId],[Hour],[Minute],[Day],[Month],[Year],[Status],[CreateTime],[TotalExpectTime]) " +
+                "VALUES (@UserAppointmentId, @UserId, @AppointmentCode,  @Name, @Phone, @Email, @Address, @DoctorId, @Hour, @Minute,@Day,  @Month, @Year,@Status, @CreateTime, @TotalExpectTime )";
             int status = this._connection.Execute(query, model, transaction);
             return status > 0;
         }
         public bool CreateUserAppointmentService(UserAppointmentService model, IDbTransaction transaction = null)
         {
-            string query = "INSERT INTO [dbo].[user_appointment_service]([UserAppointmentServiceId],[UserAppointmentId],[ServiceId]) " +
-                "VALUES (@UserAppointmentServiceId, @UserAppointmentId, @ServiceId)";
+            string query = "INSERT INTO [dbo].[user_appointment_service]([UserAppointmentServiceId],[UserAppointmentId],[ServiceId],[ExpectTime]) " +
+                "VALUES (@UserAppointmentServiceId, @UserAppointmentId, @ServiceId, @ExpectTime)";
             int status = this._connection.Execute(query, model, transaction);
             return status > 0;
         }
@@ -63,6 +63,11 @@ namespace DentalClinic.Services
         {
             string query = "Select uas.*,s.Name As NameService,s.ExpectTime, s.Price As PriceService from [user_appointment_service] uas left join [service] s on uas.ServiceId=s.ServiceId where UserAppointmentId =@userAppointmentId";
             return this._connection.Query<UserAppointmentServiceUpdate>(query, new { userAppointmentId }, transaction).ToList();
+        }
+        public List<UserAppointment> GetListUserAppointmentByDoctorId(string doctorId,int day,int month,int year, IDbTransaction transaction = null)
+        {
+            string query = "select ua.* from user_appointment ua left join doctor d on ua.DoctorId = d.DoctorId where ua.DoctorId=@doctorId and ua.Day=@day and ua.Month = @month and ua.Year = @year";
+            return this._connection.Query<UserAppointment>(query, new { doctorId,day,month,year }, transaction).ToList();
         }
     }
 }

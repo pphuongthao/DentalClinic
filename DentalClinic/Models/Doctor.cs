@@ -22,4 +22,9 @@ namespace DentalClinic.Models
         public int TotalPage { get; set; }
 
     }
+    public class TimeDoctor {
+        public int MinTime { get; set; }
+        public int MaxTime { get; set; }
+
+    }
 }

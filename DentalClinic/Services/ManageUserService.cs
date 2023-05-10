@@ -12,6 +12,7 @@ namespace DentalClinic.Services
     {
         public ManageUserService() : base() { }
         public ManageUserService(IDbConnection db) : base(db) { }
+
         public UserListViewModel GetListUser(int page, string keyword, bool enable, IDbTransaction transaction = null)
         {
             UserListViewModel userListViewModel = new UserListViewModel();

@@ -20,7 +20,7 @@
             cursor: pointer;
         }
 
-        .wrapper {
+        .wrapper {  
             position: relative;
             width: 600px;
             border-radius: 10px;
@@ -120,7 +120,17 @@
                     display: flex;
                     justify-content: space-between;
                 }
-
+                    .list-service-pick .item-pick .content > div:first-child {
+                        flex: 1;
+                    }
+                    .list-service-pick .item-pick .content > div:last-child {
+                        flex: 1;
+                        text-align:right;
+                    }
+                    .list-service-pick .item-pick .content > div:nth-child(2) {
+                        flex: 1;
+                        text-align:center;
+                    }
                 .list-service-pick .item-pick .button-delete {
                     display: flex;
                     justify-content: center;
@@ -180,6 +190,23 @@
                                 <option value="">8:30</option>
                                 <option value="">9:00</option>
                                 <option value="">9:30</option>
+                                <option value="">10:00</option>
+                                <option value="">10:30</option>
+                                <option value="">11:00</option>
+                                <option value="">11:30</option>
+                                <option value="">12:00</option>
+                                <option value="">13:00</option>
+                                <option value="">13:30</option>
+                                <option value="">14:00</option>
+                                <option value="">14:30</option>
+                                <option value="">15:00</option>
+                                <option value="">15:30</option>
+                                <option value="">16:00</option>
+                                <option value="">16:30</option>
+                                <option value="">17:00</option>
+                                <option value="">17:30</option>
+                                <option value="">18:00</option>
+                                <option value="">18:30</option>
                             </select>
                         </div>
                     </div>
@@ -262,7 +289,7 @@
             }
             if (flag === 0 && id !== '') {
                 $('#list-service-pick').append(`
-                            <div class="item-pick" data-id="${id}" data-amount="${price}">
+                            <div class="item-pick" data-id="${id}" data-amount="${price}" data-time="${expectTime}">
                                                     <div class="icon-left">
                                                         -
                                                     </div>
@@ -316,7 +343,8 @@
             let listDataPick = $('#list-service-pick').find('.item-pick');
             for (let i = 0; i < listDataPick.length; i++) {
                 listService.push({
-                    ServiceId: $(listDataPick[i]).data('id')
+                    ServiceId: $(listDataPick[i]).data('id'),
+                    ExpectTime: $(listDataPick[i]).data('time')
                 });
             }
 
@@ -345,6 +373,8 @@
                         window.location.href = '/lich-hen-user';
                     }
                 })
+            } else {
+                alert(rs.Message);
             }
         }
     </script>
