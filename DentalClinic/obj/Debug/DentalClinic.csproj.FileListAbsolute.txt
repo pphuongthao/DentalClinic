@@ -162,7 +162,6 @@ D:\DO_AN\TAILIEUDOAN\DentalClinic\DentalClinic\obj\Debug\DentalClinic.csproj.Cor
 D:\DO_AN\TAILIEUDOAN\DentalClinic\DentalClinic\obj\Debug\DentalClinic.csproj.CopyComplete
 D:\DO_AN\TAILIEUDOAN\DentalClinic\DentalClinic\obj\Debug\DentalClinic.dll
 D:\DO_AN\TAILIEUDOAN\DentalClinic\DentalClinic\obj\Debug\DentalClinic.pdb
-D:\GitHub\DentalClinic\DentalClinic\obj\Debug\DentalClinic.csproj.CoreCompileInputs.cache
 D:\GitHub\DentalClinic\DentalClinic\bin\DentalClinic.dll.config
 D:\GitHub\DentalClinic\DentalClinic\bin\DentalClinic.dll
 D:\GitHub\DentalClinic\DentalClinic\bin\DentalClinic.pdb
@@ -215,6 +214,7 @@ D:\GitHub\DentalClinic\DentalClinic\bin\roslyn\vbc.rsp
 D:\GitHub\DentalClinic\DentalClinic\bin\roslyn\VBCEXE~1.CON
 D:\GitHub\DentalClinic\DentalClinic\bin\roslyn\VBCSCompiler.exe
 D:\GitHub\DentalClinic\DentalClinic\bin\roslyn\VBCSCompiler.exe.config
+D:\GitHub\DentalClinic\DentalClinic\bin\CKFinder.dll
 D:\GitHub\DentalClinic\DentalClinic\bin\Dapper.dll
 D:\GitHub\DentalClinic\DentalClinic\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
 D:\GitHub\DentalClinic\DentalClinic\bin\Microsoft.Web.Infrastructure.dll
@@ -240,7 +240,8 @@ D:\GitHub\DentalClinic\DentalClinic\bin\System.Net.Http.Formatting.xml
 D:\GitHub\DentalClinic\DentalClinic\bin\System.Web.Http.xml
 D:\GitHub\DentalClinic\DentalClinic\bin\System.Web.Http.WebHost.xml
 D:\GitHub\DentalClinic\DentalClinic\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
+D:\GitHub\DentalClinic\DentalClinic\obj\Debug\DentalClinic.csproj.AssemblyReference.cache
+D:\GitHub\DentalClinic\DentalClinic\obj\Debug\DentalClinic.csproj.CoreCompileInputs.cache
 D:\GitHub\DentalClinic\DentalClinic\obj\Debug\DentalClinic.csproj.CopyComplete
 D:\GitHub\DentalClinic\DentalClinic\obj\Debug\DentalClinic.dll
 D:\GitHub\DentalClinic\DentalClinic\obj\Debug\DentalClinic.pdb
-D:\GitHub\DentalClinic\DentalClinic\obj\Debug\DentalClinic.csproj.AssemblyReference.cache

@@ -81,13 +81,7 @@
             width: '100%',
             resize_minHeight: 150,
             height: '55vh',
-            extraPlugins: 'image2',
-            //filebrowserBrowseUrl: '/ckfinder/ckfinder.html',
-            //filebrowserImageBrowseUrl: '/ckfinder/ckfinder.html?type=Images',
-            //filebrowserFlashBrowseUrl: '/ckfinder/ckfinder.html?type=Flash',
-            //filebrowserUploadUrl: '/ckfinder/core/connector/aspx/connector.aspx?command=QuickUpload&type=Files',
-            //filebrowserImageUploadUrl: '/ckfinder/core/connector/aspx/connector.aspx?command=QuickUpload&type=Images',
-            //filebrowserFlashUploadUrl: '/ckfinder/core/connector/aspx/connector.aspx?command=QuickUpload&type=Flash'
+            ...(window.configCkFinder || {})
         });
 
         var ChooseThumbnail = function (el) { $(el).siblings('input[type=file]').click(); }

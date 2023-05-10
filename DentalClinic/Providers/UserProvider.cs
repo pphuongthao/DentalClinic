@@ -34,5 +34,17 @@ namespace DentalClinic.Providers
 
             return userAdmin;
         }
+        public static bool CheckTimeOrder(int minTime, int maxTime, List<TimeDoctor> lstimeDoctors, IDbConnection connect = null, IDbTransaction transaction = null)
+        {
+            bool check = true;
+            for (int i = 0; i < lstimeDoctors.Count; i++)
+            {
+                if ((minTime >= lstimeDoctors[i].MinTime && minTime < lstimeDoctors[i].MaxTime) || (maxTime > lstimeDoctors[i].MinTime && maxTime <= lstimeDoctors[i].MaxTime))
+                {
+                    check = false;
+                }
+            }
+            return check;
+        }
     }
 }

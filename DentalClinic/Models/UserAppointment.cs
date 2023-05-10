@@ -22,6 +22,7 @@ namespace DentalClinic.Models
         public int Year { get; set; }
         public string Status { get; set; }
         public long CreateTime { get; set; }
+        public int TotalExpectTime { get; set; }
         public class EnumStatus
         {
             public const string PENDING = "PENDING";
@@ -47,6 +48,7 @@ namespace DentalClinic.Models
         public int Year { get; set; }
         public string Status { get; set; }
         public long CreateTime { get; set; }
+        public int TotalExpectTime { get; set; }
         public List<ServiceDental> lsServiceDental { get; set; }
 
         public class EnumStatus

@@ -14,7 +14,7 @@ namespace DentalClinic.Services
         public UserService(IDbConnection db) : base(db) { }
         public List<User> GetListUser(IDbTransaction transaction = null)
         {
-            string query = "select [UserId],[Name],[Avatar],[Account],[Email],[Phone] from [user]";
+            string query = "select [UserId],[Name],[Avatar],[Account],[Email],[Phone],[Address] from [user]";
             return this._connection.Query<User>(query, null, transaction).ToList();
         }
         public User GetUserByUserName(string userName, IDbTransaction transaction = null)

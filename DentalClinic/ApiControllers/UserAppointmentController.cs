@@ -28,6 +28,7 @@ namespace DentalClinic.ApiControllers
                         UserService userService = new UserService(connect);
                         DoctorService doctorService = new DoctorService(connect);
                         UserMakeAppointmentService userMakeAppointmentService = new UserMakeAppointmentService(connect);
+
                         string token = Request.Headers.Authorization.ToString();
                         User user = userService.GetUserByToken(token, transaction);
                         if (user == null) return Unauthorized();
@@ -51,13 +52,34 @@ namespace DentalClinic.ApiControllers
                         userAppointment.Status = UserAppointment.EnumStatus.PENDING;
                         userAppointment.CreateTime = HelperProvider.GetSeconds();
 
-                       for(int i = 0; i<model.ListService.Count; i++)
+                        int totalExpectTime = 0;
+                       for (int i = 0; i<model.ListService.Count; i++)
                         {
                             UserAppointmentService userAppointmentService = new UserAppointmentService();
                             userAppointmentService.UserAppointmentServiceId = Guid.NewGuid().ToString();
                             userAppointmentService.UserAppointmentId = userAppointment.UserAppointmentId;
                             userAppointmentService.ServiceId = model.ListService[i].ServiceId;
+                            userAppointmentService.ExpectTime = model.ListService[i].ExpectTime;
+                            totalExpectTime += model.ListService[i].ExpectTime;
                             if (!userMakeAppointmentService.CreateUserAppointmentService(userAppointmentService, transaction)) throw new Exception();
+                        }
+                        userAppointment.TotalExpectTime = totalExpectTime;
+                        // lấy ra danh sách đơn của bác sĩ ngày đơn đặt mới
+                        List<UserAppointment> lsuserAppointmentsByDoctor = userMakeAppointmentService.GetListUserAppointmentByDoctorId(model.DoctorId, model.Day, model.Month, model.Year, transaction);
+                        List<TimeDoctor> lstimeDoctors = new List<TimeDoctor>();
+                        for (int i = 0; i < lsuserAppointmentsByDoctor.Count; i++)
+                        {
+                            TimeDoctor timeDoctor = new TimeDoctor();
+                            timeDoctor.MinTime = lsuserAppointmentsByDoctor[i].Hour * 60 + lsuserAppointmentsByDoctor[i].Minute;
+                            timeDoctor.MaxTime = timeDoctor.MinTime + lsuserAppointmentsByDoctor[i].TotalExpectTime;
+                            lstimeDoctors.Add(timeDoctor);
+                        }
+                        int minTime = model.Hour * 60 + model.Minute;
+                        int maxTime = minTime + userAppointment.TotalExpectTime;
+                        bool checkOrder = UserProvider.CheckTimeOrder(minTime, maxTime, lstimeDoctors, connect, transaction);
+                        if (checkOrder == false)
+                        {
+                            throw new Exception("Bác sĩ bận trong thời gian này, vui lòng chọn bác sĩ hoặc thời gian khác");
                         }
                         if (!userMakeAppointmentService.CreateUserAppointment(userAppointment, transaction)) throw new Exception();
                         transaction.Commit();
