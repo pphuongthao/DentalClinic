@@ -202,7 +202,7 @@
                     html += '<td style="text-align:right">' + NumberFormat(x.TotalAmount) + ' (VND)</td>';
                     html += '<td>' + x.NameDoctor + ' </td>';
                     html += '<td>' + x.Day + "-" + x.Month + "-" + x.Year + ' </td>';
-                    html += '<td>' + x.Hour + ":" + x.Minute + '</td>';
+                    html += '<td>' + x.Hour + ":" + (x.Minute === 0 ? '00' : x.Minute) + '</td>';
 
                     let button = '';
                     let status = '';
@@ -212,8 +212,12 @@
 
                             button += '<button class="btn btn-danger btn-tone m-r-5 btn-sm" onclick="userCancel(this,event)" data-id="' + x.UserAppointmentId + '"> Huỷ </button>';
                             break;
+                        case 'RECEIVE':
+                            status = '<span class="badge bg-info"> Đã tiếp nhận </span>';
+
+                            break;
                         case 'DONE':
-                            status = '<span class="badge bg-success"> Đã xong </span>';
+                            status = '<span class="badge bg-success"> Đã đến </span>';
 
                             break;
                         case 'USER_CANCEL':
@@ -240,7 +244,35 @@
         const initPage = async function () {
             await getListAppointment();
         }
+        const userCancel = async function (el, event) {
 
+            Swal.fire({
+                icon: "question",
+                title: "Xác nhận hủy lịch hẹn này?",
+                preConfirm: async function () {
+                    let id = $(el).data('id');
+                    let rq = await fetch(Enum.ApiUrl + '/api/UserAppointment/UserCancelAppointment?userAppointmentId=' + id, {
+                        method: 'get',
+                        headers: Enum.OptionHeaderDefault
+                    });
+                    let rs = await rq.json();
+                    if (CheckErrorResponse(rs) === false) return;
+                    if (GetObjectProperty(rs, 'status') === Enum.ResponseStatus.SUCCESS) {
+                        Swal.fire({
+                            icon: "success",
+                            title: "Huỷ lịch hẹn thành công",
+                            preConfirm: function () {
+                                window.location.reload();
+                            }
+                        })
+                    }
+                },
+                didClose: function () {
+                    return;
+                }
+            })
+            event.stopImmediatePropagation();
+        }
         initPage();
     </script>
 }

@@ -5162,6 +5162,7 @@
     <Content Include="Content\ckfinder\userfiles\.htaccess" />
     <Content Include="Areas\Admin\Views\ManageUser\UserAppointment.cshtml" />
     <Content Include="Areas\Admin\Views\AdminManageAppointment\AddAppointment.cshtml" />
+    <Content Include="Areas\Admin\Views\AdminManageAppointment\ManageAppointment.cshtml" />
     <None Include="Scripts\jquery-1.6.4-vsdoc.js" />
     <Content Include="Scripts\jquery-1.6.4.js" />
     <Content Include="Scripts\jquery-1.6.4.min.js" />
@@ -5217,6 +5218,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\AppointmentStatus.cs" />
     <Compile Include="Models\BaseModel.cs" />
     <Compile Include="Models\CodeConfirm.cs" />
     <Compile Include="Models\CustomerFeedback.cs" />
@@ -5249,6 +5251,7 @@
     <Compile Include="Services\AdminServiceCategoryService.cs" />
     <Compile Include="Services\AdminServiceService.cs" />
     <Compile Include="Services\AdminSlideService.cs" />
+    <Compile Include="Services\AppointmentStatusService.cs" />
     <Compile Include="Services\BaseService.cs" />
     <Compile Include="Services\CustomerFeedbackService.cs" />
     <Compile Include="Services\DoctorService.cs" />

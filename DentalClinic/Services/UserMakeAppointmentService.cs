@@ -69,5 +69,11 @@ namespace DentalClinic.Services
             string query = "select ua.* from user_appointment ua left join doctor d on ua.DoctorId = d.DoctorId where ua.DoctorId=@doctorId and ua.Day=@day and ua.Month = @month and ua.Year = @year";
             return this._connection.Query<UserAppointment>(query, new { doctorId,day,month,year }, transaction).ToList();
         }
+        public bool UpdateUserAppointmentStatus(string userAppointmentId, string status, IDbTransaction transaction = null)
+        {
+            string query = "UPDATE [dbo].[user_appointment] SET [Status] = @status WHERE UserAppointmentId = @userAppointmentId";
+            int _status = this._connection.Execute(query, new { userAppointmentId, status }, transaction);
+            return _status > 0;
+        }
     }
 }

@@ -26,7 +26,9 @@ namespace DentalClinic.Models
         public class EnumStatus
         {
             public const string PENDING = "PENDING";
+            public const string RECEIVE = "RECEIVE";
             public const string DONE = "DONE";
+            public const string CONFIRM_PAID = "CONFIRM_PAID";
             public const string USER_CANCEL = "USER_CANCEL";
             public const string SYSTEM_CANCEL = "SYSTEM_CANCEL";
         }
@@ -54,7 +56,9 @@ namespace DentalClinic.Models
         public class EnumStatus
         {
             public const string PENDING = "PENDING";
+            public const string RECEIVE = "RECEIVE";
             public const string DONE = "DONE";
+            public const string CONFIRM_PAID = "CONFIRM_PAID";
             public const string USER_CANCEL = "USER_CANCEL";
             public const string SYSTEM_CANCEL = "SYSTEM_CANCEL";
         }
