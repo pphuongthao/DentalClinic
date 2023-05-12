@@ -163,5 +163,53 @@ namespace DentalClinic.ApiControllers
                 return Error(ex.Message);
             }
         }
+
+        [HttpGet]
+        [ApiTokenRequire]
+        public JsonResult UserCancelAppointment(string userAppointmentId)
+        {
+            try
+            {
+                using (var connect = BaseService.Connect())
+                {
+                    connect.Open();
+                    using (var transaction = connect.BeginTransaction())
+                    {
+                        UserService userService = new UserService(connect);
+                        UserMakeAppointmentService userMakeAppointmentService = new UserMakeAppointmentService(connect);
+                        AppointmentStatusService appointmentStatusService = new AppointmentStatusService(connect);
+                        string token = Request.Headers.Authorization.ToString();
+                        User user = userService.GetUserByToken(token, transaction);
+                        if (user == null) return Unauthorized();
+
+                        // Lấy ra 
+                        UserAppointment userAppointment = userMakeAppointmentService.GetUserAppointmentById(userAppointmentId, transaction);
+                        if (userAppointment == null) throw new Exception("Không tìm thấy lịch hẹn !");
+                        if (userAppointment.UserId != user.UserId) throw new Exception("Lịch hẹn này không phải của bạn !");
+                        if (userAppointment.Status != UserAppointment.EnumStatus.PENDING) throw new Exception("Trạng thái lịch hẹn không hợp lệ !");
+
+                        // Set lại trạng thái 
+                        if (!userMakeAppointmentService.UpdateUserAppointmentStatus(userAppointmentId, UserAppointment.EnumStatus.USER_CANCEL, transaction)) throw new Exception();
+
+                        // Lưu lịch sử status
+                        AppointmentStatus appointmentStatus = new AppointmentStatus();
+                        appointmentStatus.AppointmentStatusId = Guid.NewGuid().ToString();
+                        appointmentStatus.UserAppointmentId = userAppointmentId;
+                        appointmentStatus.Status = UserAppointment.EnumStatus.USER_CANCEL;
+                        appointmentStatus.CreateTime = HelperProvider.GetSeconds();
+                        if (!appointmentStatusService.CreateAppointmentStatus(appointmentStatus, transaction)) throw new Exception();
+
+
+                        transaction.Commit();
+                        return Success();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Error(ex.Message);
+            }
+        }
+
     }
 }

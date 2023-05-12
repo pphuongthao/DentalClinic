@@ -17,5 +17,9 @@ namespace DentalClinic.Areas.Admin.Controllers
         {
             return View();
         }
+        public ActionResult ManageAppointment()
+        {
+            return View();
+        }
     }
 }

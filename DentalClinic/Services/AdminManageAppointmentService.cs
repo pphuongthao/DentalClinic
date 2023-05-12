@@ -59,5 +59,45 @@ namespace DentalClinic.Services
             string query = "select s.* from [user_appointment_service] uas right join [service] s on uas.ServiceId = s.ServiceId where uas.UserAppointmentId = @UserAppointmentId";
             return this._connection.Query<ServiceDental>(query, new { UserAppointmentId }, transaction).ToList();
         }
+        public bool AddUser(User user, IDbTransaction transaction = null)
+        {
+            string query = "INSERT INTO [user]([UserId], [Name], [SearchName], [Email], [Phone], [Address], [Enable], [CreateTime]) VALUES (@UserId, @Name, @SearchName, @Email, @Phone, @Address, @Enable, @CreateTime)";
+            return _connection.Execute(query, user , transaction) > 0;
+        }
+
+        public ListUserAppointmentView GetListAllAppointment(int PageIndex, string AppointmentCode = "", long? CreateStart = null, long? CreateEnd = null)
+        {
+            ListUserAppointmentView listUserAppointmentView = new ListUserAppointmentView();
+            string queryCount = "select count(*) as Total ";
+            string querySelect = "select ua.*, d.Name As NameDoctor ";
+            string queryWhere = "from [user_appointment] ua join [doctor] d on ua.DoctorId = d.DoctorId";
+
+            if (!string.IsNullOrEmpty(AppointmentCode))
+            {
+                queryWhere += $"and ua.AppointmentCode like '%{AppointmentCode}%' ";
+            }
+
+            if (CreateStart.HasValue)
+            {
+                queryWhere += $"and CreateTime >= {CreateStart} ";
+            }
+            if (CreateEnd.HasValue)
+            {
+                queryWhere += $"and CreateTime <= {CreateEnd} ";
+            }
+
+            int totalRow = this._connection.Query<int>(queryCount + queryWhere, new {AppointmentCode }).FirstOrDefault();
+            int skip = (PageIndex - 1) * 20;
+            int totalPage = (int)Math.Ceiling((decimal)totalRow / 20);
+            queryWhere += " order by CreateTime offset  " + skip + " rows fetch next 20 rows only ";
+
+            listUserAppointmentView.ListUserAppointmentInfor = this._connection.Query<UserAppointmentInfor>(querySelect + queryWhere, new { AppointmentCode }).ToList();
+            listUserAppointmentView.TotalPage = totalPage;
+            return listUserAppointmentView;
+
+
+        }
+
+        
     }
 }

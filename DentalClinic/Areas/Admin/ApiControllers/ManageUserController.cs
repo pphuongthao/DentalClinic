@@ -121,6 +121,7 @@ namespace DentalClinic.Areas.Admin.ApiControllers
                         user.Address = model.Address;
                         user.Gender = model.Gender;
                         user.Phone = model.Phone;
+                        user.CreateTime = HelperProvider.GetSeconds();
                         if (!manageUserService.UpdateUser(user, transaction)) return Error();
 
 

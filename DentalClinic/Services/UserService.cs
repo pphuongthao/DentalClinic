@@ -24,7 +24,7 @@ namespace DentalClinic.Services
         }
         public User GetUserById(string UserId, IDbTransaction transaction = null)
         {
-            string query = "select [UserId],[Name], [Avatar], [Account],[Email], [Phone], [Gender] [CreateTime], [Enable] from [user] where UserId = @UserId";
+            string query = "select [UserId],[Name], [Avatar], [Account],[Email], [Phone], [Address], [Gender] [CreateTime], [Enable] from [user] where UserId = @UserId";
             return this._connection.Query<User>(query, new { UserId }, transaction).FirstOrDefault();
         }
         

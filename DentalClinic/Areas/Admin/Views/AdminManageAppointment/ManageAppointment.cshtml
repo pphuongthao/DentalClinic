@@ -1,11 +1,12 @@
 ﻿
+
 @{
-    ViewBag.Title = "UserAppointment";
-    ViewBag.Menu = "manage-user";
+    ViewBag.Title = "ManageAppointment";
 }
 
 
 @section styles{
+    <link href="~/Content/datepicker.min.css" rel="stylesheet" />
     <style>
         .account-page-content .main-content {
             padding: 10px 10px 10px 10px !important;
@@ -19,13 +20,14 @@
         }
 
         #tab-order .search-keyword {
-            flex: 1;
+            flex: 2;
             margin-right: 10px;
         }
 
         #tab-order .date-create {
             flex: 2;
             margin-left: 10px;
+            margin-right: 10px;
         }
 
             #tab-order .date-create .date-pick {
@@ -34,14 +36,14 @@
             }
 
                 #tab-order .date-create .date-pick input {
-                    width: 45%;
+                    width: 55%;
                 }
 
         #tab-order .search-tab-3 {
             display: flex;
             align-items: center;
             padding-top: 10px;
-            flex: 2;
+            flex: 1;
         }
 
             #tab-order .search-tab-3 .search-btn {
@@ -75,23 +77,32 @@
         td button {
             margin-right: 10px;
         }
+        .nav-tab {
+            display: flex;
+            display: flex;
+            justify-content: flex-start;
+            margin: 10px;
+        }
+
+            .nav-tab a {
+                width: 100px;
+                display: flex;
+                height: 35px;
+                align-items: center;
+                justify-content: center;
+                border: 0.5px solid grey;
+                cursor: pointer;
+            }
+
+                .nav-tab a.active {
+                    background-color: lightgrey;
+                    color: black;
+                }
     </style>
 }
 
 <div class="account-page-content">
     <div class="main-content">
-        <div class="page-header no-gutters has-tab">
-
-            <ul class="nav nav-tabs">
-                <li class="nav-item">
-                    <a class="nav-link " href="/Admin/ManageUser/UpdateUserInfo/@ViewBag.Id">Thông tin cá nhân</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active" href="/Admin/ManageUser/UserAppointment/@ViewBag.Id">Lịch sử đặt hẹn</a>
-                </li>
-
-            </ul>
-        </div>
         <div class="">
             <div class="tab-content m-t-15">
                 <div class="tab-pane fade show active" id="tab-order">
@@ -108,24 +119,48 @@
                             </div>
 
                         </div>
+                        <div class="search-status" style="width:170px; margin-right: 20px;">
+                            <label class="font-weight-semibold"></label>
+                            <select id="status" class="form-control " onchange="getListAllAppointment()">
+                                <option value="">Trạng thái lịch hẹn</option>
+                                <option value="PENDING">Chờ xác nhận</option>
+                                <option value="RECEIVE">Tiếp nhận</option>
+                                <option value="DONE">Đã đến</option>
+                                <option value="USER_CANCEL">Người dùng huỷ</option>
+                                <option value="SYSTEM_CANCEL">Hệ thống huỷ</option>
+
+                            </select>
+                        </div>
                         <div class="search-tab-3"><a onclick="SearchAppointment();" class="btn btn-primary">Tìm kiếm</a></div>
+                        <div class="search-tab-3"><a onclick="CreateAppointment();" class="btn btn-primary">Đặt lịch hẹn</a></div>
 
                     </div>
+                    <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                        <div class="nav-tab">
+                            <a class="active" onclick="TabSelect(this);" data-tab="tab-day">Day</a>
+                            <a onclick="TabSelect(this);" data-tab="tab-week">Week</a>
+                            <a onclick="TabSelect(this);" data-tab="tab-month">Month</a>
+                        </div>
+                        <div style=" padding-top: 15px;"><a href="#">Hôm nay</a></div>
+                        <div style=" padding-top: 15px; padding-left: 50px;"><input type="date"  value="" /></div>
+                    </div>
+                    
                     <div class="list-order">
                         <div class="table-responsive">
                             <table class="table table-hover table-custom">
                                 <thead>
                                     <tr>
                                         <th scope="col" style="width:10%">Mã lịch hẹn</th>
-                                        <th scope="col" style="width:10%">Tổng dịch vụ</th>
+                                        <th scope="col" style="width:15%">Khách hàng</th>
+                                        <th scope="col" style="width:20%">Dịch vụ</th>
                                         <th scope="col" style="width:10%">Bác sĩ</th>
-                                        <th scope="col" style="width:10%">Ngày đặt hẹn</th>
-                                        <th scope="col" style="width:10%">Trạng thái</th>
-                                        <th scope="col" style="width:20%">Thao tác</th>
+                                        <th scope="col" style="width:10%">Thời gian hẹn</th>
+                                        <th scope="col" style="width:8%">Trạng thái</th>
+                                        <th scope="col" style="width:15%">Thao tác</th>
 
                                     </tr>
                                 </thead>
-                                <tbody id="list-appointment">
+                                <tbody id="list-appointment-user">
                                 </tbody>
                             </table>
                         </div>
@@ -150,22 +185,26 @@
             format: 'dd-mm-yyyy',
             autoHide: true,
         });
-
+        const TabSelect = function (el) {
+            const tabId = $(el).data('tab');
+            $('.tab').css('display', 'none');
+            $('#' + tabId).css('display', 'flex');
+            $(el).siblings().removeClass('active');
+            $(el).addClass('active');
+        }
         const SearchAppointment = function () {
-            getListAppointment();
+            getListAllAppointment();
         }
 
 
         let _currentPage = 1;
-        const getListAppointment = async function (page = 1) {
+        const getListAllAppointment = async function (page = 1) {
             _currentPage = page;
-
-            let userId = '@ViewBag.Id';
             let fromTime = ConvertTime($('#start-date').val());
             let toTime = ConvertTime($('#end-date').val(), 23, 59, 59, 999);
             let keyword = $('#keyword').val();
 
-            let rq = await fetch(Enum.ApiUrl + '/api/AdminManageAppointment/GetListAppointmentOfUser?UserId=' + userId + '&AppointmentCode=' + keyword + '&CreateStart=' + fromTime + '&CreateEnd=' + toTime + '&PageIndex=' + page, {
+            let rq = await fetch(Enum.ApiUrl + '/api/AdminManageAppointment/GetListAllAppointment?AppointmentCode=' + keyword + '&CreateStart=' + fromTime + '&CreateEnd=' + toTime + '&PageIndex=' + page, {
                 method: 'get',
                 headers: Enum.OptionAdminHeaderDefault,
             });
@@ -173,20 +212,35 @@
             console.log(rs);
             if (AdminCheckErrorResponse(rs) === false) return;
             if (rs.data === null) return;
-            $('#list-appointment').html('');
+            $('#list-appointment-user').html('');
             if (GetObjectProperty(rs, 'status') === Enum.ResponseStatus.SUCCESS) {
                 $('.product-page-list').html('');
                 for (let page = 1; page <= rs.data.TotalPage; page++) {
-                    $('.product-page-list').append(`<a onclick="getListAppointment(${page});" data-page="${page}" class="product-page ${_currentPage === page ? 'active-custom' : ''}" id="page-num">${page}</a>`);
+                    $('.product-page-list').append(`<a onclick="getListAllAppointment(${page});" data-page="${page}" class="product-page ${_currentPage === page ? 'active-custom' : ''}" id="page-num">${page}</a>`);
                 }
 
                 for (let index = 0; index < rs.data.ListUserAppointmentInfor.length; index++) {
                     var x = rs.data.ListUserAppointmentInfor[index];
                     let html = '<tr>';
                     html += '<td>' + x.AppointmentCode + '</td>';
-                    html += '<td style="text-align:right">' + NumberFormat(x.TotalAmount) + ' VNĐ</td>';
+                    html += '<td>' + x.Name + '</td>';
+
+                    html += '<td>';
+                    for (let indexChild = 0; indexChild < x.lsServiceDental.length; indexChild++) {
+                        let y = x.lsServiceDental[indexChild];
+                        html += y.Name;
+                        if (x.lsServiceDental.length > 1 && indexChild < x.lsServiceDental.length - 1) {
+                            html += ' , ';
+                        }
+                    }
+                    html += '</td>';
+
                     html += '<td>' + x.NameDoctor + '</td>';
-                    html += '<td>' + DateStringFormat({ stringDate: new Date(x.CreateTime) }) + '</td>';
+                    html += '<td>';
+                    html += x.Hour + ':';
+                    html += x.Minute === 0 ? '00' : x.Minute;
+                    html += ', ' + x.Day + '/' + x.Month + '/' + x.Year;
+                    html += '</td>';
                     let status = '';
                     let button = '';
                     switch (x.Status) {
@@ -199,7 +253,7 @@
                             status = '<span class="badge bg-light-info"> Đã tiếp nhận </span>';
                             button = '<button class="btn btn-success btn-tone m-r-5 btn-sm" data-id="' + x.UserAppointmentId + '" onclick="confirmReceive(this)"> Đã đến </button>';
                             break;
-
+                       
                         case 'DONE':
                             status = '<span class="badge bg-light-success"> Đã đến </span>';
 
@@ -218,11 +272,55 @@
                     html += '<td>' + status + '</td>';
                     html += '<td>' + button + '</td></tr>';
 
-                    $('#list-appointment').append(html);
+                    $('#list-appointment-user').append(html);
                 }
             }
         }
+        const CreateAppointment = async function () {
+            window.location.href = '/admin/adminmanageappointment/addappointment'
+        }
 
+        const confirmPending = async function (el) {
+            $(el).addClass('is-loading');
+            let UserAppointmentId = $(el).data('id');
+
+            if (confirm('Bạn có chắc chắn muốn xác nhận lịch hẹn này được tiếp nhận?')) {
+                let rq = await fetch(Enum.ApiUrl + '/Api/AdminManageAppointment/ConfirmAppointment?userAppointmentId=' + UserAppointmentId, {
+                    method: 'get',
+                    headers: Enum.OptionAdminHeaderDefault,
+                });
+                let rs = await rq.json();
+                $(el).removeClass('is-loading');
+                if (AdminCheckErrorResponse(rs) === false) return;
+
+                if (GetObjectProperty(rs, 'status') === Enum.ResponseStatus.SUCCESS) {
+                    alert('Cập nhật trạng thái thành công');
+                    window.location.reload();
+                }
+            }
+
+        }
+        const confirmReceive = async function (el) {
+            let UserAppointmentId = $(el).data('id');
+            $(el).addClass('is-loading');
+            if (confirm('Bạn có chắc chắn muốn xác nhận khách hàng đã đến ?')) {
+                let rq = await fetch(Enum.ApiUrl + '/api/AdminManageAppointment/DoneAppointment?userAppointmentId=' + UserAppointmentId, {
+                    method: 'get',
+                    headers: Enum.OptionAdminHeaderDefault,
+                });
+                let rs = await rq.json();
+
+                $(el).removeClass('is-loading');
+
+                if (AdminCheckErrorResponse(rs) === false) return;
+
+                if (GetObjectProperty(rs, 'status') === Enum.ResponseStatus.SUCCESS) {
+                    alert('Cập nhật trạng thái thành công');
+                    window.location.reload();
+                }
+            }
+
+        }
         const adminCancel = async function (el) {
             let UserAppointmentId = $(el).data('id');
             $(el).addClass('is-loading');
@@ -244,10 +342,11 @@
 
         }
         const initPage = async function () {
-            await getListAppointment();
+            await getListAllAppointment();
         }
 
         initPage();
     </script>
 }
+
 
