@@ -132,6 +132,7 @@ namespace DentalClinic.Areas.Admin.ApiControllers
                         int totalExpectTime = 0;
                         for (int i = 0; i < model.ListService.Count; i++)
                         {
+
                             UserAppointmentService userAppointmentService = new UserAppointmentService();
                             userAppointmentService.UserAppointmentServiceId = Guid.NewGuid().ToString();
                             userAppointmentService.UserAppointmentId = userAppointment.UserAppointmentId;
@@ -293,7 +294,7 @@ namespace DentalClinic.Areas.Admin.ApiControllers
         }
         [HttpGet]
         [ApiAdminTokenRequire]
-        public JsonResult DoneAppointment(string userAppointmentId)
+        public JsonResult ConfirmArrive(string userAppointmentId)
         {
             try
             {
@@ -313,7 +314,108 @@ namespace DentalClinic.Areas.Admin.ApiControllers
                         if (userAppointment == null) throw new Exception("Không tìm thấy lịch hẹn !");
                         if (userAppointment.Status == UserAppointment.EnumStatus.DONE || userAppointment.Status == UserAppointment.EnumStatus.USER_CANCEL || userAppointment.Status == UserAppointment.EnumStatus.SYSTEM_CANCEL) throw new Exception("Trạng thái lịch hẹn không hợp lệ !");
                         // Set lại trạng thái 
+                        if (!userMakeAppointmentService.UpdateUserAppointmentStatus(userAppointmentId, UserAppointment.EnumStatus.CONFIRM_ARRIVE, transaction)) throw new Exception();
+
+                        // Lưu lịch sử status
+                        AppointmentStatus appointmentStatus = new AppointmentStatus();
+                        appointmentStatus.AppointmentStatusId = Guid.NewGuid().ToString();
+                        appointmentStatus.UserAppointmentId = userAppointmentId;
+                        appointmentStatus.Status = UserAppointment.EnumStatus.CONFIRM_ARRIVE;
+                        appointmentStatus.CreateTime = HelperProvider.GetSeconds();
+                        if (!appointmentStatusService.CreateAppointmentStatus(appointmentStatus, transaction)) throw new Exception();
+
+                        transaction.Commit();
+                        return Success();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Error(ex.Message);
+            }
+        }
+        [HttpGet]
+        [ApiAdminTokenRequire]
+        public JsonResult DoneAppointment(string userAppointmentId)
+        {
+            try
+            {
+                using (var connect = BaseService.Connect())
+                {
+                    connect.Open();
+                    using (var transaction = connect.BeginTransaction())
+                    {
+                        UserMakeAppointmentService userMakeAppointmentService = new UserMakeAppointmentService(connect);
+                        AppointmentStatusService appointmentStatusService = new AppointmentStatusService(connect);
+                        AdminSystemWalletService adminSystemWalletService = new AdminSystemWalletService(connect);
+                        AdminSystemTransactionService adminSystemTransactionService = new AdminSystemTransactionService(connect);
+                        AdminReportService adminReportService = new AdminReportService(connect);
+                        UserAdmin userAdmin = SecurityProvider.GetUserAdminByToken(Request);
+                        if (userAdmin == null) return Unauthorized();
+
+                        // Lấy ra
+                        UserAppointment userAppointment = userMakeAppointmentService.GetUserAppointmentById(userAppointmentId, transaction);
+                        if (userAppointment == null) throw new Exception("Không tìm thấy lịch hẹn !");
+                        if (userAppointment.Status == UserAppointment.EnumStatus.DONE || userAppointment.Status == UserAppointment.EnumStatus.USER_CANCEL || userAppointment.Status == UserAppointment.EnumStatus.SYSTEM_CANCEL) throw new Exception("Trạng thái lịch hẹn không hợp lệ !");
+
+                        // Set lại trạng thái 
                         if (!userMakeAppointmentService.UpdateUserAppointmentStatus(userAppointmentId, UserAppointment.EnumStatus.DONE, transaction)) throw new Exception();
+
+                        DateTime now = DateTime.Now;
+                        // Cộng tiền thu của hóa đơn vào trong ví khách sạn, và báo cáo
+                        adminSystemWalletService.UpdateRevenueSystem(userAppointment.TotalAmount, transaction);
+
+                        SystemTransaction systemTransaction = new SystemTransaction();
+                        systemTransaction.SystemTransactionId = Guid.NewGuid().ToString();
+                        systemTransaction.Amount = userAppointment.TotalAmount;
+                        systemTransaction.Message = "Tiền thu từ hóa đơn của khách hàng " + userAppointment.Name + " đã khám xong.";
+                        systemTransaction.CreateTime = HelperProvider.GetSeconds(now);
+                        adminSystemTransactionService.InsertSystemTransaction(systemTransaction, transaction);
+
+                        // Thêm vào bảng báo cáo
+                        ReportDaily reportDaily = adminReportService.GetReportDailyByDayMonthYear(now.Day, now.Month, now.Year, transaction);
+                        if (reportDaily == null)
+                        {
+                            reportDaily = new ReportDaily();
+                            reportDaily.ReportDailyId = Guid.NewGuid().ToString();
+                            reportDaily.TotalPrice = userAppointment.TotalAmount;
+                            reportDaily.Day = now.Day;
+                            reportDaily.Month = now.Month;
+                            reportDaily.Year = now.Year;
+                            adminReportService.InsertReportDaily(reportDaily, transaction);
+                        }
+                        else
+                        {
+                            adminReportService.UpdateTotalPriceByReportDailyId(userAppointment.TotalAmount, reportDaily.ReportDailyId, transaction);
+                        }
+                        ReportMonthly reportMonthly = adminReportService.GetReportMonthlyByMonthYear(now.Month, now.Year, transaction);
+                        if (reportMonthly == null)
+                        {
+                            reportMonthly = new ReportMonthly();
+                            reportMonthly.ReportMonthlyId = Guid.NewGuid().ToString();
+                            reportMonthly.TotalPrice = userAppointment.TotalAmount;
+                            reportMonthly.Month = now.Month;
+                            reportMonthly.Year = now.Year;
+                            adminReportService.InsertReportMonthly(reportMonthly, transaction);
+                        }
+                        else
+                        {
+                            adminReportService.UpdateTotalPriceByReportMonthlyId(userAppointment.TotalAmount, reportMonthly.ReportMonthlyId, transaction);
+                        }
+                        ReportYearly reportYearly = adminReportService.GetReportYearlyByYear(now.Year, transaction);
+                        if (reportYearly == null)
+                        {
+                            reportYearly = new ReportYearly();
+                            reportYearly.ReportYearlyId = Guid.NewGuid().ToString();
+                            reportYearly.TotalPrice = userAppointment.TotalAmount;
+                            reportYearly.Year = now.Year;
+                            adminReportService.InsertReportYearly(reportYearly, transaction);
+                        }
+                        else
+                        {
+                            adminReportService.UpdateTotalPriceByReportYearlyId(userAppointment.TotalAmount, reportYearly.ReportYearlyId, transaction);
+                        }
+
 
                         // Lưu lịch sử status
                         AppointmentStatus appointmentStatus = new AppointmentStatus();
@@ -326,6 +428,7 @@ namespace DentalClinic.Areas.Admin.ApiControllers
                         transaction.Commit();
                         return Success();
                     }
+                
                 }
             }
             catch (Exception ex)

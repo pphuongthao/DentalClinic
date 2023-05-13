@@ -23,12 +23,13 @@ namespace DentalClinic.Models
         public string Status { get; set; }
         public long CreateTime { get; set; }
         public int TotalExpectTime { get; set; }
+        public decimal TotalAmount { get; set; }
         public class EnumStatus
         {
             public const string PENDING = "PENDING";
             public const string RECEIVE = "RECEIVE";
             public const string DONE = "DONE";
-            public const string CONFIRM_PAID = "CONFIRM_PAID";
+            public const string CONFIRM_ARRIVE = "CONFIRM_ARRIVE";
             public const string USER_CANCEL = "USER_CANCEL";
             public const string SYSTEM_CANCEL = "SYSTEM_CANCEL";
         }
@@ -74,7 +75,7 @@ namespace DentalClinic.Models
     }
     public class UserAppointmentRequest : UserAppointment
     {
-        public List<UserAppointmentService> ListService { get; set; }
+        public List<string> ListServiceId { get; set; }
     }
 
 }

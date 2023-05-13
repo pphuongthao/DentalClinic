@@ -74,7 +74,7 @@ namespace DentalClinic.Services
 
             if (!string.IsNullOrEmpty(AppointmentCode))
             {
-                queryWhere += $"and ua.AppointmentCode like '%{AppointmentCode}%' ";
+                queryWhere += $"and AppointmentCode like '%{AppointmentCode}%' ";
             }
 
             if (CreateStart.HasValue)

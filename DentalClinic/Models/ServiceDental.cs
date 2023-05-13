@@ -10,7 +10,7 @@ namespace DentalClinic.Models
         public string ServiceId { get; set; }
         public string Name { get; set; }
         public string Thumbnail { get; set; }
-        public long ExpectTime { get; set; }
+        public int ExpectTime { get; set; }
         public string Description { get; set; }
         public string ServiceCategoryId { get; set; }
         public decimal Price { get; set; }

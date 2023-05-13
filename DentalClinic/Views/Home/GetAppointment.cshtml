@@ -342,8 +342,7 @@
             let listDataPick = $('#list-service-pick').find('.item-pick');
             for (let i = 0; i < listDataPick.length; i++) {
                 listService.push({
-                    ServiceId: $(listDataPick[i]).data('id'),
-                    ExpectTime: $(listDataPick[i]).data('time')
+                    ServiceId: $(listDataPick[i]).data('id')
                 });
             }
 
@@ -354,7 +353,7 @@
                 Year: year,
                 Hour: hour,
                 Minute: minute,
-                ListService: listService
+                ListServiceId: listService
             }
             console.log(model)
             let rp = await fetch('/api/UserAppointment/CreateUserAppointment', {
