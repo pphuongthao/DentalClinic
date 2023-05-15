@@ -173,7 +173,7 @@
             }
 
             //Week
-            const today = new Date();
+            const today = new Date(2023,5,13);
             const firstDay = new Date(today.setDate(today.getDate() - today.getDay() + i));
             $('#tab-week .days-section').html(`<div></div>`);
             for (let i = 1; i <= 7; i++) {

@@ -14,8 +14,8 @@ namespace DentalClinic.Services
         public UserMakeAppointmentService(IDbConnection db) : base(db) { }
         public bool CreateUserAppointment(UserAppointment model, IDbTransaction transaction = null)
         {
-            string query = "INSERT INTO [dbo].[user_appointment]([UserAppointmentId],[UserId], [AppointmentCode], [Name],[Phone],[Email],[Address],[DoctorId],[Hour],[Minute],[Day],[Month],[Year],[Status],[CreateTime],[TotalExpectTime]) " +
-                "VALUES (@UserAppointmentId, @UserId, @AppointmentCode,  @Name, @Phone, @Email, @Address, @DoctorId, @Hour, @Minute,@Day,  @Month, @Year,@Status, @CreateTime, @TotalExpectTime )";
+            string query = "INSERT INTO [dbo].[user_appointment]([UserAppointmentId],[UserId], [AppointmentCode], [Name],[Phone],[Email],[Address],[DoctorId],[Hour],[Minute],[Day],[Month],[Year],[Status],[CreateTime],[TotalExpectTime],[TotalAmount]) " +
+                "VALUES (@UserAppointmentId, @UserId, @AppointmentCode,  @Name, @Phone, @Email, @Address, @DoctorId, @Hour, @Minute,@Day,  @Month, @Year,@Status, @CreateTime, @TotalExpectTime,@TotalAmount )";
             int status = this._connection.Execute(query, model, transaction);
             return status > 0;
         }
@@ -35,7 +35,7 @@ namespace DentalClinic.Services
         {
             ListUserAppointmentView listUserAppointmentView = new ListUserAppointmentView();
             string queryCount = "select count(*) as Total ";
-            string querySelect = "select ua.*, d.Name as NameDoctor";
+            string querySelect = "select ua.*, d.Name as NameDoctor ";
             string query = " from [user_appointment] ua join [doctor] d on ua.DoctorId = d.DoctorId where ua.UserId = @userId ";
             if (!string.IsNullOrEmpty(keyword))
             {

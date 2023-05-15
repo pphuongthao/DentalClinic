@@ -28,6 +28,7 @@ namespace DentalClinic.ApiControllers
                         UserService userService = new UserService(connect);
                         DoctorService doctorService = new DoctorService(connect);
                         UserMakeAppointmentService userMakeAppointmentService = new UserMakeAppointmentService(connect);
+                        ServiceService serviceService = new ServiceService(connect);
 
                         string token = Request.Headers.Authorization.ToString();
                         User user = userService.GetUserByToken(token, transaction);
@@ -53,17 +54,23 @@ namespace DentalClinic.ApiControllers
                         userAppointment.CreateTime = HelperProvider.GetSeconds();
 
                         int totalExpectTime = 0;
-                       for (int i = 0; i<model.ListService.Count; i++)
+                        decimal totalPrice = 0;
+                       for (int i = 0; i<model.ListServiceId.Count; i++)
                         {
+                            string ServiceId = model.ListServiceId[i].ServiceId;
+                            ServiceDental serviceDental = serviceService.GetServiceById(ServiceId, transaction);
+
                             UserAppointmentService userAppointmentService = new UserAppointmentService();
                             userAppointmentService.UserAppointmentServiceId = Guid.NewGuid().ToString();
                             userAppointmentService.UserAppointmentId = userAppointment.UserAppointmentId;
-                            userAppointmentService.ServiceId = model.ListService[i].ServiceId;
-                            userAppointmentService.ExpectTime = model.ListService[i].ExpectTime;
-                            totalExpectTime += model.ListService[i].ExpectTime;
+                            userAppointmentService.ServiceId = serviceDental.ServiceId;
+                            userAppointmentService.ExpectTime = serviceDental.ExpectTime;
+                            totalExpectTime += serviceDental.ExpectTime;
+                            totalPrice += serviceDental.Price;
                             if (!userMakeAppointmentService.CreateUserAppointmentService(userAppointmentService, transaction)) throw new Exception();
                         }
                         userAppointment.TotalExpectTime = totalExpectTime;
+                        userAppointment.TotalAmount = totalPrice;
                         // lấy ra danh sách đơn của bác sĩ ngày đơn đặt mới
                         List<UserAppointment> lsuserAppointmentsByDoctor = userMakeAppointmentService.GetListUserAppointmentByDoctorId(model.DoctorId, model.Day, model.Month, model.Year, transaction);
                         List<TimeDoctor> lstimeDoctors = new List<TimeDoctor>();
@@ -199,6 +206,14 @@ namespace DentalClinic.ApiControllers
                         appointmentStatus.CreateTime = HelperProvider.GetSeconds();
                         if (!appointmentStatusService.CreateAppointmentStatus(appointmentStatus, transaction)) throw new Exception();
 
+                        // Thông báo cho người dùng
+                        Notification notification = new Notification();
+                        notification.UserId = user.UserId;
+                        notification.Title = "Thông báo";
+                        notification.Message = "Bạn đã hủy lịch hẹn: " + userAppointment.AppointmentCode;
+                        notification.IsRead = false;
+                        notification.CreateTime = HelperProvider.GetSeconds();
+                        if (!NotificationProvider.CreateNotification(notification, connect, transaction)) throw new Exception();
 
                         transaction.Commit();
                         return Success();

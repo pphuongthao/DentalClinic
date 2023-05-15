@@ -251,11 +251,14 @@
                             break;
                         case 'RECEIVE':
                             status = '<span class="badge bg-light-info"> Đã tiếp nhận </span>';
-                            button = '<button class="btn btn-success btn-tone m-r-5 btn-sm" data-id="' + x.UserAppointmentId + '" onclick="confirmReceive(this)"> Đã đến </button>';
+                            button = '<button class="btn btn-secondary btn-tone m-r-5 btn-sm" data-id="' + x.UserAppointmentId + '" onclick="confirmReceive(this)"> Đã đến </button>';
                             break;
-                       
+                        case 'CONFIRM_ARRIVE':
+                            status = '<span class="badge bg-light-secondary"> Đã đến </span>';
+                            button = '<button class="btn btn-success btn-tone m-r-5 btn-sm" data-id="' + x.UserAppointmentId + '" onclick="confirmArrive(this)"> Hoàn thành </button>';
+                            break;
                         case 'DONE':
-                            status = '<span class="badge bg-light-success"> Đã đến </span>';
+                            status = '<span class="badge bg-light-success"> Hoàn thành </span>';
 
                             break;
                         case 'USER_CANCEL':
@@ -304,6 +307,27 @@
             let UserAppointmentId = $(el).data('id');
             $(el).addClass('is-loading');
             if (confirm('Bạn có chắc chắn muốn xác nhận khách hàng đã đến ?')) {
+                let rq = await fetch(Enum.ApiUrl + '/api/AdminManageAppointment/ConfirmArrive?userAppointmentId=' + UserAppointmentId, {
+                    method: 'get',
+                    headers: Enum.OptionAdminHeaderDefault,
+                });
+                let rs = await rq.json();
+
+                $(el).removeClass('is-loading');
+
+                if (AdminCheckErrorResponse(rs) === false) return;
+
+                if (GetObjectProperty(rs, 'status') === Enum.ResponseStatus.SUCCESS) {
+                    alert('Cập nhật trạng thái thành công');
+                    window.location.reload();
+                }
+            }
+
+        }
+        const confirmArrive = async function (el) {
+            let UserAppointmentId = $(el).data('id');
+            $(el).addClass('is-loading');
+            if (confirm('Bạn có chắc chắn muốn xác nhận hoàn thành dịch vụ ?')) {
                 let rq = await fetch(Enum.ApiUrl + '/api/AdminManageAppointment/DoneAppointment?userAppointmentId=' + UserAppointmentId, {
                     method: 'get',
                     headers: Enum.OptionAdminHeaderDefault,
