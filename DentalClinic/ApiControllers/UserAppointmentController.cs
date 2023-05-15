@@ -57,7 +57,7 @@ namespace DentalClinic.ApiControllers
                         decimal totalPrice = 0;
                        for (int i = 0; i<model.ListServiceId.Count; i++)
                         {
-                            string ServiceId = model.ListServiceId[i];
+                            string ServiceId = model.ListServiceId[i].ServiceId;
                             ServiceDental serviceDental = serviceService.GetServiceById(ServiceId, transaction);
 
                             UserAppointmentService userAppointmentService = new UserAppointmentService();
@@ -206,6 +206,14 @@ namespace DentalClinic.ApiControllers
                         appointmentStatus.CreateTime = HelperProvider.GetSeconds();
                         if (!appointmentStatusService.CreateAppointmentStatus(appointmentStatus, transaction)) throw new Exception();
 
+                        // Thông báo cho người dùng
+                        Notification notification = new Notification();
+                        notification.UserId = user.UserId;
+                        notification.Title = "Thông báo";
+                        notification.Message = "Bạn đã hủy lịch hẹn: " + userAppointment.AppointmentCode;
+                        notification.IsRead = false;
+                        notification.CreateTime = HelperProvider.GetSeconds();
+                        if (!NotificationProvider.CreateNotification(notification, connect, transaction)) throw new Exception();
 
                         transaction.Commit();
                         return Success();

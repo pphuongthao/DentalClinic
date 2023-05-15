@@ -1856,6 +1856,7 @@
     <Content Include="Content\assets\vendors\sweetalert2\sweetalert2.min.css" />
     <Content Include="Content\assets\vendors\toastify\toastify.css" />
     <Content Include="Content\assets\vendors\toastify\toastify.js" />
+    <Content Include="Content\chart\Chart.min.js" />
     <Content Include="Content\ckeditor\adapters\jquery.js" />
     <Content Include="Content\ckeditor\build-config.js" />
     <Content Include="Content\ckeditor\ckeditor.js" />
@@ -5163,6 +5164,7 @@
     <Content Include="Areas\Admin\Views\ManageUser\UserAppointment.cshtml" />
     <Content Include="Areas\Admin\Views\AdminManageAppointment\AddAppointment.cshtml" />
     <Content Include="Areas\Admin\Views\AdminManageAppointment\ManageAppointment.cshtml" />
+    <Content Include="Areas\Admin\Views\Report\Index.cshtml" />
     <None Include="Scripts\jquery-1.6.4-vsdoc.js" />
     <Content Include="Scripts\jquery-1.6.4.js" />
     <Content Include="Scripts\jquery-1.6.4.min.js" />
@@ -5175,6 +5177,7 @@
     <Compile Include="ApiControllers\ApiBaseController.cs" />
     <Compile Include="ApiControllers\ManageDoctorController.cs" />
     <Compile Include="ApiControllers\ManageServicesController.cs" />
+    <Compile Include="ApiControllers\NotificationController.cs" />
     <Compile Include="ApiControllers\ServiceCategoryController.cs" />
     <Compile Include="ApiControllers\UserAppointmentController.cs" />
     <Compile Include="ApiControllers\UserController.cs" />
@@ -5202,6 +5205,7 @@
     <Compile Include="Areas\Admin\Controllers\ManageNewsController.cs" />
     <Compile Include="Areas\Admin\Controllers\ManageUserAdminController.cs" />
     <Compile Include="Areas\Admin\Controllers\ManageUserController.cs" />
+    <Compile Include="Areas\Admin\Controllers\ReportController.cs" />
     <Compile Include="Areas\Admin\Controllers\ServiceCategoryController.cs" />
     <Compile Include="Areas\Admin\Controllers\ServiceController.cs" />
     <Compile Include="Areas\Admin\Controllers\SlideController.cs" />
@@ -5210,6 +5214,7 @@
     <Compile Include="Controllers\DoctorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\NewsController.cs" />
+    <Compile Include="Controllers\NotificationController.cs" />
     <Compile Include="Controllers\ServiceController.cs" />
     <Compile Include="Filters\APIAdminTokenAttribute.cs" />
     <Compile Include="Filters\APIAuthenticationFilterAttribute.cs" />
@@ -5227,6 +5232,7 @@
     <Compile Include="Models\GoodsReceiptDetail.cs" />
     <Compile Include="Models\Medicine.cs" />
     <Compile Include="Models\News.cs" />
+    <Compile Include="Models\Notification.cs" />
     <Compile Include="Models\ReportDaily.cs" />
     <Compile Include="Models\ReportMonthly.cs" />
     <Compile Include="Models\ReportYearly.cs" />
@@ -5248,6 +5254,7 @@
     <Compile Include="Models\UserToken.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\HelperProvider.cs" />
+    <Compile Include="Providers\NotificationProvider.cs" />
     <Compile Include="Providers\SecurityProvider.cs" />
     <Compile Include="Providers\UserProvider.cs" />
     <Compile Include="Services\AdminDoctorService.cs" />
@@ -5265,6 +5272,7 @@
     <Compile Include="Services\DoctorService.cs" />
     <Compile Include="Services\ManageUserService.cs" />
     <Compile Include="Services\NewsService.cs" />
+    <Compile Include="Services\NotificationService.cs" />
     <Compile Include="Services\ServiceCategoryService.cs" />
     <Compile Include="Services\ServiceService.cs" />
     <Compile Include="Services\SystemAboutService.cs" />
@@ -5448,6 +5456,7 @@
     <Content Include="Views\Service\Detail.cshtml" />
     <Content Include="Views\Home\GetAppointment.cshtml" />
     <Content Include="Views\Home\AppointmentInfoDetail.cshtml" />
+    <Content Include="Views\Notification\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
