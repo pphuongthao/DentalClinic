@@ -46,7 +46,7 @@ namespace DentalClinic.Services
             int totalRow = this._connection.Query<int>(queryCount + queryWhere, new { UserId, AppointmentCode }).FirstOrDefault();
             int skip = (PageIndex - 1) * 20;
             int totalPage = (int)Math.Ceiling((decimal)totalRow / 20);
-            queryWhere += " order by CreateTime offset  " + skip + " rows fetch next 20 rows only ";
+            queryWhere += " order by CreateTime desc offset  " + skip + " rows fetch next 20 rows only ";
 
             listUserAppointmentView.ListUserAppointmentInfor = this._connection.Query<UserAppointmentInfor>(querySelect + queryWhere, new { UserId, AppointmentCode }).ToList();
             listUserAppointmentView.TotalPage = totalPage;
@@ -65,39 +65,40 @@ namespace DentalClinic.Services
             return _connection.Execute(query, user , transaction) > 0;
         }
 
-        public ListUserAppointmentView GetListAllAppointment(int PageIndex, string AppointmentCode = "", long? CreateStart = null, long? CreateEnd = null)
+        public ListUserAppointmentView GetListAllAppointment(int PageIndex, string AppointmentCode = "", string CreateStart = "", string CreateEnd = "", string status = "", IDbTransaction transaction = null)
         {
             ListUserAppointmentView listUserAppointmentView = new ListUserAppointmentView();
             string queryCount = "select count(*) as Total ";
             string querySelect = "select ua.*, d.Name As NameDoctor ";
-            string queryWhere = "from [user_appointment] ua join [doctor] d on ua.DoctorId = d.DoctorId";
+            string queryWhere = "from [user_appointment] ua join [doctor] d on ua.DoctorId = d.DoctorId where 1=1 ";
 
             if (!string.IsNullOrEmpty(AppointmentCode))
             {
                 queryWhere += $"and AppointmentCode like '%{AppointmentCode}%' ";
             }
-
-            if (CreateStart.HasValue)
+            if (!string.IsNullOrEmpty(status))
             {
-                queryWhere += $"and CreateTime >= {CreateStart} ";
+                queryWhere += " and Status = @status ";
             }
-            if (CreateEnd.HasValue)
+            if ( !string.IsNullOrEmpty(CreateStart))
             {
-                queryWhere += $"and CreateTime <= {CreateEnd} ";
+                queryWhere += $"and cast( (cast([Year] as varchar)+ '/' +cast([Month] as varchar) + '/' + cast([Day] as varchar)) as date) >= '{CreateStart}' ";
+            }
+            if (!string.IsNullOrEmpty(CreateEnd))
+            {
+                queryWhere += $"and cast( (cast([Year] as varchar)+ '/' +cast([Month] as varchar) + '/' + cast([Day] as varchar)) as date) <= '{CreateEnd}' ";
             }
 
-            int totalRow = this._connection.Query<int>(queryCount + queryWhere, new {AppointmentCode }).FirstOrDefault();
+            int totalRow = this._connection.Query<int>(queryCount + queryWhere, new {AppointmentCode, status }, transaction).FirstOrDefault();
             int skip = (PageIndex - 1) * 20;
             int totalPage = (int)Math.Ceiling((decimal)totalRow / 20);
-            queryWhere += " order by CreateTime offset  " + skip + " rows fetch next 20 rows only ";
+            queryWhere += " order by ua.CreateTime desc offset  " + skip + " rows fetch next 20 rows only ";
 
-            listUserAppointmentView.ListUserAppointmentInfor = this._connection.Query<UserAppointmentInfor>(querySelect + queryWhere, new { AppointmentCode }).ToList();
+            listUserAppointmentView.ListUserAppointmentInfor = this._connection.Query<UserAppointmentInfor>(querySelect + queryWhere, new { AppointmentCode, status }, transaction).ToList();
             listUserAppointmentView.TotalPage = totalPage;
             return listUserAppointmentView;
 
-
         }
-
-        
+       
     }
 }

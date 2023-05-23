@@ -70,7 +70,7 @@ body {
     font-size: 16px;
     line-height: 28px;
     color: #647589;
-    font-weight: 400;
+    font-weight: 700;
     -ms-word-wrap: break-word;
     word-wrap: break-word;
     background: #ffffff;
@@ -80,7 +80,8 @@ body {
 }
 
 body, .wrd-primary-font {
-    font-family: 'Rubik', sans-serif;
+    font-family: GoogleSans-Regular,sans-serif;
+    /*font-family: 'Rubik',sans-serif;*/
 }
 
 h1,
@@ -107,7 +108,8 @@ h6, .wrd-secondary-font, .widget.widget_rss ul li a, blockquote cite,
 .woocommerce ul.cart_list li a:not(.remove), .woocommerce ul.product_list_widget li a:not(.remove),
 .woocommerce .widget_shopping_cart .total strong, .woocommerce.widget_shopping_cart .total strong,
 .comment-reply-title, .woocommerce-review__author {
-    font-family: 'Poppins', sans-serif;
+    /*font-family: 'Poppins', sans-serif;*/
+    font-family: GoogleSans-Regular,sans-serif;
 }
 
 a, h1, h2, h3, h4, h5, h6, strong, dt, th, .comment-meta .fn, .comment-reply-link, .no-comments {
@@ -428,7 +430,7 @@ ul.slick-dots {
     padding: 40px 15px;
     display: block;
     color: #223645;
-    font-weight: 500;
+    font-weight: 700;
     position: relative;
     z-index: 1;
     line-height: 1;

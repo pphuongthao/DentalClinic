@@ -1,6 +1,7 @@
 ﻿
 @{
     ViewBag.Title = "UpdateDoctor";
+    ViewBag.Menu = "manage-doctor";
 }
 
 @section styles{
@@ -82,7 +83,8 @@
         var contentEditor = CKEDITOR.replace('Content', {
             width: '100%',
             resize_minHeight: 150,
-            height: '55vh'
+            height: '55vh',
+            ...(window.configCkFinder || {})
         });
 
         var ChooseThumbnail = function (el) { $(el).siblings('input[type=file]').click(); }

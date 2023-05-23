@@ -1,7 +1,7 @@
 ﻿
-
 @{
     ViewBag.Title = "ManageAppointment";
+    ViewBag.Menu = "manage-appointment";
 }
 
 
@@ -77,6 +77,7 @@
         td button {
             margin-right: 10px;
         }
+
         .nav-tab {
             display: flex;
             display: flex;
@@ -111,21 +112,22 @@
                             <label class="font-weight-semibold" for="keyword">Từ khoá</label>
                             <input type="text" class="form-control" id="keyword" placeholder="Nhập từ khoá tìm kiếm" required>
                         </div>
-                        <div class="date-create">
+                        @*<div class="date-create">
                             <label class="font-weight-semibold">Ngày hẹn</label>
                             <div class="date-pick">
                                 <input class="form-control" id="start-date" />
                                 <input class="form-control" id="end-date" />
                             </div>
 
-                        </div>
+                        </div>*@
                         <div class="search-status" style="width:170px; margin-right: 20px;">
                             <label class="font-weight-semibold"></label>
                             <select id="status" class="form-control " onchange="getListAllAppointment()">
                                 <option value="">Trạng thái lịch hẹn</option>
-                                <option value="PENDING">Chờ xác nhận</option>
-                                <option value="RECEIVE">Tiếp nhận</option>
-                                <option value="DONE">Đã đến</option>
+                                <option value="PENDING">Mới hẹn </option>
+                                <option value="RECEIVE"> Đã tiếp nhận</option>
+                                <option value="CONFIRM_ARRIVE">Đã đến</option>
+                                <option value="DONE">Hoàn thành</option>
                                 <option value="USER_CANCEL">Người dùng huỷ</option>
                                 <option value="SYSTEM_CANCEL">Hệ thống huỷ</option>
 
@@ -141,10 +143,40 @@
                             <a onclick="TabSelect(this);" data-tab="tab-week">Week</a>
                             <a onclick="TabSelect(this);" data-tab="tab-month">Month</a>
                         </div>
-                        <div style=" padding-top: 15px;"><a href="#">Hôm nay</a></div>
-                        <div style=" padding-top: 15px; padding-left: 50px;"><input type="date"  value="" /></div>
+                        <div class="filter-tab filter-tab-day" style=" padding-top: 10px; padding-left: 50px; display:flex; margin-bottom: 5px;">
+                            <input type="date" value="" onchange="DayChange(this);" style="margin-bottom: 10px;"/>
+                        </div>
+                        <div class="filter-tab filter-tab-week" style=" padding-top: 15px; padding-left: 50px;display:none;">
+                            <input type="date" value="" onchange="WeekDayChange(this);" style="margin-bottom: 10px;"/>
+                            <div class="week-diff" style="margin-left: 15px;">
+                                <span class="first-date-week"></span>
+                                <span class="">-></span>
+                                <span class="last-date-week"></span>
+                            </div>
+                        </div>
+                        <div class="filter-tab filter-tab-month" style=" padding-top: 15px; padding-left: 50px; display: none;">
+                            <select class="month" onchange="YearMonthChange(this);" style=" margin-bottom: 10px;">
+                                <option value="1">01</option>
+                                <option value="2">02</option>
+                                <option value="3">03</option>
+                                <option value="4">04</option>
+                                <option value="5">05</option>
+                                <option value="6">06</option>
+                                <option value="7">07</option>
+                                <option value="8">08</option>
+                                <option value="9">09</option>
+                                <option value="10">10</option>
+                                <option value="11">11</option>
+                                <option value="12">12</option>
+                            </select>
+                            <select class="year" onchange="YearMonthChange(this);" style=" margin-bottom: 10px;">
+                                <option value="2021">2021</option>
+                                <option value="2022">2022</option>
+                                <option value="2023">2023</option>
+                            </select>
+                        </div>
                     </div>
-                    
+
                     <div class="list-order">
                         <div class="table-responsive">
                             <table class="table table-hover table-custom">
@@ -152,11 +184,11 @@
                                     <tr>
                                         <th scope="col" style="width:10%">Mã lịch hẹn</th>
                                         <th scope="col" style="width:15%">Khách hàng</th>
-                                        <th scope="col" style="width:20%">Dịch vụ</th>
-                                        <th scope="col" style="width:10%">Bác sĩ</th>
+                                        @*<th scope="col" style="width:20%">Dịch vụ</th>*@
+                                        <th scope="col" style="width:15%">Bác sĩ</th>
                                         <th scope="col" style="width:10%">Thời gian hẹn</th>
                                         <th scope="col" style="width:8%">Trạng thái</th>
-                                        <th scope="col" style="width:15%">Thao tác</th>
+                                        <th scope="col" style="width:20%">Thao tác</th>
 
                                     </tr>
                                 </thead>
@@ -187,24 +219,93 @@
         });
         const TabSelect = function (el) {
             const tabId = $(el).data('tab');
-            $('.tab').css('display', 'none');
-            $('#' + tabId).css('display', 'flex');
+            $('.filter-tab').css('display', 'none');
+            $('.filter-' + tabId).css('display', 'flex');
             $(el).siblings().removeClass('active');
             $(el).addClass('active');
+
+            if (tabId === 'tab-day') {
+                let now = new Date();
+                now = DateStringFormat({ stringDate: now, newFormat: 'yyyy-mm-dd' });
+                $('.filter-tab-day input').val(now).change();
+
+
+            }
+            if (tabId === 'tab-week') {
+                let now = new Date();
+                now = DateStringFormat({ stringDate: now, newFormat: 'yyyy-mm-dd' });
+                $('.filter-tab-week input').val(now).change();
+
+
+            }
+            if (tabId === 'tab-month') {
+                let now = new Date();
+                let thisMonth = now.getMonth() + 1;
+                let thisYear = now.getFullYear();
+                $('.filter-tab-month').find('.month').val(thisMonth).change();
+                $('.filter-tab-month').find('.year').val(thisYear).change();
+            }
+
         }
+        //Day
+        const DayChange = async function (el) {
+            let selectedDate = $(el).val();
+            selectedDate = new Date(selectedDate);
+
+            const startDay = new Date(selectedDate.setDate(selectedDate.getDate()));
+            const endDay = new Date(selectedDate.setDate(selectedDate.getDate()));
+
+            const stringStartDay = DateStringFormat({ stringDate: startDay, newFormat: 'yyyy/mm/dd' })
+            const stringEndDay = DateStringFormat({ stringDate: endDay, newFormat: 'yyyy/mm/dd' })
+
+            await getListAllAppointment(1, stringStartDay, stringEndDay);
+        }
+
+        //Week
+        const WeekDayChange = async function (el) {
+            let selectedDate = $(el).val();
+            selectedDate = new Date(selectedDate);
+
+            const firstDateOfWeek = new Date(selectedDate.setDate(selectedDate.getDate() - selectedDate.getDay() + 1));
+            const lastDateOfWeek = new Date(selectedDate.setDate(selectedDate.getDate() - selectedDate.getDay() + 7));
+
+            const stringFirstDateOfWeek = DateStringFormat({ stringDate: firstDateOfWeek, newFormat: 'yyyy/mm/dd' })
+            const stringLastDateOfWeek = DateStringFormat({ stringDate: lastDateOfWeek, newFormat: 'yyyy/mm/dd' })
+
+            $('.filter-tab-week .week-diff .first-date-week').text(DateStringFormat({ stringDate: firstDateOfWeek, newFormat: 'dd/mm/yyyy' }))
+            $('.filter-tab-week .week-diff .last-date-week').text(DateStringFormat({ stringDate: lastDateOfWeek, newFormat: 'dd/mm/yyyy' }))
+
+            await getListAllAppointment(1, stringFirstDateOfWeek, stringLastDateOfWeek);
+
+        }
+
+        //Month
+        const YearMonthChange = async function (el) {
+            let thisMonth = $(el).closest('.filter-tab-month').find('.month').val();
+            let thisYear = $(el).closest('.filter-tab-month').find('.year').val();
+
+            var firstDay = new Date(thisYear, thisMonth - 1, 1);
+            var lastDay = new Date(thisYear, thisMonth, 0);
+
+            let startDay = thisYear + '/' + thisMonth + '/' + firstDay.getDate();
+            let endDay = thisYear + '/' + thisMonth + '/' + lastDay.getDate();
+
+            await getListAllAppointment(1, startDay, endDay);
+
+        }
+
+
         const SearchAppointment = function () {
             getListAllAppointment();
         }
 
-
         let _currentPage = 1;
-        const getListAllAppointment = async function (page = 1) {
+        const getListAllAppointment = async function (page = 1, fromTime = '', toTime = '') {
             _currentPage = page;
-            let fromTime = ConvertTime($('#start-date').val());
-            let toTime = ConvertTime($('#end-date').val(), 23, 59, 59, 999);
             let keyword = $('#keyword').val();
+            let status = $('#status').val();
 
-            let rq = await fetch(Enum.ApiUrl + '/api/AdminManageAppointment/GetListAllAppointment?AppointmentCode=' + keyword + '&CreateStart=' + fromTime + '&CreateEnd=' + toTime + '&PageIndex=' + page, {
+            let rq = await fetch(Enum.ApiUrl + '/api/AdminManageAppointment/GetListAllAppointment?AppointmentCode=' + keyword + '&CreateStart=' + fromTime + '&CreateEnd=' + toTime + '&PageIndex=' + page + '&status=' + status , {
                 method: 'get',
                 headers: Enum.OptionAdminHeaderDefault,
             });
@@ -225,15 +326,15 @@
                     html += '<td>' + x.AppointmentCode + '</td>';
                     html += '<td>' + x.Name + '</td>';
 
-                    html += '<td>';
-                    for (let indexChild = 0; indexChild < x.lsServiceDental.length; indexChild++) {
-                        let y = x.lsServiceDental[indexChild];
-                        html += y.Name;
-                        if (x.lsServiceDental.length > 1 && indexChild < x.lsServiceDental.length - 1) {
-                            html += ' , ';
-                        }
-                    }
-                    html += '</td>';
+                    //html += '<td>';
+                    //for (let indexChild = 0; indexChild < x.lsServiceDental.length; indexChild++) {
+                    //    let y = x.lsServiceDental[indexChild];
+                    //    html += y.Name;
+                    //    if (x.lsServiceDental.length > 1 && indexChild < x.lsServiceDental.length - 1) {
+                    //        html += ' , ';
+                    //    }
+                    //}
+                    //html += '</td>';
 
                     html += '<td>' + x.NameDoctor + '</td>';
                     html += '<td>';
@@ -248,26 +349,30 @@
                             status = '<span class="badge bg-light-warning"> Mới hẹn </span>';
                             button = '<button class="btn btn-primary btn-tone m-r-5 btn-sm" onclick="confirmPending(this)" data-id="' + x.UserAppointmentId + '"> Tiếp nhận </button>';
                             button += '<button class="btn btn-danger btn-tone m-r-5 btn-sm" onclick="adminCancel(this)" data-id="' + x.UserAppointmentId + '"> Huỷ </button>';
+                            button += '<button class="btn btn-info btn-tone m-r-5 btn-sm" onclick="DetailAppointment(this)" data-id="' + x.UserAppointmentId + '"> Xem chi tiết </button>';
                             break;
                         case 'RECEIVE':
                             status = '<span class="badge bg-light-info"> Đã tiếp nhận </span>';
                             button = '<button class="btn btn-secondary btn-tone m-r-5 btn-sm" data-id="' + x.UserAppointmentId + '" onclick="confirmReceive(this)"> Đã đến </button>';
+                            button += '<button class="btn btn-danger btn-tone m-r-5 btn-sm" onclick="adminCancel(this)" data-id="' + x.UserAppointmentId + '"> Huỷ </button>';
+                            button += '<button class="btn btn-info btn-tone m-r-5 btn-sm" onclick="DetailAppointment(this)" data-id="' + x.UserAppointmentId + '"> Xem chi tiết </button>';
                             break;
                         case 'CONFIRM_ARRIVE':
                             status = '<span class="badge bg-light-secondary"> Đã đến </span>';
                             button = '<button class="btn btn-success btn-tone m-r-5 btn-sm" data-id="' + x.UserAppointmentId + '" onclick="confirmArrive(this)"> Hoàn thành </button>';
+                            button += '<button class="btn btn-info btn-tone m-r-5 btn-sm" onclick="DetailAppointment(this)" data-id="' + x.UserAppointmentId + '"> Xem chi tiết </button>';
                             break;
                         case 'DONE':
                             status = '<span class="badge bg-light-success"> Hoàn thành </span>';
-
+                            button += '<button class="btn btn-info btn-tone m-r-5 btn-sm" onclick="DetailAppointment(this)" data-id="' + x.UserAppointmentId + '"> Xem chi tiết </button>';
                             break;
                         case 'USER_CANCEL':
                             status = '<span class="badge bg-light-danger"> Người dùng huỷ </span>';
-
+                            button += '<button class="btn btn-info btn-tone m-r-5 btn-sm" onclick="DetailAppointment(this)" data-id="' + x.UserAppointmentId + '"> Xem chi tiết </button>';
                             break;
                         case 'SYSTEM_CANCEL':
                             status = '<span class="badge bg-light-danger"> Hệ thống huỷ </span>';
-
+                            button += '<button class="btn btn-info btn-tone m-r-5 btn-sm" onclick="DetailAppointment(this)" data-id="' + x.UserAppointmentId + '"> Xem chi tiết </button>';
                             break;
                         default: break;
                     }
@@ -278,6 +383,11 @@
                     $('#list-appointment-user').append(html);
                 }
             }
+        }
+
+        const DetailAppointment = async function (el) {
+            let id = $(el).data('id');
+            window.location.href = ('/admin/AdminManageAppointment/Detail?userAppointmentId=' + id);
         }
         const CreateAppointment = async function () {
             window.location.href = '/admin/adminmanageappointment/addappointment'

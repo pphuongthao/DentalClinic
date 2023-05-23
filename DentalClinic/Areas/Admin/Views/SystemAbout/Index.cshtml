@@ -40,7 +40,8 @@
     <script src="/Content/ckeditor/ckeditor.js"></script>
     <script>
        var editor= CKEDITOR.replace('system-about', {
-            height: 600,
+           height: 600,
+           ...(window.configCkFinder || {})
         });
 
         const getSystemAbout = async function () {

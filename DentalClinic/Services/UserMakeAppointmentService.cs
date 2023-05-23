@@ -75,5 +75,10 @@ namespace DentalClinic.Services
             int _status = this._connection.Execute(query, new { userAppointmentId, status }, transaction);
             return _status > 0;
         }
+        public List<UserAppointmentServiceUpdate> GetListAppointmentDetailByAppointmentId(string userAppointmentId, IDbTransaction transaction = null)
+        {
+            string query = "Select * from user_appointment where UserAppointmentId =@userAppointmentId";
+            return this._connection.Query<UserAppointmentServiceUpdate>(query, new { userAppointmentId }, transaction).ToList();
+        }
     }
 }

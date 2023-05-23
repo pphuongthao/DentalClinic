@@ -21,5 +21,10 @@ namespace DentalClinic.Areas.Admin.Controllers
         {
             return View();
         }
+        public ActionResult Detail(string userAppointmentId)
+        {
+            ViewBag.UserAppointmentId = userAppointmentId;
+            return View();
+        }
     }
 }

@@ -180,7 +180,7 @@ namespace DentalClinic.Areas.Admin.ApiControllers
 
         [HttpGet]
         [ApiAdminTokenRequire]
-        public JsonResult GetListAllAppointment(int PageIndex, string AppointmentCode = "", long? CreateStart = null, long? CreateEnd = null)
+        public JsonResult GetListAllAppointment(int PageIndex, string AppointmentCode = "", string CreateStart = "", string CreateEnd = "", string Status ="")
         {
             try
             {
@@ -188,7 +188,7 @@ namespace DentalClinic.Areas.Admin.ApiControllers
                 if (userAdmin == null) return Unauthorized();
 
                 AdminManageAppointmentService adminManageAppointmentService = new AdminManageAppointmentService();
-                ListUserAppointmentView listUserAppointmentView = adminManageAppointmentService.GetListAllAppointment(PageIndex, AppointmentCode, CreateStart, CreateEnd);
+                ListUserAppointmentView listUserAppointmentView = adminManageAppointmentService.GetListAllAppointment(PageIndex, AppointmentCode, CreateStart, CreateEnd, Status);
                 for (int i = 0; i < listUserAppointmentView.ListUserAppointmentInfor.Count; i++)
                 {
                     var item = listUserAppointmentView.ListUserAppointmentInfor[i];
@@ -209,6 +209,7 @@ namespace DentalClinic.Areas.Admin.ApiControllers
                 return Error(ex.Message);
             }
         }
+
 
         [HttpGet]
         [ApiAdminTokenRequire]
@@ -241,6 +242,10 @@ namespace DentalClinic.Areas.Admin.ApiControllers
                         appointmentStatus.Status = UserAppointment.EnumStatus.RECEIVE;
                         appointmentStatus.CreateTime = HelperProvider.GetSeconds();
                         if (!appointmentStatusService.CreateAppointmentStatus(appointmentStatus, transaction)) throw new Exception();
+
+                        //Email
+                        if (!string.IsNullOrEmpty(userAppointment.Email))
+                            SMSProvider.SendOTPViaEmail(userAppointment.Email, "", "THÔNG BÁO XÁC NHẬN"," Phòng khám nha khoa Phương Thảo đã tiếp nhận lịch hẹn [" + userAppointment.AppointmentCode + "] của bạn. Hãy chú ý để đến phòng khám đúng hẹn. Xin trân trọng cảm ơn!");
 
                         // Thông báo cho người dùng
                         Notification notification = new Notification();
@@ -474,6 +479,26 @@ namespace DentalClinic.Areas.Admin.ApiControllers
             catch (Exception ex)
             {
                 return Error(ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [ApiAdminTokenRequire]
+        public JsonResult GetAppointmentDetail(string userAppointmentId)
+        {
+            try
+            {
+                UserAdmin userAdmin = SecurityProvider.GetUserAdminByToken(Request);
+                if (userAdmin == null) return Unauthorized();
+                UserMakeAppointmentService userMakeAppointmentService = new UserMakeAppointmentService();
+                UserAppointment userAppointment = userMakeAppointmentService.GetUserAppointmentById(userAppointmentId);
+                if (userAppointment == null) return Error("Lịch hẹn này không tồn tại!");
+                List<UserAppointmentServiceUpdate> listUserAppointmentDetail = userMakeAppointmentService.GetListUserAppointmentServiceUpdateByUserAppointmentId(userAppointmentId);
+                return Success(new { userAppointment, listUserAppointmentDetail });
+            }
+            catch (Exception ex)
+            {
+                return Error();
             }
         }
     }

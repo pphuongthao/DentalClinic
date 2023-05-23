@@ -27,7 +27,7 @@ namespace DentalClinic.Services.Admin
             if (!string.IsNullOrEmpty(keyword))
             {
                 keyword = "%" + keyword.Replace(' ', '%') + "%";
-                query += " where Title like @keyword";
+                query += " where SearchTitle like @keyword";
             }
 
             int totalRow = _connection.Query<int>(queryCount + query, new { keyword = keyword }, transaction).FirstOrDefault();
