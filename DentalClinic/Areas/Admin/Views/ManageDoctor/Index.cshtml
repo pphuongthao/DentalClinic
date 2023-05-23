@@ -1,6 +1,7 @@
 ﻿
 @{
     ViewBag.Title = "Danh sách bác sĩ";
+    ViewBag.Menu = "manage-doctor";
 }
 
 @section styles{
@@ -84,8 +85,8 @@
                 <tr>
                     <th style="width: 20%;" id="Avatar">Avatar</th>
                     <th style="width: 15%;" id="Name">Tên bác sĩ</th>
-                    <th style="width: 20%;" id="Qualification">Trình độ chuyên môn</th>
-                    <th style="width: 35%;" id="Description">Mô tả</th>
+                    <th style="width: 30%;" id="Qualification">Trình độ chuyên môn</th>
+                    @*<th style="width: 35%;" id="Description">Mô tả</th>*@
                     <th style="width: 10%; text-align: right;"><button class="btn btn-primary" onclick="AddDoctor();">Thêm</button></th>
                 </tr>
             </thead>
@@ -128,7 +129,6 @@
                                         <td><div class="preview" style="background-image:url(${rs.data.ListDoctor[i].Avatar})"></div></td>
                                         <td>${rs.data.ListDoctor[i].Name}</td>
                                         <td>${rs.data.ListDoctor[i].Qualification}</td>
-                                        <td>${rs.data.ListDoctor[i].Description}</td>
                                         
                                         <td>
                                             <div class="button-icon">

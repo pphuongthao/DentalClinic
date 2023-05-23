@@ -127,20 +127,7 @@
                                 <span>Tài khoản quản trị</span>
                             </a>
                         </li>
-                        <li class="sidebar-item  has-sub">
-                            <a href="#" class='sidebar-link'>
-                                <i class="fa-solid fa-users"></i>
-                                <span>Thành viên</span>
-                            </a>
-                            <ul class="submenu ">
-                                <li class="submenu-item ">
-                                    <a href="/admin/manageuser">Danh sách thành viên</a>
-                                </li>
-                                <li class="submenu-item ">
-                                    <a href="/admin/user/UserWithdrawalRequest">Lệnh rút</a>
-                                </li>
-                            </ul>
-                        </li>
+                       
                         <li class="sidebar-item  has-sub  @(ViewBag.Menu == "category" ? "active" : "")">
                             <a href="#" class='sidebar-link'>
                                 <i class="fa-solid fa-rectangle-list"></i>
@@ -153,22 +140,19 @@
 
                             </ul>
                         </li>
-                        <li class="sidebar-item  has-sub">
+                        <li class="sidebar-item  has-sub @(ViewBag.Menu == "manage-content" ? "active" : "")" >
                             <a href="#" class='sidebar-link'>
                                 <i class="fa-brands fa-stack-overflow"></i>
                                 <span>Quản lý nội dung</span>
                             </a>
-                            <ul class="submenu ">
-                                <li class="submenu-item ">
+                            <ul class="submenu @(ViewBag.Menu == "manage-content" ? "active" : "")">
+                                <li class="submenu-item @(ViewBag.SubMenu == "manage-news" ? "active" : "")">
                                     <a href="/admin/ManageNews">Tin tức</a>
                                 </li>
-                                <li class="submenu-item ">
+                                @*<li class="submenu-item @(ViewBag.SubMenu == "manage-slide" ? "active" : "")">
                                     <a href="/admin/Slide">Slide</a>
-                                </li>
-                                <li class="submenu-item ">
-                                    <a href="/admin/managebranch">Thông tin liên hệ</a>
-                                </li>
-                                <li class="submenu-item ">
+                                </li>*@
+                                <li class="submenu-item @(ViewBag.SubMenu == "system-about" ? "active" : "")">
                                     <a href="/admin/SystemAbout">Trang giới thiệu</a>
                                 </li>
                                 <li class="submenu-item @(ViewBag.SubMenu == "customer-feedback" ? "active" : "")">
@@ -178,49 +162,41 @@
                             </ul>
                         </li>
 
-                        <li class="sidebar-item ">
+                        <li class="sidebar-item @(ViewBag.Menu == "manage-doctor" ? "active" : "")">
                             <a href="/admin/managedoctor" class='sidebar-link'>
                                 <i class="fa-solid fa-user-doctor"></i>
                                 <span>Quản lý bác sĩ</span>
                             </a>
                         </li>
-                        <li class="sidebar-item ">
+                        <li class="sidebar-item @(ViewBag.Menu == "manage-user" ? "active" : "")">
                             <a href="/admin/manageuser" class='sidebar-link'>
                                 <i class="fa-solid fa-hospital-user"></i>
                                 <span>Quản lý người dùng</span>
                             </a>
                         </li>
-                        <li class="sidebar-item ">
+                        <li class="sidebar-item @(ViewBag.Menu == "manage-appointment" ? "active" : "")">
                             <a href="/admin/adminmanageappointment/ManageAppointment" class='sidebar-link'>
                                 <i class="fa-solid fa-calendar"></i>
                                 <span>Quản lý lịch hẹn</span>
                             </a>
                         </li>
-                        <li class="sidebar-item ">
+                        <li class="sidebar-item @(ViewBag.Menu == "manage-service" ? "active" : "")">
                             <a href="/admin/service" class='sidebar-link'>
                                 <i class="fa-brands fa-servicestack"></i>
                                 <span>Quản lý dịch vụ</span>
                             </a>
                         </li>
 
-                        <li class="sidebar-item @(ViewBag.Menu == "request-help" ? "active" : "")">
-                            <a href="/admin/userhelprequest" class='sidebar-link'>
-                                <i class="fa-brands fa-hire-a-helper"></i>
-                                <span>Yêu cầu hỗ trợ</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-item  has-sub">
+                        <li class="sidebar-item  has-sub @(ViewBag.Menu == "report" ? "active" : "")">
                             <a href="#" class='sidebar-link'>
                                 <i class="fa-solid fa-chart-pie"></i>
                                 <span>Báo cáo thống kê</span>
                             </a>
-                            <ul class="submenu ">
-                                <li class="submenu-item ">
+                            <ul class="submenu @(ViewBag.Menu == "report" ? "active" : "")">
+                                <li class="submenu-item @(ViewBag.SubMenu == "report-revenue" ? "active" : "")">
                                     <a href="/admin/report">Thống kê doanh thu</a>
                                 </li>
-                                <li class="submenu-item ">
-                                    <a href="#">Thống kê người dùng</a>
-                                </li>
+                               
 
                             </ul>
                         </li>
@@ -430,7 +406,21 @@
         }
 
         InitLayoutPage();
+        const GetUserAdminInfo = async function () {
 
+            let rq = await fetch('/api/AdminSystem/GetUserAdminInfo', {
+                method: 'get',
+                headers: Enum.OptionAdminHeaderDefault
+            })
+            let rs = await rq.json();
+            if (AdminCheckErrorResponse(rs) === false) return;
+            if (GetObjectProperty(rs, 'status') === Enum.ResponseStatus.SUCCESS) {
+                $('#AdminName').text(rs.data.Name);
+                if (rs.data.Role == 'ADMIN') $('#AdminRole').text('Quản trị viên');
+                else $('#AdminRole').text('Nhân viên')
+            }
+        }
+        GetUserAdminInfo();
     </script>
     @RenderSection("scripts", false)
 </body>

@@ -2,7 +2,7 @@
 
 @{
     ViewBag.Title = "Cập nhật dịch vụ";
-    ViewBag.Menu = "service";
+    ViewBag.Menu = "manage-service";
 }
 
 @section styles{
@@ -224,6 +224,7 @@
 
         var editorDescription = CKEDITOR.replace('Description', {
             height: 600,
+            ...(window.configCkFinder || {})
         });
 
         var ChooseThumbnail = function (el) { $(el).siblings('input[type=file]').click(); }
