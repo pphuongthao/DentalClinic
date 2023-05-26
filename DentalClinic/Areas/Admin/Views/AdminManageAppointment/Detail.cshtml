@@ -156,16 +156,16 @@
 @*<div style="display: flex; justify-content: flex-end;"><button class="btn btn-primary" onclick="ExportOrder();">In hóa đơn</button></div>*@
 @section Scripts{
     <script>
-        const userAppointmentInfo = {
+        const userAppointment = {
             Name: '',
             Phone: '',
             Email: '',
-            Appointment: '',
-            Hour: 0,
-            Day: 0,
-            TotalPrice: 0
+            Address: '',
+            AppointmentCode: '',
+            Date: '',
+            TotalAmount: 0
         };
-        const listServiceDental = [];
+        const listServiceBooked = [];
 
         const GetListAppointmentDetailUser = async function () {
             let userAppointmentId ='@ViewBag.UserAppointmentId';
@@ -189,14 +189,23 @@
                     html += '</div></td></tr>';
 
                     $('#order-detail').append(html);
+                    listServiceBooked.push(rs.data.listUserAppointmentDetail[index]);
                 }
                 $('#ReceiverName').html(rs.data.userAppointment.Name);
                 $('#PhoneNum').html(rs.data.userAppointment.Phone);
                 $('#ReceiverEmail').html(rs.data.userAppointment.Email);
                 $('#ReceiverAddr').html(rs.data.userAppointment.Address);
                 $('#AppointmentCode').html(rs.data.userAppointment.AppointmentCode);
-                $('#Date').html(rs.data.userAppointment.Hour + ':' + (rs.data.userAppointment.Minute === 0 ? '00' : rs.data.userAppointment.Minute) + ' ' + rs.data.userAppointment.Day + '/' + rs.data.userAppointment.Month + '/' + rs.data.userAppointment.Year);
+                $('#Date').html(rs.data.userAppointment.Hour + ':' + (rs.data.userAppointment.Minute > 10 ? rs.data.userAppointment.Minute : '0' + rs.data.userAppointment.Minute) + ' ' + (rs.data.userAppointment.Day > 10 ? rs.data.userAppointment.Day : '0' + rs.data.userAppointment.Day) + '/' + (rs.data.userAppointment.Month > 10 ? rs.data.userAppointment.Month : '0' + rs.data.userAppointment.Month) + '/' + rs.data.userAppointment.Year);
                 $('#SumTotalPrice').html(NumberFormat(rs.data.userAppointment.TotalAmount) + ' <sup>VNĐ<sup>');
+
+                userAppointment.Date = rs.data.userAppointment.Hour + ':' + (rs.data.userAppointment.Minute > 10 ? rs.data.userAppointment.Minute : '0' + rs.data.userAppointment.Minute) + ' ' + (rs.data.userAppointment.Day > 10 ? rs.data.userAppointment.Day : '0' + rs.data.userAppointment.Day) + '/' + (rs.data.userAppointment.Month > 10 ? rs.data.userAppointment.Month : '0' + rs.data.userAppointment.Month) + '/' + rs.data.userAppointment.Year;
+                userAppointment.Name = rs.data.userAppointment.Name;
+                userAppointment.Phone = rs.data.userAppointment.Phone;
+                userAppointment.Email = rs.data.userAppointment.Email;
+                userAppointment.Address = rs.data.userAppointment.Address;
+                userAppointment.TotalAmount = rs.data.userAppointment.TotalAmount;
+                userAppointment.AppointmentCode = rs.data.userAppointment.AppointmentCode;
             }
         }
 
@@ -211,8 +220,8 @@
         var ExportOrder = async function () {
 
             let model = {
-                UserAppointmentInfo: userAppointmentInfo,
-                ListServiceDental: listServiceDental
+                UserAppointmentExportPdf: userAppointment,
+                ListServiceBooked: listServiceBooked
                
             };
 
@@ -223,7 +232,7 @@
                     body: JSON.stringify(model)
                 });
                 let rs = await rq.blob();
-                var fileName = "Thông tin hóa đơn mã " + model.UserAppointmentInfo.AppointmentCode + ".xlsx";
+                var fileName = "Thông tin hóa đơn mã " + model.UserAppointmentExportPdf.AppointmentCode + ".xlsx";
                 if (window.navigator.msSaveOrOpenBlob) {
                     window.navigator.msSaveOrOpenBlob(rs, fileName);
                 } else {
@@ -244,8 +253,8 @@
 
         const ExportPdfOrder = async function () {
             let model = {
-                UserAppointmentInfo: userAppointmentInfo,
-                ListServiceDental: listServiceDental
+                UserAppointmentExportPdf: userAppointment,
+                ListServiceBooked: listServiceBooked
             };
 
             if (confirm("Xác nhận xuất hóa đơn !")) {
@@ -256,7 +265,7 @@
                 });
                 let rs = await rq.blob();
                 console.log(rs);
-                var fileName = "Thông tin hóa đơn mã " + model.UserAppointmentInfo.AppointmentCode + ".pdf";
+                var fileName = "Thông tin hóa đơn mã " + model.UserAppointmentExportPdf.AppointmentCode + ".pdf";
                 console.log(fileName);
                 if (window.navigator.msSaveOrOpenBlob) {
                     window.navigator.msSaveOrOpenBlob(rs, fileName);

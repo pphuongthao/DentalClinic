@@ -84,9 +84,25 @@ namespace DentalClinic.Models
         public int Year { get; set; }
         public List<ServiceDental> ListServiceId { get; set; }
     }
+    public class ServiceBooked
+    {
+        public string NameService { get; set; }
+        public decimal PriceService { get; set; }
+    }
+    public class UserAppointmentExportPdf
+    {
+        public string AppointmentCode { get; set; }
+        public string Name { get; set; }
+        public string Phone { get; set; }
+        public string Email { get; set; }
+        public string Address { get; set; }
+        public string Date { get; set; }
+        public decimal TotalAmount { get; set; }
+    }
     public class ExportUserAppointment
     {
-        public UserAppointmentInfor UserAppointmentInfo { get; set; }
-        public List<ServiceDental> ListServiceDental { get; set; }
+        public UserAppointmentExportPdf UserAppointmentExportPdf { get; set; }
+        public List<ServiceBooked> ListServiceBooked { get; set; }
     }
+
 }
