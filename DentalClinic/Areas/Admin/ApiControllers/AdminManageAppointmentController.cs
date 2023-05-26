@@ -518,128 +518,6 @@ namespace DentalClinic.Areas.Admin.ApiControllers
             }
         }
 
-        private void BindingFormatForExcelOrder(ExcelWorksheet worksheet, ExportUserAppointment model)
-        {
-            worksheet.DefaultColWidth = 10;
-            worksheet.Cells.Style.WrapText = true;
-
-            worksheet.Cells["A1:D1"].Value = "NHA KHOA PHƯƠNG THẢO";
-            worksheet.Cells["A2:D2"].Value = "HÓA ĐƠN ĐẶT PHÒNG";
-
-
-            worksheet.Cells["A4"].Value = "Họ và tên khách hàng: ";
-            worksheet.Cells["A5"].Value = "Số điện thoại: ";
-            worksheet.Cells["A6"].Value = "Email: ";
-            worksheet.Cells["B4"].Value = model.UserAppointmentInfo.Name;
-            worksheet.Cells["B5"].Value = model.UserAppointmentInfo.Phone;
-            worksheet.Cells["B6"].Value = model.UserAppointmentInfo.Email;
-
-            DateTime hour = HelperProvider.GetDateTime(model.UserAppointmentInfo.Hour);
-            DateTime date = HelperProvider.GetDateTime(model.UserAppointmentInfo.Day);
-
-            worksheet.Cells["D4"].Value = "Mã lịch hẹn: ";
-            worksheet.Cells["D5"].Value = "Giờ hẹn : ";
-            worksheet.Cells["D6"].Value = "Ngày hẹn: ";
-            worksheet.Cells["E4"].Value = model.UserAppointmentInfo.AppointmentCode;
-            worksheet.Cells["E5"].Value = hour;
-            worksheet.Cells["E6"].Value = date;
-
-            worksheet.Cells["A7"].Value = "STT: ";
-            worksheet.Cells["B7"].Value = "Dịch vụ: ";
-            worksheet.Cells["C7"].Value = "Giá dịch vụ: ";
-
-            using (var range = worksheet.Cells["A7:C7"])
-            {
-                range.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                range.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.FromArgb(255, 221, 177));
-                range.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                range.Style.Font.SetFromFont("Arial", 10);
-                range.Style.Border.Bottom.Style = ExcelBorderStyle.Thick;
-                range.Style.Border.Bottom.Color.SetColor(System.Drawing.Color.WhiteSmoke);
-                range.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                range.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                range.Style.Font.Bold = true;
-            }
-            using (var range = worksheet.Cells["A8:C8"])
-            {
-                range.Style.Font.Bold = true;
-                range.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                range.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-            }
-            for (int i = 0; i < model.ListServiceDental.Count; i++)
-            {
-                worksheet.Cells["A" + (i + 8)].Value = i + 1;
-            }
-            for (int i = 0; i < model.ListServiceDental.Count; i++)
-            {
-                var item = model.ListServiceDental[i];
-                worksheet.Cells["B" + (i + 8)].Value = item.Name;
-                worksheet.Cells["C" + (i + 8)].Value = item.Price;
-                using (var range = worksheet.Cells["A" + (i + 8) + ":C" + i + 8])
-                {
-                    range.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                    range.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                }
-                worksheet.Row(i + 8).Height = 30;
-            }
-
-            using (var range = worksheet.Cells["A" + (model.ListServiceDental.Count + 1) + ":C" + model.ListServiceDental.Count + 1])
-            {
-                range.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                range.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                worksheet.Row(model.ListServiceDental.Count + 1).Height = 30;
-            }
-            for (int i = 1; i <= worksheet.Dimension.End.Column; i++) { worksheet.Column(i).AutoFit(); }
-            worksheet.Cells[1, 1, model.ListServiceDental.Count + 10, 9].AutoFitColumns(20);
-            worksheet.Cells["A8:A" + model.ListServiceDental.Count + 8].AutoFitColumns(10);
-            worksheet.Cells["D8:D" + model.ListServiceDental.Count + 8].AutoFitColumns(40);
-            worksheet.Cells["D7:D7"].AutoFilter = true;
-
-            int currentRoomLength = model.ListServiceDental.Count;
-
-
-        }
-
-        private Stream CreateExcelFileOrder(ExportUserAppointment model, Stream stream = null)
-        {
-            ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
-            using (var excelPackage = new ExcelPackage(stream ?? new MemoryStream()))
-            {
-                excelPackage.Workbook.Properties.Author = "NhaKhoaPhuongThao";
-                excelPackage.Workbook.Properties.Title = "Create Excel File";
-                excelPackage.Workbook.Properties.Comments = "Lịch hẹn mã " + model.UserAppointmentInfo.AppointmentCode;
-                excelPackage.Workbook.Worksheets.Add("Trang 1");
-                var workSheet = excelPackage.Workbook.Worksheets[0];
-                BindingFormatForExcelOrder(workSheet, model);
-
-                excelPackage.Save();
-                return excelPackage.Stream;
-            }
-        }
-        [HttpPost]
-        public HttpResponseMessage ExportFileExcelOrder(ExportUserAppointment model)
-        {
-            using (var streams = CreateExcelFileOrder(model, null) as MemoryStream)
-            {
-                using (var memoryStream = new MemoryStream())
-                {
-                    var nameFile = "";
-                    streams.Position = 0;
-                    streams.CopyTo(memoryStream);
-                    var result = new HttpResponseMessage(HttpStatusCode.OK)
-                    {
-                        Content = new ByteArrayContent(memoryStream.ToArray())
-                    };
-                    nameFile = "Lichhenma" + model.UserAppointmentInfo.AppointmentCode;
-                    result.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment")
-                    {
-                        FileName = nameFile + ".xlsx"
-                    };
-                    result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-                    return result;
-                }
-            }
-        }
 
         [HttpPost]
         public HttpResponseMessage ExportPdf(ExportUserAppointment model)
@@ -675,37 +553,37 @@ namespace DentalClinic.Areas.Admin.ApiControllers
             // Add order info
             PdfPTable tableOrderInfo = new PdfPTable(2);
             PdfPCell cellOrderInfo = new PdfPCell();
-            cellOrderInfo = new PdfPCell(new Paragraph("Họ và tên khách hàng: " + model.UserAppointmentInfo.Name, vietnameseFont));
+            cellOrderInfo = new PdfPCell(new Paragraph("Họ và tên khách hàng: " + model.UserAppointmentExportPdf.Name, vietnameseFont));
             cellOrderInfo.BorderWidth = 0;
             cellOrderInfo.PaddingTop = 10f;
             cellOrderInfo.PaddingBottom = 10f;
             tableOrderInfo.AddCell(cellOrderInfo);
 
-            cellOrderInfo = new PdfPCell(new Paragraph("Mã lịch hẹn: " + model.UserAppointmentInfo.AppointmentCode, vietnameseFont));
+            cellOrderInfo = new PdfPCell(new Paragraph("Mã lịch hẹn: " + model.UserAppointmentExportPdf.AppointmentCode, vietnameseFont));
             cellOrderInfo.BorderWidth = 0;
             cellOrderInfo.PaddingTop = 10f;
             cellOrderInfo.PaddingBottom = 10f;
             tableOrderInfo.AddCell(cellOrderInfo);
 
-            cellOrderInfo = new PdfPCell(new Paragraph("Số điện thoại: " + model.UserAppointmentInfo.Phone, vietnameseFont));
+            cellOrderInfo = new PdfPCell(new Paragraph("Số điện thoại: " + model.UserAppointmentExportPdf.Phone, vietnameseFont));
             cellOrderInfo.BorderWidth = 0;
             cellOrderInfo.PaddingTop = 10f;
             cellOrderInfo.PaddingBottom = 10f;
             tableOrderInfo.AddCell(cellOrderInfo);
 
-            cellOrderInfo = new PdfPCell(new Paragraph("Ngày đến: " + model.UserAppointmentInfo.Hour, vietnameseFont));
+            cellOrderInfo = new PdfPCell(new Paragraph("Ngày hẹn: " + model.UserAppointmentExportPdf.Date, vietnameseFont));
             cellOrderInfo.BorderWidth = 0;
             cellOrderInfo.PaddingTop = 10f;
             cellOrderInfo.PaddingBottom = 10f;
             tableOrderInfo.AddCell(cellOrderInfo);
 
-            cellOrderInfo = new PdfPCell(new Paragraph("Email: " + model.UserAppointmentInfo.Email, vietnameseFont));
+            cellOrderInfo = new PdfPCell(new Paragraph("Email: " + model.UserAppointmentExportPdf.Email, vietnameseFont));
             cellOrderInfo.BorderWidth = 0;
             cellOrderInfo.PaddingTop = 10f;
             cellOrderInfo.PaddingBottom = 10f;
             tableOrderInfo.AddCell(cellOrderInfo);
 
-            cellOrderInfo = new PdfPCell(new Paragraph("Ngày đi: " + model.UserAppointmentInfo.Day, vietnameseFont));
+            cellOrderInfo = new PdfPCell(new Paragraph("Địa chỉ: " + model.UserAppointmentExportPdf.Address, vietnameseFont));
             cellOrderInfo.BorderWidth = 0;
             cellOrderInfo.PaddingTop = 10f;
             cellOrderInfo.PaddingBottom = 10f;
@@ -719,8 +597,8 @@ namespace DentalClinic.Areas.Admin.ApiControllers
 
 
             // Table Room Category
-            PdfPTable tableRoom = new PdfPTable(4);
-            float[] widths = new float[] { 1f, 2f, 1f, 1f };
+            PdfPTable tableRoom = new PdfPTable(3);
+            float[] widths = new float[] { 1f, 2f, 1f };
             tableRoom.SetWidths(widths);
             PdfPCell cellRoom = new PdfPCell();
             cellRoom = new PdfPCell(new Paragraph("STT", vietnameseFont));
@@ -745,9 +623,9 @@ namespace DentalClinic.Areas.Admin.ApiControllers
             cellRoom.PaddingBottom = 10f;
             tableRoom.AddCell(cellRoom);
 
-            for (int i = 0; i < model.ListServiceDental.Count; i++)
+            for (int i = 0; i < model.ListServiceBooked.Count; i++)
             {
-                var item = model.ListServiceDental[i];
+                var item = model.ListServiceBooked[i];
                 cellRoom = new PdfPCell(new Paragraph("" + (i + 1)));
                 cellRoom.HorizontalAlignment = Element.ALIGN_CENTER;
                 cellRoom.VerticalAlignment = Element.ALIGN_MIDDLE;
@@ -755,14 +633,14 @@ namespace DentalClinic.Areas.Admin.ApiControllers
                 cellRoom.PaddingBottom = 10f;
                 tableRoom.AddCell(cellRoom);
 
-                cellRoom = new PdfPCell(new Paragraph("" + item.Name, vietnameseFont));
+                cellRoom = new PdfPCell(new Paragraph("" + item.NameService, vietnameseFont));
                 cellRoom.HorizontalAlignment = Element.ALIGN_CENTER;
                 cellRoom.VerticalAlignment = Element.ALIGN_MIDDLE;
                 cellRoom.PaddingTop = 10f;
                 cellRoom.PaddingBottom = 10f;
                 tableRoom.AddCell(cellRoom);
 
-                cellRoom = new PdfPCell(new Paragraph("" + item.Price, vietnameseFont));
+                cellRoom = new PdfPCell(new Paragraph("" + item.PriceService, vietnameseFont));
                 cellRoom.HorizontalAlignment = Element.ALIGN_CENTER;
                 cellRoom.VerticalAlignment = Element.ALIGN_MIDDLE;
                 cellRoom.PaddingTop = 10f;
@@ -784,7 +662,7 @@ namespace DentalClinic.Areas.Admin.ApiControllers
             table1.SpacingBefore = 10f;
             table1.SpacingAfter = 10f;
 
-            PdfPCell cell1 = new PdfPCell(new Paragraph("Tổng tiền: " + model.UserAppointmentInfo.TotalAmount, vietnameseFont));
+            PdfPCell cell1 = new PdfPCell(new Paragraph("Tổng tiền: " + model.UserAppointmentExportPdf.TotalAmount, vietnameseFont));
             cell1.HorizontalAlignment = Element.ALIGN_RIGHT;
             cell1.VerticalAlignment = Element.ALIGN_MIDDLE;
             cell1.BorderWidth = 0;
