@@ -265,3 +265,15 @@ D:\GitHub\DentalClinic\DentalClinic\obj\Debug\DentalClinic.csproj.CopyComplete
 D:\GitHub\DentalClinic\DentalClinic\obj\Debug\DentalClinic.dll
 D:\GitHub\DentalClinic\DentalClinic\obj\Debug\DentalClinic.pdb
 D:\GitHub\DentalClinic\DentalClinic\obj\Debug\DentalClinic.csproj.AssemblyReference.cache
+D:\GitHub\DentalClinic\DentalClinic\bin\EPPlus.dll
+D:\GitHub\DentalClinic\DentalClinic\bin\EPPlus.Interfaces.dll
+D:\GitHub\DentalClinic\DentalClinic\bin\EPPlus.System.Drawing.dll
+D:\GitHub\DentalClinic\DentalClinic\bin\Microsoft.IO.RecyclableMemoryStream.dll
+D:\GitHub\DentalClinic\DentalClinic\bin\EPPlus.xml
+D:\GitHub\DentalClinic\DentalClinic\bin\Microsoft.IO.RecyclableMemoryStream.xml
+D:\GitHub\DentalClinic\DentalClinic\bin\itextsharp.dll
+D:\GitHub\DentalClinic\DentalClinic\bin\System.Collections.Immutable.dll
+D:\GitHub\DentalClinic\DentalClinic\bin\System.Reflection.Metadata.dll
+D:\GitHub\DentalClinic\DentalClinic\bin\itextsharp.xml
+D:\GitHub\DentalClinic\DentalClinic\bin\System.Collections.Immutable.xml
+D:\GitHub\DentalClinic\DentalClinic\bin\System.Reflection.Metadata.xml

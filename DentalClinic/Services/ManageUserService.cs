@@ -13,7 +13,7 @@ namespace DentalClinic.Services
         public ManageUserService() : base() { }
         public ManageUserService(IDbConnection db) : base(db) { }
 
-        public UserListViewModel GetListUser(int page, string keyword, bool enable, IDbTransaction transaction = null)
+        public UserListViewModel GetListUser(int page, string keyword, bool? enable = null, IDbTransaction transaction = null)
         {
             UserListViewModel userListViewModel = new UserListViewModel();
             userListViewModel.ListUser = new List<User>();
@@ -21,15 +21,18 @@ namespace DentalClinic.Services
 
             string querySelect = "select * ";
             string queryCount = "select count(*) as Total ";
-            string query = " from [user] ";
+            string query = " from [user] where 1=1";
 
             if (!string.IsNullOrEmpty(keyword))
             {
                 keyword = "%" + keyword.Replace(' ', '%') + "%";
-                query += " where SearchName like @keyword";
+                query += " and SearchName like @keyword";
             }
-
-            int totalRow = _connection.Query<int>(queryCount + query, new { keyword = keyword }, transaction).FirstOrDefault();
+            if(enable != null)
+            {
+                query += " and Enable=@enable";
+            }
+            int totalRow = _connection.Query<int>(queryCount + query, new { keyword = keyword, enable }, transaction).FirstOrDefault();
             if (totalRow > 0)
             {
                 userListViewModel.TotalPage = (int)Math.Ceiling((decimal)totalRow / Constant.ADMIN_PAGE_SIZE);

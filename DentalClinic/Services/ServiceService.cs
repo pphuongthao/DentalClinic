@@ -20,7 +20,7 @@ namespace DentalClinic.Services
         }
         public List<ServiceDental> GetListServiceForHomePage(IDbTransaction transaction = null)
         {
-            string query = "select TOP(10) * from [service]";
+            string query = "select TOP(6) * from [service]";
             return this._connection.Query<ServiceDental>(query, transaction).ToList();
         }
         public ServiceDental GetServiceById(string ServiceId, IDbTransaction transaction = null)

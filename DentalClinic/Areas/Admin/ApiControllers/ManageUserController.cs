@@ -24,8 +24,7 @@ namespace DentalClinic.Areas.Admin.ApiControllers
                 UserAdmin userAdmin = SecurityProvider.GetUserAdminByToken(Request);
                 if (userAdmin == null) return Unauthorized();
                 if (!page.HasValue) page = 1;
-                if (!enable.HasValue) enable = true;
-                return Success(manageUserService.GetListUser(page.Value, keyword, enable.Value));
+                return Success(manageUserService.GetListUser(page.Value, keyword, enable));
             }
             catch (Exception ex)
             {
