@@ -84,5 +84,9 @@ namespace DentalClinic.Models
         public int Year { get; set; }
         public List<ServiceDental> ListServiceId { get; set; }
     }
-
+    public class ExportUserAppointment
+    {
+        public UserAppointmentInfor UserAppointmentInfo { get; set; }
+        public List<ServiceDental> ListServiceDental { get; set; }
+    }
 }

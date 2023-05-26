@@ -53,6 +53,8 @@
 
 <input id="UserAppointmentId" value="@ViewBag.UserAppointmentId" type="hidden" />
 <div class="card">
+    <h4 style="text-align: center; padding-top: 20px;">Nha khoa Phương Thảo</h4>
+    <h6 style="text-align: center;">Địa chỉ: Số 16, ngách 2, ngõ 343, phố Đội Cấn, P. Liễu Giai, Q. Ba Đình, TP Hà Nội</h6>
     <div class="cart-index">
         <div class="cart-body">
             <div class="list-order-info">
@@ -150,9 +152,20 @@
         </div>
     </div>
 </div>
-<div style="display: flex; justify-content: flex-end;"><button class="btn btn-primary">In hóa đơn</button></div>
+<div style="display: flex; justify-content: flex-end;"><button class="btn btn-primary" onclick="ExportPdfOrder();">In hóa đơn</button></div>
+@*<div style="display: flex; justify-content: flex-end;"><button class="btn btn-primary" onclick="ExportOrder();">In hóa đơn</button></div>*@
 @section Scripts{
     <script>
+        const userAppointmentInfo = {
+            Name: '',
+            Phone: '',
+            Email: '',
+            Appointment: '',
+            Hour: 0,
+            Day: 0,
+            TotalPrice: 0
+        };
+        const listServiceDental = [];
 
         const GetListAppointmentDetailUser = async function () {
             let userAppointmentId ='@ViewBag.UserAppointmentId';
@@ -194,6 +207,75 @@
         }
 
         initPage();
+
+        var ExportOrder = async function () {
+
+            let model = {
+                UserAppointmentInfo: userAppointmentInfo,
+                ListServiceDental: listServiceDental
+               
+            };
+
+            if (confirm("Xác nhận xuất hóa đơn !")) {
+                let rq = await fetch('/api/AdminManageAppointment/ExportFileExcelOrder', {
+                    method: 'POST',
+                    headers: Enum.OptionAdminHeaderDefault,
+                    body: JSON.stringify(model)
+                });
+                let rs = await rq.blob();
+                var fileName = "Thông tin hóa đơn mã " + model.UserAppointmentInfo.AppointmentCode + ".xlsx";
+                if (window.navigator.msSaveOrOpenBlob) {
+                    window.navigator.msSaveOrOpenBlob(rs, fileName);
+                } else {
+                    const a = document.createElement('a');
+                    document.body.appendChild(a);
+                    const url = window.URL.createObjectURL(rs);
+                    a.href = url;
+                    a.download = fileName;
+                    a.click();
+                    setTimeout(() => {
+                        window.URL.revokeObjectURL(url);
+                        document.body.removeChild(a);
+                    }, 0)
+                }
+                alert("Hóa đơn đang được tải xuống !");
+            }
+        }
+
+        const ExportPdfOrder = async function () {
+            let model = {
+                UserAppointmentInfo: userAppointmentInfo,
+                ListServiceDental: listServiceDental
+            };
+
+            if (confirm("Xác nhận xuất hóa đơn !")) {
+                let rq = await fetch('/api/AdminManageAppointment/ExportPdf', {
+                    method: 'POST',
+                    headers: Enum.OptionAdminHeaderDefault,
+                    body: JSON.stringify(model)
+                });
+                let rs = await rq.blob();
+                console.log(rs);
+                var fileName = "Thông tin hóa đơn mã " + model.UserAppointmentInfo.AppointmentCode + ".pdf";
+                console.log(fileName);
+                if (window.navigator.msSaveOrOpenBlob) {
+                    window.navigator.msSaveOrOpenBlob(rs, fileName);
+                } else {
+                    const a = document.createElement('a');
+                    document.body.appendChild(a);
+                    const url = window.URL.createObjectURL(rs);
+                    a.href = url;
+                    a.download = fileName;
+                    a.click();
+                    setTimeout(() => {
+                        window.URL.revokeObjectURL(url);
+                        document.body.removeChild(a);
+                    }, 0)
+                }
+                alert("Hóa đơn đang được tải xuống !");
+
+            }
+        }
     </script>
 }
 

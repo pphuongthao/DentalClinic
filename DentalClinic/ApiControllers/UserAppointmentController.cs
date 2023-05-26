@@ -30,12 +30,21 @@ namespace DentalClinic.ApiControllers
                         UserMakeAppointmentService userMakeAppointmentService = new UserMakeAppointmentService(connect);
                         ServiceService serviceService = new ServiceService(connect);
 
+                        
                         string token = Request.Headers.Authorization.ToString();
                         User user = userService.GetUserByToken(token, transaction);
                         if (user == null) return Unauthorized();
                         if (user.Name == null || user.Phone == null || user.Email == null || user.Address == null) throw new Exception("Bạn vui lòng cập nhật đầy đủ thông tin tài khoản");
+
                         Doctor doctor = doctorService.GetDoctorById(model.DoctorId, transaction);
-                        if (doctor == null) return Error("Không tồn tại bác sĩ này.");
+                        if (doctor == null) return Error("Bạn chưa chọn bác sĩ.");
+
+                        long now = HelperProvider.GetSeconds();
+                        long timeOrder = HelperProvider.GetSeconds(new DateTime(model.Year, model.Month, model.Day, model.Hour, model.Minute, 0, 0));
+                        if (timeOrder <= now) return Error("Bạn phải đặt sau thời điểm hiện tại");
+
+                        if (model.Hour <= 0) return Error("Bạn chưa chọn giờ hẹn.");
+
                         UserAppointment userAppointment = new UserAppointment();
                         userAppointment.UserAppointmentId = Guid.NewGuid().ToString();
                         userAppointment.UserId = user.UserId;
@@ -55,11 +64,12 @@ namespace DentalClinic.ApiControllers
 
                         int totalExpectTime = 0;
                         decimal totalPrice = 0;
+                        if (model.ListServiceId.Count <= 0) return Error("Bạn chưa chọn dịch vụ nào.");
                        for (int i = 0; i<model.ListServiceId.Count; i++)
                         {
                             string ServiceId = model.ListServiceId[i].ServiceId;
                             ServiceDental serviceDental = serviceService.GetServiceById(ServiceId, transaction);
-
+                            if (serviceDental == null) return Error("Dịch vụ này không tồn tại");
                             UserAppointmentService userAppointmentService = new UserAppointmentService();
                             userAppointmentService.UserAppointmentServiceId = Guid.NewGuid().ToString();
                             userAppointmentService.UserAppointmentId = userAppointment.UserAppointmentId;
@@ -69,6 +79,7 @@ namespace DentalClinic.ApiControllers
                             totalPrice += serviceDental.Price;
                             if (!userMakeAppointmentService.CreateUserAppointmentService(userAppointmentService, transaction)) throw new Exception();
                         }
+                       
                         userAppointment.TotalExpectTime = totalExpectTime;
                         userAppointment.TotalAmount = totalPrice;
                         // lấy ra danh sách đơn của bác sĩ ngày đơn đặt mới

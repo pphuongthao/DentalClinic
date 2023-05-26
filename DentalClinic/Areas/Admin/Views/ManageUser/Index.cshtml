@@ -81,8 +81,8 @@
                             <div class="search-active" style="width: 200px ">
                                 <select id="isEnable" class="form-control" onchange="getListUser()">
                                     <option value="">Trạng thái</option>
-                                    <option value="true">Đang kích hoạt</option>
-                                    <option value="false">Chưa kích hoạt</option>
+                                    <option value="true">Kích hoạt</option>
+                                    <option value="false">Đã khóa</option>
                                 </select>
                             </div>
                         </div>
@@ -93,6 +93,7 @@
                                         <th scope="col" style="width:20%">Tên người dùng</th>
                                         <th scope="col" style="width:20%">Email</th>
                                         <th scope="col" style="width:25%">Tên đăng nhập</th>
+                                        <th scope="col" style="width:15%">Trạng thái</th>
                                         <th scope="col" style="width:20%">Thao tác</th>
                                     </tr>
                                 </thead>
@@ -161,6 +162,11 @@
                     html += '<td> <div class="user-info"><div class="name">' + GetObjectProperty(x, 'Name') + '</div></div> </td>';
                     html += '<td>' + GetObjectProperty(x, 'Email') + '</td>';
                     html += '<td>' + GetObjectProperty(x, 'Account') + '</td>';
+                    if (x.Enable === true) {
+                        html += '<td><div><span class="badge bg-light-success">Kích hoạt</span></div></td>';
+                    } else {
+                        html += '<td><div><span class="badge bg-light-danger">Đã khóa</span></div></td>';
+                    }
                     html += '<td>';
                     html += '<a data-id="' + x.UserId + '" onclick="updateUserInfo(this);"><button class="btn btn-primary btn-xs"><i class="fa-solid fa-pen-to-square"></i></button></a>';
                     if (x.Enable === true) {

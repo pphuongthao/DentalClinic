@@ -43,5 +43,90 @@ namespace DentalClinic.Areas.Admin.ApiControllers
                 return Error(ex.Message);
             }
         }
+
+        [HttpGet]
+        [ApiAdminTokenRequire]
+        public JsonResult GetTotalUserActive()
+        {
+            try
+            {
+                UserAdmin userAdmin = SecurityProvider.GetUserAdminByToken(Request);
+                if (userAdmin == null) return Unauthorized();
+                ReportService reportService = new ReportService();
+                return Success(reportService.GetTotalUser());
+            }
+            catch (Exception ex)
+            {
+                return Error();
+            }
+        }
+
+        [HttpGet]
+        [ApiAdminTokenRequire]
+        public JsonResult GetTotalAppointment()
+        {
+            try
+            {
+                UserAdmin userAdmin = SecurityProvider.GetUserAdminByToken(Request);
+                if (userAdmin == null) return Unauthorized();
+                ReportService reportService = new ReportService();
+                return Success(reportService.GetTotalAppointment(UserAppointment.EnumStatus.PENDING));
+            }
+            catch (Exception ex)
+            {
+                return Error();
+            }
+        }
+        [HttpGet]
+        [ApiAdminTokenRequire]
+        public JsonResult GetListReportSystemRevenueMonthly(int month, int year)
+        {
+            try
+            {
+                UserAdmin userAdmin = SecurityProvider.GetUserAdminByToken(Request);
+                if (userAdmin == null) return Unauthorized();
+                ReportService reportService = new ReportService();
+                return Success(reportService.GetListReportSystemRevenueMonthly(month, year));
+            }
+            catch (Exception ex)
+            {
+                return Error();
+                throw;
+            }
+        }
+        [HttpGet]
+        [ApiAdminTokenRequire]
+        public JsonResult GetListReportSystemRevenueYearly(int year)
+        {
+            try
+            {
+                UserAdmin userAdmin = SecurityProvider.GetUserAdminByToken(Request);
+                if (userAdmin == null) return Unauthorized();
+                ReportService reportService = new ReportService();
+                return Success(reportService.GetListReportSystemRevenueYearly(year));
+            }
+            catch (Exception ex)
+            {
+                return Error();
+                throw;
+            }
+        }
+        [HttpGet]
+        [ApiAdminTokenRequire]
+        public JsonResult GetReportSystemRevenueThisMonth()
+        {
+            try
+            {
+                UserAdmin userAdmin = SecurityProvider.GetUserAdminByToken(Request);
+                if (userAdmin == null) return Unauthorized();
+                ReportService reportSystemRevenueService = new ReportService();
+                return Success(reportSystemRevenueService.GetListReportSystemRevenueThisMonth());
+            }
+            catch (Exception ex)
+            {
+                return Error();
+            }
+        }
+
     }
 }

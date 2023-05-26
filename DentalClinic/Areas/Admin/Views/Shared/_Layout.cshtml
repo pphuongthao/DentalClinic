@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="/Content/assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
     <link rel="stylesheet" href="/Content/assets/css/app.css">
     <link rel="shortcut icon" href="/Content/assets/images/favicon.svg" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
     <style>
         .submenu .submenu-item {
@@ -127,7 +128,7 @@
                                 <span>Tài khoản quản trị</span>
                             </a>
                         </li>
-                       
+
                         <li class="sidebar-item  has-sub  @(ViewBag.Menu == "category" ? "active" : "")">
                             <a href="#" class='sidebar-link'>
                                 <i class="fa-solid fa-rectangle-list"></i>
@@ -140,7 +141,7 @@
 
                             </ul>
                         </li>
-                        <li class="sidebar-item  has-sub @(ViewBag.Menu == "manage-content" ? "active" : "")" >
+                        <li class="sidebar-item  has-sub @(ViewBag.Menu == "manage-content" ? "active" : "")">
                             <a href="#" class='sidebar-link'>
                                 <i class="fa-brands fa-stack-overflow"></i>
                                 <span>Quản lý nội dung</span>
@@ -150,8 +151,8 @@
                                     <a href="/admin/ManageNews">Tin tức</a>
                                 </li>
                                 @*<li class="submenu-item @(ViewBag.SubMenu == "manage-slide" ? "active" : "")">
-                                    <a href="/admin/Slide">Slide</a>
-                                </li>*@
+                                        <a href="/admin/Slide">Slide</a>
+                                    </li>*@
                                 <li class="submenu-item @(ViewBag.SubMenu == "system-about" ? "active" : "")">
                                     <a href="/admin/SystemAbout">Trang giới thiệu</a>
                                 </li>
@@ -196,7 +197,7 @@
                                 <li class="submenu-item @(ViewBag.SubMenu == "report-revenue" ? "active" : "")">
                                     <a href="/admin/report">Thống kê doanh thu</a>
                                 </li>
-                               
+
 
                             </ul>
                         </li>
@@ -334,7 +335,9 @@
     <script src="~/Content/assets/js/magnific-popup.min.js"></script>
     <script src="~/Content/slick/slick.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.5.6/tinymce.min.js"></script>
-
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <script>
         const OpenChangePasswordPopup = function () {
             $('#ChangePasswordPopup').css('display', 'flex');
