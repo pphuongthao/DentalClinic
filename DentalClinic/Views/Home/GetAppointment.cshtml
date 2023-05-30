@@ -20,9 +20,9 @@
             cursor: pointer;
         }
 
-        .wrapper {  
+        .wrapper {
             position: relative;
-            width: 600px;
+            width: 650px;
             border-radius: 10px;
             display: flex;
             justify-content: center;
@@ -112,7 +112,7 @@
             }
 
                 .list-service-pick .item-pick .icon-left {
-                    flex: .5;
+                    flex: .2;
                 }
 
                 .list-service-pick .item-pick .content {
@@ -120,17 +120,21 @@
                     display: flex;
                     justify-content: space-between;
                 }
+
                     .list-service-pick .item-pick .content > div:first-child {
                         flex: 1;
                     }
+
                     .list-service-pick .item-pick .content > div:last-child {
                         flex: 1;
-                        text-align:right;
+                        text-align: right;
                     }
+
                     .list-service-pick .item-pick .content > div:nth-child(2) {
-                        flex: 1;
-                        text-align:center;
+                        flex: .5;
+                        text-align: center;
                     }
+
                 .list-service-pick .item-pick .button-delete {
                     display: flex;
                     justify-content: center;
@@ -178,7 +182,8 @@
                     <div class="form-group">
                         <label class="font-weight-semibold">Ngày khám</label>
                         <div class="date-pick">
-                            <input class="form-control" id="date" placeholder="Chọn ngày khám" />
+                            <input class="form-control" id="date" placeholder="Chọn ngày khám"/>
+                            
                         </div>
                     </div>
                     <div class="form-group">
@@ -206,6 +211,24 @@
                                 <option value="">17:00</option>
                                 <option value="">17:30</option>
                                 <option value="">18:00</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="font-weight-semibold">Nhắc nhở - Trước:</label>
+                        <div style="display: flex; width: 170px;">
+                            <select class="form-select" id="hourRemind">
+                                <option>Giờ</option>
+                                <option>02</option>
+                                <option>03</option>
+                                <option>12</option>
+                            </select>
+                            <select class="form-select" id="minuteRemind">
+                                <option>Phút</option>
+                                <option>00</option>
+                                <option>05</option>
+                                <option>06</option>
+                                <option>10</option>
                             </select>
                         </div>
                     </div>
@@ -288,20 +311,20 @@
             }
             if (flag === 0 && id !== '') {
                 $('#list-service-pick').append(`
-                            <div class="item-pick" data-id="${id}" data-amount="${price}" data-time="${expectTime}">
-                                                    <div class="icon-left">
-                                                        -
-                                                    </div>
-                                                    <div class="content">
-                                                        <div>${text}</div>
-                                                        <div>${expectTime} (phút)</div>
-                                                        <div>${NumberFormat(parseInt(price))} đ</div>
-                                                    </div>
-                                                    <div class="button-delete" onclick="deleteButton(this);">
-                                                        x
-                                                    </div>
-                                                </div>
-                            `);
+                                    <div class="item-pick" data-id="${id}" data-amount="${price}" data-time="${expectTime}">
+                                                            <div class="icon-left">
+                                                                -
+                                                            </div>
+                                                            <div class="content">
+                                                                <div style="width: 25%;">${text}</div>
+                                                                <div>${expectTime} (phút)</div>
+                                                                <div>${NumberFormat(parseInt(price))} đ</div>
+                                                            </div>
+                                                            <div class="button-delete" onclick="deleteButton(this);">
+                                                                x
+                                                            </div>
+                                                        </div>
+                                    `);
             }
             totalPrice();
         }
@@ -353,6 +376,7 @@
                 Day: day,
                 Month: month,
                 Year: year,
+                Remind: $('#hourRemind').find(':selected').val() + ":" + $('#minuteRemind').find(':selected').val() + ":" + "00.000",
                 ListServiceId: listService
             }
 

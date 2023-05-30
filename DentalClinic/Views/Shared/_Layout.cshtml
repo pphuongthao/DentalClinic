@@ -308,30 +308,30 @@
                                 <nav class="main-navigation">
                                     <div class="main-menu-container">
                                         <ul id="main-menu" class="menu">
-                                            <li class="menu-item-has-children current-menu-ancestor current-menu-item" >
+                                            <li class="menu-item-has-children @(ViewBag.Menu == "home" ? "current-menu-ancestor current-menu-item" : "") " >
                                                 <a href="/">TRANG CHỦ</a>
 
                                             </li>
 
-                                            <li><a href="/gioi-thieu">GIỚI THIỆU</a></li>
+                                            <li class="menu-item-has-children @(ViewBag.Menu == "about" ? "current-menu-ancestor current-menu-item" : "") "><a href="/gioi-thieu">GIỚI THIỆU</a></li>
 
 
-                                            <li class="menu-item-has-children">
+                                            <li class="menu-item-has-children @(ViewBag.Menu == "doctor" ? "current-menu-ancestor current-menu-item" : "")">
                                                 <a href="/bac-si/danh-sach?page=1">BÁC SĨ</a>
                                             </li>
 
 
-                                            <li class="menu-item-has-children">
+                                            <li class="menu-item-has-children @(ViewBag.Menu == "service" ? "current-menu-ancestor current-menu-item" : "")">
                                                 <a href="/dich-vu/danh-sach?CurrentPage=1">DỊCH VỤ</a>
                                                 <ul class="sub-menu" id="idService">
                                                 </ul>
                                             </li>
 
-                                            <li class="menu-item-has-children">
+                                            <li class="menu-item-has-children @(ViewBag.Menu == "news" ? "current-menu-ancestor current-menu-item" : "")">
                                                 <a href="/tin-tuc/danh-sach?page=1">TIN TỨC</a>
                                             </li>
 
-                                            <li><a href="/lien-he">LIÊN HỆ</a></li>
+                                            <li class="menu-item-has-children @(ViewBag.Menu == "contact" ? "current-menu-ancestor current-menu-item" : "")"><a href="/lien-he">LIÊN HỆ</a></li>
                                         </ul>
                                     </div>
                                 </nav>

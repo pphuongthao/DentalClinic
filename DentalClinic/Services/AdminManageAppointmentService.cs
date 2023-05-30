@@ -19,7 +19,7 @@ namespace DentalClinic.Services
             ListUserAppointmentView listUserAppointmentView = new ListUserAppointmentView();
             listUserAppointmentView.ListUserAppointmentInfor = new List<UserAppointmentInfor>();
             string query = "select * from [user_appointment]";
-            listUserAppointmentView.ListUserAppointmentInfor = this._connection.Query<UserAppointmentInfor>( query, transaction).ToList();
+            listUserAppointmentView.ListUserAppointmentInfor = this._connection.Query<UserAppointmentInfor>(query).ToList();
             return listUserAppointmentView;
         }
         public ListUserAppointmentView GetListAppointmentOfUser(string UserId, int PageIndex, string AppointmentCode = "", long? CreateStart = null, long? CreateEnd = null)

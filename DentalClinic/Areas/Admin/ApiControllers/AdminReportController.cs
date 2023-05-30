@@ -97,6 +97,7 @@ namespace DentalClinic.Areas.Admin.ApiControllers
                 range.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
                 range.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
                 range.Style.Font.Bold = true;
+                
             }
             /* using (var range = worksheet.Cells["A2:C2"])
              {

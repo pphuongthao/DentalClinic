@@ -339,8 +339,8 @@
                     html += '<td>' + x.NameDoctor + '</td>';
                     html += '<td>';
                     html += x.Hour + ':';
-                    html += x.Minute === 0 ? '00' : x.Minute;
-                    html += ', ' + x.Day + '/' + x.Month + '/' + x.Year;
+                    html += x.Minute > 10 ? x.Minute : '0' + x.Minute;
+                    html += ', ' + (x.Day > 10 ? x.Day : '0' + x.Day) + '/' + (x.Month > 10 ? x.Month : '0' + x.Month) + '/' + x.Year;
                     html += '</td>';
                     let status = '';
                     let button = '';

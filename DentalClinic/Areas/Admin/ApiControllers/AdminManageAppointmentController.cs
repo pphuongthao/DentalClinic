@@ -25,7 +25,7 @@ namespace DentalClinic.Areas.Admin.ApiControllers
         {
             try
             {
-                AdminManageAppointmentService adminManageAppointmentService = new AdminManageAppointmentService();
+                AdminManageAppointmentService adminManageAppointmentService = new AdminManageAppointmentService(null);
                 return Success(adminManageAppointmentService.GetListUserAppointment());
             }
             catch (Exception ex)
@@ -261,7 +261,7 @@ namespace DentalClinic.Areas.Admin.ApiControllers
 
                         //Email
                         if (!string.IsNullOrEmpty(userAppointment.Email))
-                            SMSProvider.SendOTPViaEmail(userAppointment.Email, "", "THÔNG BÁO XÁC NHẬN"," Phòng khám nha khoa Phương Thảo đã tiếp nhận lịch hẹn [" + userAppointment.AppointmentCode + "] của bạn. Hãy chú ý để đến phòng khám đúng hẹn. Xin trân trọng cảm ơn!");
+                            SMSProvider.SendOTPViaEmail(userAppointment.Email, "", "THÔNG BÁO XÁC NHẬN LỊCH HẸN"," Phòng khám nha khoa Phương Thảo đã tiếp nhận lịch hẹn [" + userAppointment.AppointmentCode + "] của bạn. Hãy chú ý để đến phòng khám đúng hẹn. Xin trân trọng cảm ơn!", 1);
 
                         // Thông báo cho người dùng
                         Notification notification = new Notification();

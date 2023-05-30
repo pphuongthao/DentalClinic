@@ -24,6 +24,7 @@ namespace DentalClinic.Models
         public long CreateTime { get; set; }
         public int TotalExpectTime { get; set; }
         public decimal TotalAmount { get; set; }
+        public string Remind { get; set; } = "06:00:00.000"; //mặcđịnh 6 tiếng
         public class EnumStatus
         {
             public const string PENDING = "PENDING";
@@ -52,6 +53,7 @@ namespace DentalClinic.Models
         public string Status { get; set; }
         public long CreateTime { get; set; }
         public int TotalExpectTime { get; set; }
+        public string Remind { get; set; } = "06:00:00.000"; //mặcđịnh 6 tiếng
         public List<ServiceDental> lsServiceDental { get; set; }
 
         public class EnumStatus
@@ -82,6 +84,7 @@ namespace DentalClinic.Models
         public int Day { get; set; }
         public int Month { get; set; }
         public int Year { get; set; }
+        public string Remind { get; set; }
         public List<ServiceDental> ListServiceId { get; set; }
     }
     public class ServiceBooked

@@ -59,6 +59,7 @@ namespace DentalClinic.ApiControllers
                         userAppointment.Day = model.Day;
                         userAppointment.Month = model.Month;
                         userAppointment.Year = model.Year;
+                        userAppointment.Remind = model.Remind;
                         userAppointment.Status = UserAppointment.EnumStatus.PENDING;
                         userAppointment.CreateTime = HelperProvider.GetSeconds();
 
