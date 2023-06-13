@@ -231,6 +231,15 @@ var RemoveVietnameseTones = function (str) {
     str = str.replace(/!|@|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|,|\.|\:|\;|\'|\"|\&|\#|\[|\]|~|\$|_|`|-|{|}|\||\\/g, " ");
     return str;
 }
+var RemoveSpace = function (string) {
+    string = string.replace(/ | |ㅤ/g, "");
+    return string;
+}
+var RemoveSpecialCharacters = function (str) {
+    str = RemoveVietnameseTones(str);
+    str = RemoveSpace(str);
+    return str;
+}
 
 var CountDownBetweenDate = function (fromDate, toDate, format = 'mm:ss') {
     if (fromDate === '' || fromDate === null || typeof fromDate === 'undefined') return '00:00';
@@ -280,4 +289,16 @@ const ConvertTime = function (date, hour = 0, minute = 0, second = 0, milisecond
     let numberDate = new Date(datePart[2], month, datePart[0], hour, minute, second, milisecond).getTime();
 
     return numberDate;
+}
+
+function CreateSlugFromTitle(text = '')
+{
+    const arr1 = "~`#^&*()+=<>|[]%,@_?.$/áàảãạâấầẩẫậăắằẳẵặđéèẻẽẹêếềểễệíìỉĩịóòỏõọôốồổỗộơớờởỡợúùủũụưứừửữựýỳỷỹỵ";
+    const arr2 = "------------------------aaaaaaaaaaaaaaaaadeeeeeeeeeeeiiiiiooooooooooooooooouuuuuuuuuuuyyyyy";
+    for (let i = 0; i < arr1.Length; i++)
+    {
+        text = text.Replace(arr1[i], arr2[i]);
+        text = text.Replace(arr1[i].ToUpper(), arr2[i].ToUpper());
+    }
+    return text;
 }

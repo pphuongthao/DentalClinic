@@ -183,8 +183,8 @@
                     <div class="form-group">
                         <label class="font-weight-semibold">Ngày khám</label>
                         <div class="date-pick">
-                            <input class="form-control" id="date" placeholder="Chọn ngày khám"/>
-                            
+                            <input class="form-control" id="date" placeholder="Chọn ngày khám" />
+
                         </div>
                     </div>
                     <div class="form-group">
@@ -215,23 +215,30 @@
                             </select>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label class="font-weight-semibold">Nhắc nhở - Trước:</label>
-                        <div style="display: flex; width: 170px;">
-                            <select class="form-select" id="hourRemind">
-                                <option>Giờ</option>
-                                <option>02</option>
-                                <option>03</option>
-                                <option>12</option>
-                            </select>
-                            <select class="form-select" id="minuteRemind">
-                                <option>Phút</option>
-                                <option>00</option>
-                                <option>05</option>
-                                <option>06</option>
-                                <option>10</option>
-                            </select>
-                        </div>
+
+                </div>
+                <div class="form-group">
+                    <label class="font-weight-semibold">Nhắc nhở - Trước:</label>
+                    <div style="display: flex; width: 170px; gap: 5px;">
+                        <select class="form-select" id="hourRemind">
+                            <option>Giờ</option>
+                            <option>00</option>
+                            <option>01</option>
+                            <option>02</option>
+                            <option>03</option>
+                            <option>04</option>
+                            <option>05</option>
+                            <option>06</option>
+                            <option>12</option>
+                        </select>
+                        <select class="form-select" id="minuteRemind">
+                            <option>Phút</option>
+                            <option>00</option>
+                            <option>05</option>
+                            <option>10</option>
+                            <option>15</option>
+                            <option>30</option>
+                        </select>
                     </div>
                 </div>
                 <div class="form-group">
@@ -253,6 +260,10 @@
                             (VND)
                         </div>
                     </div>
+                </div>
+                <div class="form-group">
+                    <label class="font-weight-semibold" for="name">Ghi chú</label>
+                    <textarea class="form-control" aria-label="With textarea" style="resize:none;" placeholder="Nhập ghi chú" rows="3" id="UserNote"></textarea>
                 </div>
                 <div class="footer-form">
                     <button class="btn-register" onclick="GetAppointment_OnClick();">Đặt hẹn</button>
@@ -378,7 +389,8 @@
                 Month: month,
                 Year: year,
                 Remind: $('#hourRemind').find(':selected').val() + ":" + $('#minuteRemind').find(':selected').val() + ":" + "00.000",
-                ListServiceId: listService
+                ListServiceId: listService,
+                UserNote: $('#UserNote').val()
             }
 
             console.log(model)

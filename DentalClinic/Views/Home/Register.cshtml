@@ -166,7 +166,7 @@
                 </div>
                 <div class="input-box">
                     <span class="icon"></span>
-                    <input type="text" id="Account">
+                    <input type="text" id="Account" onkeyup="removeSpecialCharacter(this);">
                     <label for="">Tên đăng nhập</label>
                 </div>
                 <div class="input-box">
@@ -191,6 +191,7 @@
     </div>
     <script src="~/Content/assets/js/jquery-3.6.0.min.js"></script>
     <script src="~/Content/assets/js/bootstrap.min.js"></script>
+    <script src="~/Scripts/helper.js"></script>
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
     <script src="~/Content/assets/js/helper.js"></script>
@@ -213,25 +214,25 @@
 
         const Register_OnClick = async function () {
             console.log($('#Name').val());
-                let model = {
-                    Name: $('#Name').val(),
-                    Account: $('#Account').val(),
-                    Email: $('#Email').val(),
-                    Password: $('#password').val()
-                }
+            let model = {
+                Name: $('#Name').val(),
+                Account: $('#Account').val(),
+                Email: $('#Email').val(),
+                Password: $('#password').val()
+            }
 
-                if (GetObjectProperty(model, 'Name') === '') { alert('Họ và tên người dùng không được để trống.'); return; }
-                if (GetObjectProperty(model, 'Account') === '') { alert('Tên đăng nhập không được để trống.'); return; }
-                if (GetObjectProperty(model, 'Email') === '') { alert('Email không được để trống.'); return; }
-                if (!validateEmail(model.Email)) { alert('Email không đúng định dạng.'); return; }
-                if (GetObjectProperty(model, 'Password') === '') { alert('Password không được để trống.'); return; }
+            if (GetObjectProperty(model, 'Name') === '') { alert('Họ và tên người dùng không được để trống.'); return; }
+            if (GetObjectProperty(model, 'Account') === '') { alert('Tên đăng nhập không được để trống.'); return; }
+            if (GetObjectProperty(model, 'Email') === '') { alert('Email không được để trống.'); return; }
+            if (!validateEmail(model.Email)) { alert('Email không đúng định dạng.'); return; }
+            if (GetObjectProperty(model, 'Password') === '') { alert('Password không được để trống.'); return; }
 
-                let rq = await fetch('/api/user/Register', {
-                    method: 'post',
-                    headers: Enum.OptionHeaderDefault,
+            let rq = await fetch('/api/user/Register', {
+                method: 'post',
+                headers: Enum.OptionHeaderDefault,
                 body: JSON.stringify(model)
             })
-                let rs = await rq.json();
+            let rs = await rq.json();
 
             console.log(rs);
 
@@ -245,6 +246,9 @@
         function validateEmail($email) {
             var emailReg = /^([\w-\.]+@@([\w-]+\.)+[\w-]{2,4})?$/;
             return emailReg.test($email);
+        }
+        var removeSpecialCharacter = function (inputAccount) {
+            $(inputAccount).val(RemoveSpecialCharacters($(inputAccount).val()));
         }
     </script>
 </body>

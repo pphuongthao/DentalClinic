@@ -30,11 +30,11 @@ namespace BackgroundServices
         private void InitializeComponent()
         {
             this.serviceProcessInstaller1 = new System.ServiceProcess.ServiceProcessInstaller();
-            this.serviceProcessInstaller1.Account = System.ServiceProcess.ServiceAccount.LocalSystem;
             this.serviceInstaller1 = new System.ServiceProcess.ServiceInstaller();
             // 
             // serviceProcessInstaller1
             // 
+            this.serviceProcessInstaller1.Account = System.ServiceProcess.ServiceAccount.LocalSystem;
             this.serviceProcessInstaller1.Password = null;
             this.serviceProcessInstaller1.Username = null;
             // 
@@ -42,8 +42,6 @@ namespace BackgroundServices
             // 
             this.serviceInstaller1.Description = "Send mail schedule";
             this.serviceInstaller1.ServiceName = "SendMailService";
-            
-            
             // 
             // ProjectInstaller
             // 

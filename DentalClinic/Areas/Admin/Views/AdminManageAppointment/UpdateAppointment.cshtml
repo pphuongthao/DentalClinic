@@ -1,7 +1,8 @@
 ﻿
 @{
-    ViewBag.Menu = "manage-appointment";
+
 }
+
 <link href="~/Content/datepicker.min.css" rel="stylesheet" />
 @section styles{
     <style>
@@ -162,13 +163,14 @@
 
 
 <div class="card">
+    <input id="UserAppointmentId" value="@ViewBag.UserAppointmentId" type="hidden" />
     <div class="form-add-customer" id="form-add">
-        <div style="padding: 20px; text-align: center;"><h2>Đặt lịch hẹn</h2></div>
+        <div style="padding: 20px; text-align: center;"><h2>Cập nhật lịch hẹn</h2></div>
         <div class="info-detail" id="info-detail">
             <div class="form-group">
                 <label class="font-weight-semibold"> Khách hàng</label>
                 <div style="display:flex">
-                    <select class="form-control" id="UserId">
+                    <select class="form-control" id="UserIds">
                         <option value="">Chọn khách hàng</option>
                     </select>
                     <button class="btn btn-sm btn-primary btn-add-supplier" onclick="openAddUserModal()"><i class="fa-solid fa-plus"></i></button>
@@ -194,26 +196,26 @@
                     <div>
                         <select class="form-select" id="hour">
                             <option value="">Chọn giờ khám</option>
-                            <option value="">8:00</option>
-                            <option value="">8:30</option>
-                            <option value="">9:00</option>
-                            <option value="">9:30</option>
-                            <option value="">10:00</option>
-                            <option value="">10:30</option>
-                            <option value="">11:00</option>
-                            <option value="">11:30</option>
-                            <option value="">12:00</option>
-                            <option value="">13:00</option>
-                            <option value="">13:30</option>
-                            <option value="">14:00</option>
-                            <option value="">14:30</option>
-                            <option value="">15:00</option>
-                            <option value="">15:30</option>
-                            <option value="">16:00</option>
-                            <option value="">16:30</option>
-                            <option value="">17:00</option>
-                            <option value="">17:30</option>
-                            <option value="">18:00</option>
+                            <option value="8:00">8:00</option>
+                            <option value="8:30">8:30</option>
+                            <option value="9:00">9:00</option>
+                            <option value="9:30">9:30</option>
+                            <option value="10:00">10:00</option>
+                            <option value="10:30">10:30</option>
+                            <option value="11:00">11:00</option>
+                            <option value="11:30">11:30</option>
+                            <option value="12:00">12:00</option>
+                            <option value="13:00">13:00</option>
+                            <option value="13:30">13:30</option>
+                            <option value="14:00">14:00</option>
+                            <option value="14:30">14:30</option>
+                            <option value="15:00">15:00</option>
+                            <option value="15:30">15:30</option>
+                            <option value="16:00">16:00</option>
+                            <option value="16:30">16:30</option>
+                            <option value="17:00">17:00</option>
+                            <option value="17:30">17:30</option>
+                            <option value="18:00">18:00</option>
                         </select>
                     </div>
                 </div>
@@ -268,7 +270,7 @@
             </div>
             <div class="form-custom">
                 <div class="form-footer" style="align-items: center;">
-                    <button type="button" onclick="AddAppointment();" class="create-button btn btn-primary">Đặt hẹn</button>
+                    <button type="button" onclick="UpdateAppointment();" class="create-button btn btn-primary">Cập nhật</button>
                 </div>
             </div>
         </div>
@@ -304,7 +306,7 @@
                         <div class="label-custom">
                             <label class="font-weight-semibold" for="phoneNum">Số điện thoại:</label>
                         </div>
-                        <input type="text" class="form-control" id="phoneNum" placeholder="Số điện thoại" value="" onkeyup="ValidateInputOnlyPhoneNumber(event, this);">
+                        <input type="text" class="form-control" id="phoneNum" placeholder="Số điện thoại" value="">
                     </div>
 
                     <div class="form-custom">
@@ -326,6 +328,7 @@
         </div>
     </div>
 </div>
+
 
 @section Scripts{
     <script src="~/Scripts/helper.js"></script>
@@ -378,10 +381,10 @@
             });
             let rs = await rp.json();
 
-            $('#UserId').html('<option value="" selected>Chọn khách hàng</option>');
+            $('#UserIds').html('<option value="" selected>Chọn khách hàng</option>');
             for (let index = 0; index < rs.data.length; index++) {
                 var x = rs.data[index]
-                $('#UserId').append(`<option value="${x.UserId}">${x.Name}</option>`);
+                $('#UserIds').append(`<option value=${x.UserId}>${x.Name}</option>`);
             }
         }
 
@@ -401,7 +404,6 @@
             if (model.Email === '') {
                 alert("Bạn cần thêm email."); return;
             }
-            if (!validateEmail(model.Email)) { alert('Email không đúng định dạng.'); return; }
             if (model.Phone === '') {
                 alert("Bạn cần thêm số điện thoại."); return;
             }
@@ -420,7 +422,7 @@
             if (GetObjectProperty(rs, 'status') === Enum.ResponseStatus.SUCCESS) {
                 if (rs.message !== '' && rs.message !== null) alert(rs.message);
                 /*alert('Thêm khách hàng thành công');*/
-                $('#UserId').append(`<option selected value="${rs.data.UserId}">${rs.data.Name}</option>`);
+                $('#UserIds').append(`<option selected value="${rs.data.UserId}">${rs.data.Name}</option>`);
                 closeModal();
             }
         }
@@ -442,20 +444,20 @@
             }
             if (flag === 0 && id !== '') {
                 $('#list-service-pick').append(`
-                                <div class="item-pick" data-id="${id}" data-amount="${price}" data-time="${expectTime}">
-                                                        <div class="icon-left">
-                                                            -
-                                                        </div>
-                                                        <div class="content">
-                                                            <div>${text}</div>
-                                                            <div>${expectTime} (phút)</div>
-                                                            <div>${NumberFormat(parseInt(price))} đ</div>
-                                                        </div>
-                                                        <div class="button-delete" onclick="deleteButton(this);">
-                                                            x
-                                                        </div>
-                                                    </div>
-                                `);
+                                            <div class="item-pick" data-id="${id}" data-amount="${price}" data-time="${expectTime}">
+                                                                    <div class="icon-left">
+                                                                        -
+                                                                    </div>
+                                                                    <div class="content">
+                                                                        <div>${text}</div>
+                                                                        <div>${expectTime} (phút)</div>
+                                                                        <div>${NumberFormat(parseInt(price))} đ</div>
+                                                                    </div>
+                                                                    <div class="button-delete" onclick="deleteButton(this);">
+                                                                        x
+                                                                    </div>
+                                                                </div>
+                                            `);
             }
             totalPrice();
         }
@@ -474,17 +476,11 @@
             totalPrice();
         }
 
-        ///Add Appointment
-        const AddAppointment = async function () {
-            let datetimePicker = $('#date').val().split('-');
-            let day = parseInt(datetimePicker[0]);
-            let month = parseInt(datetimePicker[1]);
-            let year = parseInt(datetimePicker[2]);
 
-            let timePicker = $('#hour').find(':selected').text().split(':');
-            let hour = parseInt(timePicker[0]);
-            let minute = parseInt(timePicker[1]);
-
+        const UpdateAppointment = async function () {
+            if (confirm('Bạn có chắc muốn cập nhật lịch hẹn này?') === false) return;
+            let date = $('#date').val().split('-');
+            let hour = $('#hour').val().split(':');
             let listService = [];
             let listDataPick = $('#list-service-pick').find('.item-pick');
             for (let i = 0; i < listDataPick.length; i++) {
@@ -493,48 +489,80 @@
                     ExpectTime: $(listDataPick[i]).data('time')
                 });
             }
-
             let model = {
+                UserAppointmentId: $('#UserAppointmentId').val(),
                 DoctorId: $('#DoctorId').find(':selected').val(),
-                UserId: $('#UserId').find(':selected').val(),
-                Day: day,
-                Month: month,
-                Year: year,
-                Hour: hour,
-                Minute: minute,
+                UserId: $('#UserIds').find(':selected').val(),
+                Day: date[0],
+                Month: date[1],
+                Year: date[2],
+                Hour: hour[0],
+                Minute: hour[1],
                 ListServiceId: listService,
                 Remind: $('#hourRemind').find(':selected').val() + ":" + $('#minuteRemind').find(':selected').val() + ":" + "00.000",
                 UserNote: $('#UserNote').val()
             }
-            console.log(model)
-            let rp = await fetch('/api/AdminManageAppointment/AddAppointment', {
+            console.log(model);
+            let url = '/api/AdminManageAppointment/UpdateAppointment';
+            if (GetObjectProperty(model, 'UserAppointmentId') === '') url = '/api/AdminManageAppointment/AddAppointment';
+            const rp = await fetch(url, {
                 method: 'post',
                 headers: Enum.OptionAdminHeaderDefault,
                 body: JSON.stringify(model)
             });
             let rs = await rp.json();
-            if (CheckErrorResponse(rs) === false) return;
-            if (GetObjectProperty(rs, 'status') === Enum.ResponseStatus.SUCCESS) {
-                Swal.fire({
-                    icon: "success",
-                    title: "Đặt lịch hẹn thành công.",
-                    preConfirm: function () {
-                        window.location.href = '/admin/adminmanageappointment/manageappointment';
-                    }
-                })
-            } else {
-                alert(rs.Message);
-            }
 
+
+            if (GetObjectProperty(rs, 'status') === Enum.ResponseStatus.SUCCESS) {
+                alert('Cập nhật lịch hẹn thành công')
+                window.location.href = '/Admin/adminmanageappointment/manageappointment';
+            }
         }
-        function validateEmail($email) {
-            var emailReg = /^([\w-\.]+@@([\w-]+\.)+[\w-]{2,4})?$/;
-            return emailReg.test($email);
+        const GetAppointment = async function () {
+            const id = $('#UserAppointmentId').val();
+            console.log(id)
+            if (id === '' || id === null || typeof id === 'undefined') return;
+            let rp = await fetch('/api/AdminManageAppointment/GetUserAppointmentById?id=' + id, {
+                method: 'get',
+                headers: Enum.OptionAdminHeaderDefault
+            });
+            let rs = await rp.json();
+            console.log(rs);
+            let item = rs.data;
+            $('#UserIds').val(item.userAppointment.UserId);
+            $('#DoctorId').val(item.userAppointment.DoctorId);
+            $('#date').val((item.userAppointment.Day >= 10 ? item.userAppointment.Day : '0' + item.userAppointment.Day) + "-" + (item.userAppointment.Month >= 10 ? item.userAppointment.Month : '0' + item.userAppointment.Month) + "-" + item.userAppointment.Year);
+            $('#hour').val(item.userAppointment.Hour + ":" + (item.userAppointment.Minute >= 10 ? item.userAppointment.Minute : '0' + item.userAppointment.Minute));
+            let remind = item.userAppointment.Remind;
+            let hour = remind.split(':')[0];
+            $('#hourRemind').val(hour);
+            let minute = remind.split(':')[1];
+            $('#minuteRemind').val(minute);
+            $('#UserNote').val(item.userAppointment.UserNote);
+
+            for (index = 0; index < item.lsService.length; index++) {
+                $('#list-service-pick').append(`
+                                            <div class="item-pick" data-id="${item.lsService[index].ServiceId}" data-amount="${item.lsService[index].Price}" data-time="${item.lsService[index].ExpectTime}">
+                                                                    <div class="icon-left">
+                                                                        -
+                                                                    </div>
+                                                                    <div class="content">
+                                                                        <div>${item.lsService[index].Name}</div>
+                                                                        <div>${item.lsService[index].ExpectTime} (phút)</div>
+                                                                        <div>${NumberFormat(parseInt(item.lsService[index].Price))} đ</div>
+                                                                    </div>
+                                                                    <div class="button-delete" onclick="deleteButton(this);">
+                                                                        x
+                                                                    </div>
+                                                                </div>
+                                            `);
+            }
         }
         const InitPage = async function () {
             await GetListUser();
             await GetListDoctor();
             await GetListService();
+            await GetAppointment();
             $(".modal-container").click(function (event) {
                 event.stopPropagation();
             });

@@ -27,6 +27,8 @@ namespace DentalClinic.Areas.Admin.ApiControllers
                 DateTime now = DateTime.Now;
                 DateTime prevmonth = now.AddMonths(-1);
                 DateTime prevyear = now.AddYears(-1);
+                // Báo cáo doanh thu tháng này, tháng trước
+                object ListReportToday = adminReportService.GetListReportToday(now.Day, now.Month, now.Year);
 
                 // Báo cáo doanh thu tháng này, tháng trước
                 object ListReportThisMonth = adminReportService.GetListReportDaily(now.Month, now.Year);
@@ -36,7 +38,7 @@ namespace DentalClinic.Areas.Admin.ApiControllers
                 object ListReportThisYear = adminReportService.GetListReportMonth(now.Year);
                 object ListReportPrevYear = adminReportService.GetListReportMonth(prevyear.Year);
 
-                return Success(new { ListReportThisMonth, ListReportPrevMonth, ListReportThisYear, ListReportPrevYear });
+                return Success(new { ListReportToday, ListReportThisMonth, ListReportPrevMonth, ListReportThisYear, ListReportPrevYear });
 
             }
             catch (Exception ex)
@@ -186,5 +188,6 @@ namespace DentalClinic.Areas.Admin.ApiControllers
                 }
             }
         }
+
     }
 }

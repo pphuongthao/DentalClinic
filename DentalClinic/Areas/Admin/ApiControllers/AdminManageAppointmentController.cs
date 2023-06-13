@@ -34,10 +34,102 @@ namespace DentalClinic.Areas.Admin.ApiControllers
             }
         }
 
+        [HttpPost]
+        public JsonResult GetListUserAppointmentByDate(UserAppointmentDateRequest req)
+        {
+            try
+            {
+                //date = yyyy/MM/dd
+                req.Date = req.Date.AddHours(7);
+                AdminManageAppointmentService adminManageAppointmentService = new AdminManageAppointmentService(null);
+
+                var data = adminManageAppointmentService.GetListUserAppointment();
+                var appointments = data.ListUserAppointmentInfor.Where(app =>
+                {
+                    bool oke = false;
+                    switch (req.Type)
+                    {
+                        case "day":
+                            {
+                                var from = req.Date.Date;
+                                var to = from.AddDays(req.NumAdd).Date;
+                                var dateDB = new DateTime(app.Year, app.Month, app.Day);
+                                if (req.NumAdd >= 0)
+                                {
+                                    if (dateDB >= from && dateDB < to)
+                                    {
+                                        oke = true;
+                                    }
+                                }
+                                else
+                                {
+                                    if (dateDB >= to && dateDB < from)
+                                    {
+                                        oke = true;
+                                    }
+                                }
+                            }
+                            break;
+                        case "month":
+                            {
+                                var from = new DateTime(req.Date.Year, req.Date.Month, 1);
+                                var to = from.AddMonths(req.NumAdd);
+                                var dateDB = new DateTime(app.Year, app.Month, app.Day);
+                                if (req.NumAdd >= 0)
+                                {
+                                    if (dateDB >= from && dateDB < to)
+                                    {
+                                        oke = true;
+                                    }
+                                }
+                                else
+                                {
+                                    if (dateDB >= to && dateDB < from)
+                                    {
+                                        oke = true;
+                                    }
+                                }
+                            }
+                            break;
+                        case "year":
+                            {
+                                var from = new DateTime(req.Date.Year,1,1);
+                                var to = from.AddYears(req.NumAdd);
+                                var dateDB = new DateTime(app.Year, app.Month, app.Day);
+                                if(req.NumAdd >= 0)
+                                {
+                                    if (dateDB >= from && dateDB < to)
+                                    {
+                                        oke = true;
+                                    }
+                                }
+                                else
+                                {
+                                    if (dateDB >= to && dateDB < from)
+                                    {
+                                        oke = true;
+                                    }
+                                }
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                    return oke && app.Status == "DONE";
+                }).ToList();
+
+                return Success(appointments);
+            }
+            catch (Exception ex)
+            {
+                return Error(ex.Message);
+            }
+        }
+
 
         [HttpGet]
         [ApiAdminTokenRequire]
-        public JsonResult GetListAppointmentOfUser(string UserId, int PageIndex, string AppointmentCode = "", long? CreateStart = null, long? CreateEnd = null)
+        public JsonResult GetListAppointmentOfUser(string UserId, int PageIndex, string AppointmentCode = "", string CreateStart = "", string CreateEnd = "")
         {
             try
             {
@@ -59,6 +151,7 @@ namespace DentalClinic.Areas.Admin.ApiControllers
                     item.lsServiceDental.AddRange(lsServiceDental);
                     item.TotalAmount = totalPriceService;
                 }
+
                 return Success(listUserAppointmentView);
             }
             catch (Exception ex)
@@ -142,6 +235,8 @@ namespace DentalClinic.Areas.Admin.ApiControllers
                         userAppointment.Day = model.Day;
                         userAppointment.Month = model.Month;
                         userAppointment.Year = model.Year;
+                        userAppointment.Remind = model.Remind;
+                        userAppointment.UserNote = model.UserNote;
                         userAppointment.Status = UserAppointment.EnumStatus.PENDING;
                         userAppointment.CreateTime = HelperProvider.GetSeconds();
 
@@ -218,6 +313,9 @@ namespace DentalClinic.Areas.Admin.ApiControllers
                     item.lsServiceDental.AddRange(lsServiceDental);
                     item.TotalAmount = totalPriceService;
                 }
+
+                //test
+                //var test = GetListUserAppointmentByDate(DateTime.Now, "day");
                 return Success(listUserAppointmentView);
             }
             catch (Exception ex)
@@ -261,7 +359,7 @@ namespace DentalClinic.Areas.Admin.ApiControllers
 
                         //Email
                         if (!string.IsNullOrEmpty(userAppointment.Email))
-                            SMSProvider.SendOTPViaEmail(userAppointment.Email, "", "THÔNG BÁO XÁC NHẬN LỊCH HẸN"," Phòng khám nha khoa Phương Thảo đã tiếp nhận lịch hẹn [" + userAppointment.AppointmentCode + "] của bạn. Hãy chú ý để đến phòng khám đúng hẹn. Xin trân trọng cảm ơn!", 1);
+                            SMSProvider.SendOTPViaEmail(userAppointment.Email, userAppointment.Name, userAppointment.AppointmentCode, userAppointment.Day,userAppointment.Month, userAppointment.Year, userAppointment.Hour, userAppointment.Minute,  "THÔNG BÁO XÁC NHẬN LỊCH HẸN"," Phòng khám nha khoa Phương Thảo đã tiếp nhận lịch hẹn [" + userAppointment.AppointmentCode + "] của bạn. Hãy chú ý để đến phòng khám đúng hẹn. Xin trân trọng cảm ơn!");
 
                         // Thông báo cho người dùng
                         Notification notification = new Notification();
@@ -284,9 +382,9 @@ namespace DentalClinic.Areas.Admin.ApiControllers
         }
 
 
-        [HttpGet]
+        [HttpPost]
         [ApiAdminTokenRequire]
-        public JsonResult SystemCancelAppointment(string userAppointmentId)
+        public JsonResult SystemCancelAppointment(ReasonReject model)
         {
             try
             {
@@ -296,25 +394,34 @@ namespace DentalClinic.Areas.Admin.ApiControllers
                     using (var transaction = connect.BeginTransaction())
                     {
                         UserService userService = new UserService(connect);
+                        ReasonRejectService reasonRejectService = new ReasonRejectService(connect);
                         UserMakeAppointmentService userMakeAppointmentService = new UserMakeAppointmentService(connect);
                         AppointmentStatusService appointmentStatusService = new AppointmentStatusService(connect);
                         UserAdmin userAdmin = SecurityProvider.GetUserAdminByToken(Request);
                         if (userAdmin == null) return Unauthorized();
 
                         // Lấy ra
-                        UserAppointment userAppointment = userMakeAppointmentService.GetUserAppointmentById(userAppointmentId, transaction);
+                        UserAppointment userAppointment = userMakeAppointmentService.GetUserAppointmentById(model.UserAppointmentId, transaction);
                         if (userAppointment == null) throw new Exception("Không tìm thấy lịch hẹn !");
                         if (userAppointment.Status == UserAppointment.EnumStatus.DONE || userAppointment.Status == UserAppointment.EnumStatus.USER_CANCEL || userAppointment.Status == UserAppointment.EnumStatus.SYSTEM_CANCEL) throw new Exception("Trạng thái lịch hẹn không hợp lệ !");
                         // Set lại trạng thái 
-                        if (!userMakeAppointmentService.UpdateUserAppointmentStatus(userAppointmentId, UserAppointment.EnumStatus.SYSTEM_CANCEL, transaction)) throw new Exception();
+                        if (!userMakeAppointmentService.UpdateUserAppointmentStatus(userAppointment.UserAppointmentId, UserAppointment.EnumStatus.SYSTEM_CANCEL, transaction)) throw new Exception();
 
                         // Lưu lịch sử Order_status
                         AppointmentStatus appointmentStatus = new AppointmentStatus();
                         appointmentStatus.AppointmentStatusId = Guid.NewGuid().ToString();
-                        appointmentStatus.UserAppointmentId = userAppointmentId;
+                        appointmentStatus.UserAppointmentId = userAppointment.UserAppointmentId;
                         appointmentStatus.Status = UserAppointment.EnumStatus.SYSTEM_CANCEL;
                         appointmentStatus.CreateTime = HelperProvider.GetSeconds();
                         if (!appointmentStatusService.CreateAppointmentStatus(appointmentStatus, transaction)) throw new Exception();
+
+                        //Lưu lý do hủy
+                        ReasonReject reasonReject = new ReasonReject();
+                        reasonReject.ReasonRejectId = Guid.NewGuid().ToString();
+                        reasonReject.UserAppointmentId = userAppointment.UserAppointmentId;
+                        reasonReject.Message = model.Message;
+                        reasonReject.CreateTime = HelperProvider.GetSeconds();
+                        if (!reasonRejectService.InsertReasonReject(reasonReject, transaction)) throw new Exception();
 
                         // Thông báo cho người dùng
                         Notification notification = new Notification();
@@ -506,11 +613,13 @@ namespace DentalClinic.Areas.Admin.ApiControllers
             {
                 UserAdmin userAdmin = SecurityProvider.GetUserAdminByToken(Request);
                 if (userAdmin == null) return Unauthorized();
+                ReasonRejectService reasonRejectService = new ReasonRejectService();
                 UserMakeAppointmentService userMakeAppointmentService = new UserMakeAppointmentService();
                 UserAppointment userAppointment = userMakeAppointmentService.GetUserAppointmentById(userAppointmentId);
                 if (userAppointment == null) return Error("Lịch hẹn này không tồn tại!");
                 List<UserAppointmentServiceUpdate> listUserAppointmentDetail = userMakeAppointmentService.GetListUserAppointmentServiceUpdateByUserAppointmentId(userAppointmentId);
-                return Success(new { userAppointment, listUserAppointmentDetail });
+                ReasonReject reasonReject = reasonRejectService.GetReasonRejectById(userAppointmentId);
+                return Success(new { userAppointment, listUserAppointmentDetail, reasonReject });
             }
             catch (Exception ex)
             {
@@ -694,6 +803,175 @@ namespace DentalClinic.Areas.Admin.ApiControllers
             response.Content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("attachment");
             response.Content.Headers.ContentDisposition.FileName = "invoice.pdf";
             return response;
+        }
+
+        [HttpPost]
+        public JsonResult AddServiceToAppointmentDetail(ListServiceAddAppointmentDetail model)
+        {
+            try
+            {
+                using (var connection = BaseService.Connect())
+                {
+                    connection.Open();
+                    using (var transaction = connection.BeginTransaction())
+                    {
+
+                        AdminManageAppointmentService adminManageAppointmentService = new AdminManageAppointmentService(connection);
+                        ServiceService serviceService = new ServiceService(connection);
+                        UserAppointment userAppointment = adminManageAppointmentService.GetUserAppointmentById(model.UserAppointmentId, transaction);
+                        if (userAppointment == null) return Error("Không tìm thấy lịch hẹn này.");
+
+                        decimal totalAmountAdd = 0;
+                        for (int i = 0; i < model.ListServiceId.Count; i++)
+                        {
+                            string ServiceId = model.ListServiceId[i].ServiceId;
+                            ServiceDental serviceDental = serviceService.GetServiceById(ServiceId, transaction);
+                            if (serviceDental == null) return Error("Dịch vụ này không tồn tại");
+                            totalAmountAdd += serviceDental.Price;
+
+                            UserAppointmentService userAppointmentService = new UserAppointmentService();
+                            userAppointmentService.UserAppointmentServiceId = Guid.NewGuid().ToString();
+                            userAppointmentService.UserAppointmentId = userAppointment.UserAppointmentId;
+                            userAppointmentService.ServiceId = serviceDental.ServiceId;
+                            userAppointmentService.ExpectTime = serviceDental.ExpectTime;
+                            if (!adminManageAppointmentService.AddAppointmentServiceToDetail(userAppointmentService, transaction)) throw new Exception();
+                        }
+                        userAppointment.TotalAmount += totalAmountAdd;
+                        adminManageAppointmentService.UpdateTotalAmountAppointmentService(userAppointment,transaction);
+                        transaction.Commit();
+                        return Success();
+                    }
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+        [HttpGet]
+        public JsonResult GetReasonRejectById(string reasonRejectId)
+        {
+            try
+            {
+                ReasonRejectService reasonRejectService = new ReasonRejectService();
+                return Success(reasonRejectService.GetReasonRejectById(reasonRejectId));
+
+            }
+            catch (Exception ex)
+            {
+                return Error(ex.Message);
+
+            }
+        }
+
+        [HttpGet]
+        public JsonResult GetUserAppointmentById(string id)
+        {
+            AdminManageAppointmentService adminManageAppointmentService = new AdminManageAppointmentService();
+            UserAppointment userAppointment = adminManageAppointmentService.GetUserAppointmentById(id);
+            List<ServiceDental> lsService = adminManageAppointmentService.GetServiceByUserAppointmentId(id);
+            return Success(new { userAppointment, lsService });
+        }
+
+        [HttpPost]
+        [ApiAdminTokenRequire]
+        public JsonResult UpdateAppointment(UserAppointmentRequest model)
+        {
+            try
+            {
+                using (var connect = BaseService.Connect())
+                {
+                    connect.Open();
+                    using (var transaction = connect.BeginTransaction())
+                    {
+                        UserService userService = new UserService(connect);
+                        DoctorService doctorService = new DoctorService(connect);
+                        ServiceService serviceService = new ServiceService(connect);
+                        UserMakeAppointmentService userMakeAppointmentService = new UserMakeAppointmentService(connect);
+                        AdminManageAppointmentService adminManageAppointmentService = new AdminManageAppointmentService(connect);
+
+                        User user = userService.GetUserById(model.UserId, transaction);
+                        if (user == null) throw new Exception("Không tìm thấy người dùng");
+
+                        Doctor doctor = doctorService.GetDoctorById(model.DoctorId, transaction);
+                        if (doctor == null) return Error("Bạn chưa chọn bác sĩ.");
+
+                        long now = HelperProvider.GetSeconds();
+                        long timeOrder = HelperProvider.GetSeconds(new DateTime(model.Year, model.Month, model.Day, model.Hour, model.Minute, 0, 0));
+                        if (timeOrder <= now) return Error("Bạn phải đặt sau thời điểm hiện tại");
+
+                        if (model.Hour <= 0) return Error("Bạn chưa chọn giờ hẹn.");
+
+                        UserAppointment userAppointment = adminManageAppointmentService.GetUserAppointmentById(model.UserAppointmentId, transaction);
+                        if (userAppointment == null) return Error("Không tìm thấy lịch hẹn này.");
+
+                        userAppointment.UserId = user.UserId;
+                        userAppointment.Name = user.Name;
+                        userAppointment.Phone = user.Phone;
+                        userAppointment.Email = user.Email;
+                        userAppointment.Address = user.Address;
+                        userAppointment.DoctorId = doctor.DoctorId;
+                        userAppointment.Hour = model.Hour;
+                        userAppointment.Minute = model.Minute;
+                        userAppointment.Day = model.Day;
+                        userAppointment.Month = model.Month;
+                        userAppointment.Year = model.Year;
+                        userAppointment.Remind = model.Remind;
+                        userAppointment.UserNote = model.UserNote;
+                        userAppointment.CreateTime = HelperProvider.GetSeconds();
+
+                        List<UserAppointmentService> lsUserAppointmentService = adminManageAppointmentService.GetAllServiceByUserAppointmentId(userAppointment.UserAppointmentId, transaction);
+                        for(int index= 0; index <lsUserAppointmentService.Count; index++)
+                        {
+                            if (!adminManageAppointmentService.DeleteServiceByUserAppointmentServiceId(lsUserAppointmentService[index].UserAppointmentServiceId, transaction)) throw new Exception();
+                        }
+                        int totalExpectTime = 0;
+                        decimal totalPrice = 0;
+                        if (model.ListServiceId.Count <= 0) return Error("Bạn chưa chọn dịch vụ nào.");
+                        for (int i = 0; i < model.ListServiceId.Count; i++)
+                        {
+                            string ServiceId = model.ListServiceId[i].ServiceId;
+                            ServiceDental serviceDental = serviceService.GetServiceById(ServiceId, transaction);
+
+                            UserAppointmentService userAppointmentService = new UserAppointmentService();
+                            userAppointmentService.UserAppointmentServiceId = Guid.NewGuid().ToString();
+                            userAppointmentService.UserAppointmentId = userAppointment.UserAppointmentId;
+                            userAppointmentService.ServiceId = serviceDental.ServiceId;
+                            userAppointmentService.ExpectTime = serviceDental.ExpectTime;
+                            totalExpectTime += serviceDental.ExpectTime;
+                            totalPrice += serviceDental.Price;
+                            if (!userMakeAppointmentService.CreateUserAppointmentService(userAppointmentService, transaction)) throw new Exception();
+                        }
+                        userAppointment.TotalExpectTime = totalExpectTime;
+                        userAppointment.TotalAmount = totalPrice;
+                        // lấy ra danh sách đơn của bác sĩ ngày đơn đặt mới
+                        List<UserAppointment> lsuserAppointmentsByDoctor = userMakeAppointmentService.GetListUserAppointmentByDoctorId(model.DoctorId, model.Day, model.Month, model.Year, transaction);
+                        List<TimeDoctor> lstimeDoctors = new List<TimeDoctor>();
+                        for (int i = 0; i < lsuserAppointmentsByDoctor.Count; i++)
+                        {
+                            TimeDoctor timeDoctor = new TimeDoctor();
+                            timeDoctor.MinTime = lsuserAppointmentsByDoctor[i].Hour * 60 + lsuserAppointmentsByDoctor[i].Minute;
+                            timeDoctor.MaxTime = timeDoctor.MinTime + lsuserAppointmentsByDoctor[i].TotalExpectTime;
+                            lstimeDoctors.Add(timeDoctor);
+                        }
+                        int minTime = model.Hour * 60 + model.Minute;
+                        int maxTime = minTime + userAppointment.TotalExpectTime;
+                        bool checkOrder = UserProvider.CheckTimeOrder(minTime, maxTime, lstimeDoctors, connect, transaction);
+                        if (checkOrder == false)
+                        {
+                            throw new Exception("Bác sĩ bận trong thời gian này, vui lòng chọn bác sĩ hoặc thời gian khác");
+                        }
+                        if (!userMakeAppointmentService.UpdateUserAppointment(userAppointment, transaction)) throw new Exception();
+                        transaction.Commit();
+                        return Success(new { AppointmentCode = userAppointment.AppointmentCode });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Error(ex.Message);
+            }
         }
     }
 }

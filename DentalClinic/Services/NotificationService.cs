@@ -54,5 +54,10 @@ namespace DentalClinic.Services
             int count = this._connection.Query<int>(query, new { userId, isRead = false }, transaction).FirstOrDefault();
             return count;
         }
+        public void UpdateAllNotificationReadOfUser(string userId, IDbTransaction transaction = null)
+        {
+            string query = "UPDATE [dbo].[notification] SET IsRead = 1 WHERE UserId=@userId and IsRead = 0";
+            this._connection.Execute(query, new { userId }, transaction);
+        }
     }
 }

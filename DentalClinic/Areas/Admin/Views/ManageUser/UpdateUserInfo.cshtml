@@ -250,7 +250,7 @@
                             <div class="label-custom">
                                 <label class="font-weight-semibold" for="phoneNum">Số điện thoại:</label>
                             </div>
-                            <input type="text" class="" id="phoneNum" placeholder="Số điện thoại" value="" >
+                            <input type="text" class="" id="phoneNum" placeholder="Số điện thoại" value="" onkeyup="ValidateInputOnlyPhoneNumber(event, this);">
                         </div>
 
                         <div class="form-custom">
@@ -340,7 +340,7 @@
                 Phone: $('#phoneNum').val(),
                 SearchName: '',
             }
-
+            if (!validateEmail(model.Email)) { alert('Email không đúng định dạng.'); return; }
             model.SearchName = RemoveVietnameseTones(model.Name);
             $(el).addClass('is-loading')
             let rq = await fetch(Enum.ApiUrl + '/api/ManageUser/UpdateUser', {
@@ -400,7 +400,10 @@
                 $(this).remove();
             }).appendTo('body');
         });
-
+        function validateEmail($email) {
+            var emailReg = /^([\w-\.]+@@([\w-]+\.)+[\w-]{2,4})?$/;
+            return emailReg.test($email);
+        }
         const initPage = async function () {
             await getUserDetail();
 

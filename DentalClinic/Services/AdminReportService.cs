@@ -80,7 +80,23 @@ namespace DentalClinic.Services
 
         #region Report
 
-        public object GetListReportDaily(int month, int year, IDbTransaction transaction = null)
+        public object GetListReportToday(int day, int month, int year, IDbTransaction transaction = null)
+        {
+            string querySelect = "select * ";
+            string querySum = "select SUM(TotalPrice) ";
+            string query = "from [report_daily] where 1=1 and Day = @day and Month = @month and Year = @year";
+
+            decimal? TotalPrice = this._connection.Query<decimal?>(querySum + query, new { day, month, year }, transaction).FirstOrDefault();
+
+            query += "  order by Year, Month, Day asc";
+            List<ReportDaily> ListAllReportDaily = this._connection.Query<ReportDaily>(querySelect + query, new { day, month, year }, transaction).ToList();
+            return new
+            {
+                ListAllReportDaily,
+                TotalPrice
+            };
+        }
+        public object GetListReportDaily( int month, int year, IDbTransaction transaction = null)
         {
             string querySelect = "select * ";
             string querySum = "select SUM(TotalPrice) ";
@@ -96,7 +112,6 @@ namespace DentalClinic.Services
                 TotalPrice
             };
         }
-
         public object GetListReportMonth(int year, IDbTransaction transaction = null)
         {
             string querySelect = "select * ";

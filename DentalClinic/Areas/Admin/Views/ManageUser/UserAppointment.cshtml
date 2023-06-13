@@ -75,6 +75,83 @@
         td button {
             margin-right: 10px;
         }
+        .modalReason {
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.4);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .modal-container {
+            background-color: #fff;
+            width: 600px;
+            max-width: calc(100% - 32px);
+            min-height: 200px;
+            position: relative;
+            animation: modalFadeIn ease 0.5s;
+            transition: top 0.4s, opacity 0.4s;
+        }
+
+        .modal-header {
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center !important;
+            font-size: 20px;
+            border-bottom: solid #ccc 0.5px;
+            text-transform: uppercase;
+        }
+
+        .modal-body {
+            width: 90%;
+            margin: auto;
+        }
+
+        .modal-footer {
+            width: 90%;
+            margin: auto;
+            justify-content: end;
+            display: flex;
+            gap: 10px;
+            padding-bottom: 10px;
+            padding-top: 10px;
+        }
+
+            .modal-footer .update-btn {
+                width: 100px;
+                padding: 5px 5px;
+                background-color: #435ebe;
+                color: white;
+                border-radius: 5px;
+                cursor: pointer;
+                border: solid #435ebe 1px;
+            }
+
+            .modal-footer .close-modal {
+                width: fit-content;
+                color: black;
+                border: solid #ccc 0.5px;
+                cursor: pointer;
+                border-radius: 5px;
+            }
+
+        .update-appointment {
+            cursor: pointer;
+            color: orangered;
+            font-weight: 500 !important;
+        }
+
+            .update-appointment :active {
+                cursor: pointer;
+                color: darkred;
+                font-weight: 500 !important;
+            } 
     </style>
 }
 
@@ -100,14 +177,7 @@
                             <label class="font-weight-semibold" for="keyword">Từ khoá</label>
                             <input type="text" class="form-control" id="keyword" placeholder="Nhập từ khoá tìm kiếm" required>
                         </div>
-                        <div class="date-create">
-                            <label class="font-weight-semibold">Ngày hẹn</label>
-                            <div class="date-pick">
-                                <input class="form-control" id="start-date" />
-                                <input class="form-control" id="end-date" />
-                            </div>
 
-                        </div>
                         <div class="search-tab-3"><a onclick="SearchAppointment();" class="btn btn-primary">Tìm kiếm</a></div>
 
                     </div>
@@ -138,6 +208,28 @@
 </div>
 <div class="product-page-list">
 </div>
+
+@*Model Reason Reject*@
+<div id="modal" class="modalReason">
+    <div class="modal-container">
+        <div class="modal-header">Lý do hủy</div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label class="font-weight-semibold" for="name"></label>
+                <textarea class="form-control" aria-label="With textarea" style="resize:none;" placeholder="Nhập lý do hủy" rows="3" id="ReasonReject"></textarea>
+            </div>
+            <input id="UserAppointmentId" hidden />
+        </div>
+
+        <div class="modal-footer">
+            <button class="close-modal btn" onclick="closeModal()">Đóng</button>
+            <button class="btn btn-primary" onclick="systemCancel(event)">Lưu</button>
+
+        </div>
+
+    </div>
+
+</div>
 @section Scripts{
     <script src="~/Content/assets/js/datepicker.min.js"></script>
     <script>
@@ -155,14 +247,23 @@
             getListAppointment();
         }
 
+        const closeModal = function () {
+            $('#ReasonReject').val('');
+            $('.modalReason').css('display', 'none');
+        }
 
+        const openModal = function (el, event) {
+            let id = $(el).data('id');
+            console.log(id);
+            $('#UserAppointmentId').val(id);
+            $('.modalReason').css('display', 'flex');
+            event.stopImmediatePropagation();
+        }
         let _currentPage = 1;
-        const getListAppointment = async function (page = 1) {
+        const getListAppointment = async function (page = 1, fromTime = '', toTime = '') {
             _currentPage = page;
 
             let userId = '@ViewBag.Id';
-            let fromTime = ConvertTime($('#start-date').val());
-            let toTime = ConvertTime($('#end-date').val(), 23, 59, 59, 999);
             let keyword = $('#keyword').val();
 
             let rq = await fetch(Enum.ApiUrl + '/api/AdminManageAppointment/GetListAppointmentOfUser?UserId=' + userId + '&AppointmentCode=' + keyword + '&CreateStart=' + fromTime + '&CreateEnd=' + toTime + '&PageIndex=' + page, {
@@ -183,35 +284,51 @@
                 for (let index = 0; index < rs.data.ListUserAppointmentInfor.length; index++) {
                     var x = rs.data.ListUserAppointmentInfor[index];
                     let html = '<tr>';
-                    html += '<td>' + x.AppointmentCode + '</td>';
+                    html += '<td class="update-appointment" data-id=' + x.UserAppointmentId + ' onclick="updateAppointment(this)">' + x.AppointmentCode + '</td>';
                     html += '<td style="text-align:right">' + NumberFormat(x.TotalAmount) + ' VNĐ</td>';
                     html += '<td>' + x.NameDoctor + '</td>';
-                    html += '<td>' + DateStringFormat({ stringDate: new Date(x.CreateTime) }) + '</td>';
+                    html += '<td>';
+                    html += (x.Hour >= 10 ? x.Hour : '0' + x.Hour) + ':';
+                    html += x.Minute >= 10 ? x.Minute : '0' + x.Minute;
+                    html += ', ' + (x.Day >= 10 ? x.Day : '0' + x.Day) + '/' + (x.Month >= 10 ? x.Month : '0' + x.Month) + '/' + x.Year;
+                    html += '</td>';
                     let status = '';
                     let button = '';
                     switch (x.Status) {
                         case 'PENDING':
                             status = '<span class="badge bg-light-warning"> Mới hẹn </span>';
                             button = '<button class="btn btn-primary btn-tone m-r-5 btn-sm" onclick="confirmPending(this)" data-id="' + x.UserAppointmentId + '"> Tiếp nhận </button>';
-                            button += '<button class="btn btn-danger btn-tone m-r-5 btn-sm" onclick="adminCancel(this)" data-id="' + x.UserAppointmentId + '"> Huỷ </button>';
+                            button += '<button class="btn btn-danger btn-tone m-r-5 btn-sm" onclick="openModal(this,event)" data-id="' + x.UserAppointmentId + '"> Huỷ </button>';
+                            button += '<button class="btn btn-primary btn-tone m-r-5 btn-sm" onclick="DetailAppointment(this)" data-id="' + x.UserAppointmentId + '"> Xem chi tiết </button>';
                             break;
                         case 'RECEIVE':
                             status = '<span class="badge bg-light-info"> Đã tiếp nhận </span>';
-                            button = '<button class="btn btn-success btn-tone m-r-5 btn-sm" data-id="' + x.UserAppointmentId + '" onclick="confirmReceive(this)"> Đã đến </button>';
+                            button = '<button class="btn btn-info btn-tone m-r-5 btn-sm" data-id="' + x.UserAppointmentId + '" onclick="confirmReceive(this)"> Đã đến </button>';
+                            button += '<button class="btn btn-danger btn-tone m-r-5 btn-sm" onclick="openModal(this,event)" data-id="' + x.UserAppointmentId + '"> Huỷ </button>';
+                            button += '<button class="btn btn-primary btn-tone m-r-5 btn-sm" onclick="DetailAppointment(this)" data-id="' + x.UserAppointmentId + '"> Xem chi tiết </button>';
                             break;
-
+                        case 'CONFIRM_ARRIVE':
+                            status = '<span class="badge bg-info"> Đến hẹn </span>';
+                            button = '<button class="btn btn-success btn-tone m-r-5 btn-sm" data-id="' + x.UserAppointmentId + '" onclick="confirmArrive(this)"> Hoàn thành </button>';
+                            button += '<button class="btn btn-primary btn-tone m-r-5 btn-sm" onclick="DetailAppointment(this)" data-id="' + x.UserAppointmentId + '"> Xem chi tiết </button>';
+                            break;
                         case 'DONE':
-                            status = '<span class="badge bg-light-success"> Đã đến </span>';
-
+                            status = '<span class="badge bg-light-success"> Hoàn thành </span>';
+                            button += '<button class="btn btn-primary btn-tone m-r-5 btn-sm" onclick="DetailAppointment(this)" data-id="' + x.UserAppointmentId + '"> Xem chi tiết </button>';
                             break;
                         case 'USER_CANCEL':
                             status = '<span class="badge bg-light-danger"> Người dùng huỷ </span>';
-
+                            button += '<button class="btn btn-primary btn-tone m-r-5 btn-sm" onclick="DetailAppointment(this)" data-id="' + x.UserAppointmentId + '"> Xem chi tiết </button>';
                             break;
                         case 'SYSTEM_CANCEL':
                             status = '<span class="badge bg-light-danger"> Hệ thống huỷ </span>';
-
+                            button += '<button class="btn btn-primary btn-tone m-r-5 btn-sm" onclick="DetailAppointment(this)" data-id="' + x.UserAppointmentId + '"> Xem chi tiết </button>';
                             break;
+                        case 'OUT_DATE':
+                            status = '<span class="badge bg-light-secondary"> Quá hẹn </span>';
+                            button += '<button class="btn btn-primary btn-tone m-r-5 btn-sm" onclick="DetailAppointment(this)" data-id="' + x.UserAppointmentId + '"> Xem chi tiết </button>';
+                            break;
+
                         default: break;
                     }
 
@@ -222,16 +339,44 @@
                 }
             }
         }
-
-        const adminCancel = async function (el) {
-            let UserAppointmentId = $(el).data('id');
+        const updateAppointment = async function (el) {
+            let id = $(el).data('id');
+            window.location.href = ('/admin/AdminManageAppointment/UpdateAppointment?userAppointmentId=' + id);
+            if (rs.status === 'error') if (rs.message !== '' && rs.message !== null) alert(rs.message);
+            if (rs.status === 'success') {
+                if (rs.message !== '' && rs.message !== null) alert(rs.message);
+            }
+        }
+        const confirmPending = async function (el) {
             $(el).addClass('is-loading');
-            if (confirm('Bạn có chắc chắn muốn huỷ lịch hẹn này ?')) {
-                let rq = await fetch(Enum.ApiUrl + '/Api/AdminManageAppointment/SystemCancelAppointment?userAppointmentId=' + UserAppointmentId, {
+            let UserAppointmentId = $(el).data('id');
+
+            if (confirm('Bạn có chắc chắn muốn xác nhận lịch hẹn này được tiếp nhận?')) {
+                let rq = await fetch(Enum.ApiUrl + '/Api/AdminManageAppointment/ConfirmAppointment?userAppointmentId=' + UserAppointmentId, {
                     method: 'get',
                     headers: Enum.OptionAdminHeaderDefault,
                 });
                 let rs = await rq.json();
+                $(el).removeClass('is-loading');
+                if (AdminCheckErrorResponse(rs) === false) return;
+
+                if (GetObjectProperty(rs, 'status') === Enum.ResponseStatus.SUCCESS) {
+                    alert('Cập nhật trạng thái thành công');
+                    window.location.reload();
+                }
+            }
+
+        }
+        const confirmReceive = async function (el) {
+            let UserAppointmentId = $(el).data('id');
+            $(el).addClass('is-loading');
+            if (confirm('Bạn có chắc chắn muốn xác nhận khách hàng đã đến ?')) {
+                let rq = await fetch(Enum.ApiUrl + '/api/AdminManageAppointment/ConfirmArrive?userAppointmentId=' + UserAppointmentId, {
+                    method: 'get',
+                    headers: Enum.OptionAdminHeaderDefault,
+                });
+                let rs = await rq.json();
+
                 $(el).removeClass('is-loading');
 
                 if (AdminCheckErrorResponse(rs) === false) return;
@@ -242,6 +387,66 @@
                 }
             }
 
+        }
+        const confirmArrive = async function (el) {
+            let UserAppointmentId = $(el).data('id');
+            $(el).addClass('is-loading');
+            if (confirm('Bạn có chắc chắn muốn xác nhận hoàn thành dịch vụ ?')) {
+                let rq = await fetch(Enum.ApiUrl + '/api/AdminManageAppointment/DoneAppointment?userAppointmentId=' + UserAppointmentId, {
+                    method: 'get',
+                    headers: Enum.OptionAdminHeaderDefault,
+                });
+                let rs = await rq.json();
+
+                $(el).removeClass('is-loading');
+
+                if (AdminCheckErrorResponse(rs) === false) return;
+
+                if (GetObjectProperty(rs, 'status') === Enum.ResponseStatus.SUCCESS) {
+                    alert('Cập nhật trạng thái thành công');
+                    window.location.reload();
+                }
+            }
+
+        }
+        const systemCancel = async function (event) {
+
+            Swal.fire({
+                icon: "question",
+                title: "Xác nhận hủy lịch hẹn này?",
+                preConfirm: async function () {
+                    let id = $('#UserAppointmentId').val();
+                    let model = {
+                        UserAppointmentId: id,
+                        Message: $('#ReasonReject').val()
+                    }
+
+                    let rq = await fetch(Enum.ApiUrl + '/api/AdminManageAppointment/SystemCancelAppointment', {
+                        method: 'post',
+                        headers: Enum.OptionAdminHeaderDefault,
+                        body: JSON.stringify(model)
+                    });
+                    let rs = await rq.json();
+                    if (CheckErrorResponse(rs) === false) return;
+                    if (GetObjectProperty(rs, 'status') === Enum.ResponseStatus.SUCCESS) {
+                        Swal.fire({
+                            icon: "success",
+                            title: "Huỷ lịch hẹn thành công",
+                            preConfirm: function () {
+                                window.location.reload();
+                            }
+                        })
+                    }
+                },
+                didClose: function () {
+                    return;
+                }
+            })
+            event.stopImmediatePropagation();
+        }
+        const DetailAppointment = async function (el) {
+            let id = $(el).data('id');
+            window.location.href = ('/admin/AdminManageAppointment/Detail?userAppointmentId=' + id);
         }
         const initPage = async function () {
             await getListAppointment();

@@ -14,8 +14,14 @@ namespace DentalClinic.Services
         public UserMakeAppointmentService(IDbConnection db) : base(db) { }
         public bool CreateUserAppointment(UserAppointment model, IDbTransaction transaction = null)
         {
-            string query = "INSERT INTO [dbo].[user_appointment]([UserAppointmentId],[UserId], [AppointmentCode], [Name],[Phone],[Email],[Address],[DoctorId],[Hour],[Minute],[Day],[Month],[Year],[Status],[CreateTime],[TotalExpectTime],[TotalAmount],[Remind]) " +
-                "VALUES (@UserAppointmentId, @UserId, @AppointmentCode,  @Name, @Phone, @Email, @Address, @DoctorId, @Hour, @Minute,@Day,  @Month, @Year,@Status, @CreateTime, @TotalExpectTime,@TotalAmount,@Remind )";
+            string query = "INSERT INTO [dbo].[user_appointment]([UserAppointmentId],[UserId], [AppointmentCode], [Name],[Phone],[Email],[Address],[DoctorId],[Hour],[Minute],[Day],[Month],[Year],[Status],[CreateTime],[TotalExpectTime],[TotalAmount],[Remind],[UserNote]) " +
+                "VALUES (@UserAppointmentId, @UserId, @AppointmentCode,  @Name, @Phone, @Email, @Address, @DoctorId, @Hour, @Minute,@Day,  @Month, @Year,@Status, @CreateTime, @TotalExpectTime,@TotalAmount,@Remind,@UserNote )";
+            int status = this._connection.Execute(query, model, transaction);
+            return status > 0;
+        }
+        public bool UpdateUserAppointment(UserAppointment model, IDbTransaction transaction = null)
+        {
+            string query = "UPDATE [dbo].[user_appointment] SET [UserId]=@UserId, [AppointmentCode]=@AppointmentCode, [Name]=@Name,[Phone]=@Phone,[Email]=@Email,[Address]=@Address,[DoctorId]=@DoctorId,[Hour]=@Hour,[Minute]=@Minute,[Day]=@Day,[Month]=@Month,[Year]=@Year,[Status]=@Status,[CreateTime]=@CreateTime,[TotalExpectTime]=@TotalExpectTime,[TotalAmount]=@TotalAmount,[Remind]=@Remind,[UserNote]=@UserNote where UserAppointmentId=@UserAppointmentId";
             int status = this._connection.Execute(query, model, transaction);
             return status > 0;
         }
@@ -54,10 +60,10 @@ namespace DentalClinic.Services
             listUserAppointmentView.TotalPage = TotalPage;
             return listUserAppointmentView;
         }
-        public UserAppointment GetAppointmentByAppointmentCode(string appointmentCode, IDbTransaction transaction = null)
+        public UserAppointmentInfor GetAppointmentByAppointmentCode(string appointmentCode, IDbTransaction transaction = null)
         {
-            string query = "select * from [dbo].[user_appointment] where AppointmentCode=@appointmentCode";
-            return this._connection.Query<UserAppointment>(query, new { appointmentCode }, transaction).FirstOrDefault();
+            string query = "select ua.*, d.Name as NameDoctor from [dbo].[user_appointment] ua left join [doctor] d on ua.DoctorId = d.DoctorId where AppointmentCode=@appointmentCode";
+            return this._connection.Query<UserAppointmentInfor>(query, new { appointmentCode }, transaction).FirstOrDefault();
         }
         public List<UserAppointmentServiceUpdate> GetListUserAppointmentServiceUpdateByUserAppointmentId(string userAppointmentId, IDbTransaction transaction = null)
         {

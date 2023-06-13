@@ -92,11 +92,20 @@
             transform-origin: 50% 2px;
         }
         /*EndNotiPage*/
+        .read-all{
+            display: flex;
+            justify-content: flex-end;
+            margin-right: 250px;
+            height: 35px;
+        }
     </style>
 }
 
 <section class="notification-page" style="width: 950px; margin: auto;">
     <div class="section-header">Thông báo</div>
+    <div class="read-all">
+        <button class="btn btn-sm btn-primary" onclick="readAll()">Đánh dấu tất cả là đã đọc</button>
+    </div>
     <div class="list-noti">
 
     </div>
@@ -172,7 +181,17 @@
                 window.location.reload();
             }
         }
-
+        const readAll = async function () {
+            let rq = await fetch('/api/Notification/UpdateAllNotificationRead', {
+                method: 'get',
+                headers: Enum.OptionHeaderDefault
+            });
+            let rs = await rq.json();
+            if (CheckErrorResponse(rs) === false) return;
+            if (GetObjectProperty(rs, 'status') === Enum.ResponseStatus.SUCCESS) {
+                window.location.reload();
+            }
+        }
         const InitPageNoti = async function () {
             await getNotificationList();
         }

@@ -8,6 +8,10 @@
 
 @section styles {
     <style>
+        #modalReportDate .modal-dialog {
+            max-width: calc(100vw - 200px);
+        }
+
         .main-report {
             margin: 15px auto;
             display: flex;
@@ -275,7 +279,14 @@
                 <div class="item-sidebar item-time">
                     <h3 class="header-item-sidebar">Thời gian</h3>
                     <div class="list-item-sidebar" id="sidebartime">
-                        <div class="item active" onclick="showtype(this);" data-time="thismonth">
+                        <div class="item active" onclick="showtype(this);" data-time="today">
+                            <div class="icon-check">
+                                <div class="circle-icon">
+                                </div>
+                            </div>
+                            <div class="text">Hôm nay</div>
+                        </div>
+                        <div class="item" onclick="showtype(this);" data-time="thismonth">
                             <div class="icon-check">
                                 <div class="circle-icon">
                                 </div>
@@ -349,6 +360,25 @@
         </div>
     </div>
 
+
+    <div id="modalReportDate" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Chi tiết báo cáo</h5>
+                    <button type="button" onclick="handleCloseModal()" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                   
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="handleCloseModal()" data-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 @section scripts{
@@ -356,7 +386,7 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
     @* <script src="/Scripts/helper.js"></script>*@
-    <script>
+<script>
         // time
         var now = new Date();
         var prevDay = new Date();
@@ -367,6 +397,10 @@
         prevYear.setFullYear(now.getFullYear() - 1);
 
         // Doanh thu
+        let datatoday = {
+            Revenue: 0,
+            listDataReport: []
+        };
         let datathismonth = {
             Revenue: 0,
             listDataReport: []
@@ -388,6 +422,9 @@
             listDataReport: []
         }
 
+        const handleCloseModal = () => {
+            $('#modalReportDate').hide();
+        }
 
         const InitPage = async function () {
             let rq = await fetch('/api/AdminReport/GetAllReportMonthYear', {
@@ -398,12 +435,22 @@
             if (AdminCheckErrorResponse(rs) === false) return;
 
             if (GetObjectProperty(rs, 'status') === Enum.ResponseStatus.SUCCESS) {
+                let reportToday = rs.data.ListReportToday;
                 let reportThisMonth = rs.data.ListReportThisMonth;
                 let reportPrevMonth = rs.data.ListReportPrevMonth;
                 let reportThisYear = rs.data.ListReportThisYear;
                 let reportPrevYear = rs.data.ListReportPrevYear;
 
                 console.log(rs.data);
+                //Báo cáo hôm nay
+                datatoday.Revenue = reportToday.TotalPrice;
+                for (let today = 0; today < reportToday.ListAllReportDaily.length; today++) {
+                    datatoday.listDataReport.push(
+                        {
+                            TableId: reportToday.ListAllReportDaily[today].Day + '-' + reportToday.ListAllReportDaily[today].Month + '-' + reportToday.ListAllReportDaily[today].Year,
+                            TableData: reportToday.ListAllReportDaily[today].TotalPrice
+                        });
+                }
 
                 //Báo cáo tháng này
                 datathismonth.Revenue = reportThisMonth.TotalPrice;
@@ -544,6 +591,64 @@
             }
         }
 
+        var handleClickRow = async (data) => {
+            let dates = data.TableId.split("-"),
+                day = dates[0],
+                month = dates[1]-1,
+                year = dates[2];
+            const date = new Date(year, month, day),
+                body = {
+                    Date:date,
+                    NumAdd: 1,
+                    Type: "day"
+                };
+
+            let rq = await fetch('/api/AdminManageAppointment/GetListUserAppointmentByDate', {
+                method: 'post',
+                headers: Enum.OptionAdminHeaderDefault,
+                body: JSON.stringify(body)
+            });
+
+            let rs = await rq.json();
+            debugger
+            //Mã lịch hẹn	Khách hàng	Bác sĩ	Chi phí
+            let html = ``,
+                table = `<table class="table">
+                          <thead>
+                            <tr>
+                              <th scope="col">Mã lịch hẹn</th>
+                              <th scope="col">Khách hàng</th>
+                              <th scope="col">Bác sĩ</th>
+                              <th scope="col">Chi phí</th>
+                            </tr>
+                          </thead>
+                          <tbody class="table-body">
+                            {{0}}
+                          </tbody>
+                        </table>`;
+
+            for (let row of rs.data) {
+                let keys = Object.keys(row);
+                let tr = `<tr>`;
+                let id = row['AppointmentCode'],
+                    customer = row['UserId'],
+                    doctor = row['NameDoctor'],
+                    total = row['TotalAmount'];
+                tr += `<td>${id}</td>`;
+                tr += `<td>${customer || '---'}</td>`;
+                tr += `<td>${doctor || '---'}</td>`;
+                tr += `<td>${total || '---'}</td>`;
+                tr += `</tr>`;
+
+                html += tr;
+            }
+
+            table=table.replace("{{0}}", html);
+
+            $('#modalReportDate .modal-body').html('');
+            $('#modalReportDate .modal-body').html(table);
+            $('#modalReportDate').show();
+        }
 
         // vẽ bảng (document)
         var paintingdocument = function (datapaint) {
@@ -573,7 +678,7 @@
             let html = '';
 
             for (let index = 0; index < datapaint.listDataReport.length; index++) {
-                html += '<tr><td style="text-align:center">' + GetObjectProperty(datapaint.listDataReport[index], 'TableId') + '</td>';
+                html += `<tr onClick='handleClickRow(${JSON.stringify(datapaint.listDataReport[index])})'><td style="text-align:center">` + GetObjectProperty(datapaint.listDataReport[index], 'TableId') + '</td>';
                 html += '<td style="text-align:center">' + NumberFormat(datapaint.listDataReport[index].TableData) + '</td>';
                 html += '</tr>';
             }
@@ -644,6 +749,6 @@
                 alert("File của bạn đang được tải xuống !");
             }
         }
-    </script>
+</script>
 
 }

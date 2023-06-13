@@ -188,7 +188,7 @@
         <div class="modal-body">
             <div class="form-group">
                 <label class="font-weight-semibold" for="account">Tài khoản:</label>
-                <input type="text" class="form-control" id="account" placeholder="Tên tài khoản">
+                <input type="text" class="form-control" id="account" placeholder="Tên tài khoản" onkeyup="removeSpecialCharacter(this);">
             </div>
             <div class="form-group">
                 <label class="font-weight-semibold" for="role">Quyền truy cập:</label>
@@ -265,7 +265,9 @@
 
         }
 
-
+        var removeSpecialCharacter = function (inputAccount) {
+            $(inputAccount).val(RemoveSpecialCharacters($(inputAccount).val()));
+        }
         let _currentPage = 1;
 
         const getListAdmin = async function (page = 1) {

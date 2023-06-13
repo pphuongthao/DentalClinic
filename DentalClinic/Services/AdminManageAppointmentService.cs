@@ -14,6 +14,25 @@ namespace DentalClinic.Services
 
         public AdminManageAppointmentService(IDbConnection db) : base(db) { }
 
+
+        public ListUserAppointmentView GetListOutDateUserAppointment( IDbTransaction transaction = null)
+        {
+            ListUserAppointmentView listUserAppointmentView = new ListUserAppointmentView();
+            listUserAppointmentView.ListUserAppointmentInfor = new List<UserAppointmentInfor>();
+
+            string query = $"select * from [user_appointment]";
+
+            listUserAppointmentView.ListUserAppointmentInfor = this._connection.Query<UserAppointmentInfor>(query).ToList();
+            return listUserAppointmentView;
+        }
+
+        public bool UpdateOutdateStatus(string ids,string status = "OUT_DATE", IDbTransaction transaction = null)
+        {
+            string query = $"update user_appointment  set Status='{status}' where '{ids}' like CONCAT('%|',UserAppointmentId,'|%');";
+            var res = (int)this._connection.ExecuteScalar(query, transaction: transaction);
+            return res > 0;
+        }
+
         public ListUserAppointmentView GetListUserAppointment(IDbTransaction transaction = null)
         {
             ListUserAppointmentView listUserAppointmentView = new ListUserAppointmentView();
@@ -22,7 +41,7 @@ namespace DentalClinic.Services
             listUserAppointmentView.ListUserAppointmentInfor = this._connection.Query<UserAppointmentInfor>(query).ToList();
             return listUserAppointmentView;
         }
-        public ListUserAppointmentView GetListAppointmentOfUser(string UserId, int PageIndex, string AppointmentCode = "", long? CreateStart = null, long? CreateEnd = null)
+        public ListUserAppointmentView GetListAppointmentOfUser(string UserId, int PageIndex, string AppointmentCode = "", string CreateStart = "", string CreateEnd = "")
         {
             ListUserAppointmentView listUserAppointmentView = new ListUserAppointmentView();
             string queryCount = "select count(*) as Total ";
@@ -33,14 +52,13 @@ namespace DentalClinic.Services
             {
                 queryWhere += $"and ua.AppointmentCode like '%{AppointmentCode}%' ";
             }
-
-            if (CreateStart.HasValue)
+            if (!string.IsNullOrEmpty(CreateStart))
             {
-                queryWhere += $"and CreateTime >= {CreateStart} ";
+                queryWhere += $"and cast( (cast([Year] as varchar)+ '/' +cast([Month] as varchar) + '/' + cast([Day] as varchar)) as date) >= '{CreateStart}' ";
             }
-            if (CreateEnd.HasValue)
+            if (!string.IsNullOrEmpty(CreateEnd))
             {
-                queryWhere += $"and CreateTime <= {CreateEnd} ";
+                queryWhere += $"and cast( (cast([Year] as varchar)+ '/' +cast([Month] as varchar) + '/' + cast([Day] as varchar)) as date) <= '{CreateEnd}' ";
             }
 
             int totalRow = this._connection.Query<int>(queryCount + queryWhere, new { UserId, AppointmentCode }).FirstOrDefault();
@@ -99,6 +117,34 @@ namespace DentalClinic.Services
             return listUserAppointmentView;
 
         }
-       
+        public bool AddAppointmentServiceToDetail(UserAppointmentService model, IDbTransaction transaction = null)
+        {
+            string query = "INSERT INTO [dbo].[user_appointment_service]([UserAppointmentServiceId],[UserAppointmentId],[ServiceId],[ExpectTime]) " +
+                "VALUES (@UserAppointmentServiceId, @UserAppointmentId, @ServiceId, @ExpectTime)";
+            int status = this._connection.Execute(query, model, transaction);
+            return status > 0;
+        }
+        public bool UpdateTotalAmountAppointmentService(UserAppointment model, IDbTransaction transaction = null)
+        {
+            string query = "UPDATE [dbo].[user_appointment] SET [TotalAmount] = @TotalAmount WHERE UserAppointmentId = @UserAppointmentId";
+            int status = this._connection.Execute(query, model, transaction);
+            return status > 0;
+        }
+        public UserAppointment GetUserAppointmentById(string userAppointmentId, IDbTransaction transaction = null)
+        {
+            string query = "select * from [dbo].[user_appointment] where UserAppointmentId=@userAppointmentId";
+            return this._connection.Query<UserAppointment>(query, new { userAppointmentId }, transaction).FirstOrDefault();
+        }
+
+        public List<UserAppointmentService> GetAllServiceByUserAppointmentId(string UserAppointmentId, IDbTransaction transaction = null)
+        {
+            string query = "select * from [user_appointment_service] where UserAppointmentId = @UserAppointmentId";
+            return this._connection.Query<UserAppointmentService>(query, new { UserAppointmentId }, transaction).ToList();
+        }
+        public bool DeleteServiceByUserAppointmentServiceId(string userAppointmentServiceId, IDbTransaction transaction = null)
+        {
+            string query = "delete from [user_appointment_service] where UserAppointmentServiceId=@userAppointmentServiceId";
+            return this._connection.Execute(query, new { userAppointmentServiceId }, transaction) > 0;
+        }
     }
 }

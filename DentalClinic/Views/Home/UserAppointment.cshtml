@@ -120,6 +120,83 @@
                 background-color: #3f87f5 !important;
                 color: white !important;
             }
+
+        .modalReason {
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.4);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .modal-container {
+            background-color: #fff;
+            width: 600px;
+            max-width: calc(100% - 32px);
+            min-height: 200px;
+            position: relative;
+            animation: modalFadeIn ease 0.5s;
+            transition: top 0.4s, opacity 0.4s;
+        }
+
+        .modal-header {
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center !important;
+            font-size: 20px;
+            border-bottom: solid #ccc 0.5px;
+            text-transform: uppercase;
+        }
+
+        .modal-body {
+            width: 90%;
+            margin: auto;
+        }
+
+        .modal-footer {
+            width: 90%;
+            margin: auto;
+            justify-content: end;
+            display: flex;
+            gap: 10px;
+            padding-bottom: 10px;
+            padding-top: 10px;
+        }
+
+            .modal-footer .update-btn {
+                width: 100px;
+                padding: 5px 5px;
+                background-color: #435ebe;
+                color: white;
+                border-radius: 5px;
+                cursor: pointer;
+                border: solid #435ebe 1px;
+            }
+
+            .modal-footer .close-modal {
+                width: fit-content;
+                color: black;
+                border: solid #ccc 0.5px;
+                cursor: pointer;
+                border-radius: 5px;
+            }
+        /*.doctor-choosen {
+            text-decoration: underline;
+        }*/
+        .doctor-choosen:hover {
+            color: red !important;
+            
+        }
+        .doctor-choosen:active {
+            color: red !important;
+            
+        }
     </style>
 }
 
@@ -163,8 +240,45 @@
 </div>
 <div class="product-page-list" id="page-order" style="margin-bottom: 30px;">
 </div>
+
+<div id="modal" class="modalReason">
+    <div class="modal-container">
+        <div class="modal-header">Lý do hủy</div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label class="font-weight-semibold" for="name"></label>
+                <textarea class="form-control" aria-label="With textarea" style="resize:none;" placeholder="Nhập lý do hủy" rows="3" id="ReasonReject"></textarea>
+            </div>
+            <input id="UserAppointmentId" hidden />
+        </div>
+
+        <div class="modal-footer">
+            <button class="close-modal btn" onclick="closeModal()">Đóng</button>
+            <button class="btn btn-primary" onclick="userCancel(event)">Lưu</button>
+
+        </div>
+
+    </div>
+
+</div>
 @section scripts{
+    <script src="~/Scripts/helper.js"></script>
     <script>
+
+        const closeModal = function () {
+            $('#ReasonReject').val('');
+            $('.modalReason').css('display', 'none');
+        }
+
+        const openModal = function (el, event) {
+            let id = $(el).data('id');
+            console.log(id);
+            $('#UserAppointmentId').val(id);
+            $('.modalReason').css('display', 'flex');
+            event.stopImmediatePropagation();
+        }
+
+
         const SearchAppointment = function () {
             getListAppointment();
         }
@@ -200,9 +314,9 @@
                     //}
                     //html += '</div></td>';
                     html += '<td style="text-align:right">' + NumberFormat(x.TotalAmount) + ' (VND)</td>';
-                    html += '<td>' + x.NameDoctor + ' </td>';
-                    html += '<td>' + x.Day + "-" + x.Month + "-" + x.Year + ' </td>';
-                    html += '<td>' + x.Hour + ":" + (x.Minute === 0 ? '00' : x.Minute) + '</td>';
+                    html += '<td class="doctor-choosen" data-id="' + x.DoctorId + '" onclick="openDoctorInfo(this, event);" data-name="' + x.NameDoctor + '">' + x.NameDoctor + ' </td>';
+                    html += '<td>' + (x.Day >= 10 ? x.Day : '0' + x.Day) + "-" + (x.Month >= 10 ? x.Month : '0' + x.Month) + "-" + x.Year + ' </td>';
+                    html += '<td>' + (x.Hour >= 10 ? x.Hour : '0' + x.Hour) + ":" + (x.Minute >= 10 ? x.Minute : '0' + x.Minute) + '</td>';
 
                     let button = '';
                     let status = '';
@@ -210,15 +324,15 @@
                         case 'PENDING':
                             status = '<span class="badge bg-warning"> Chờ xác nhận </span>';
 
-                            button += '<button class="btn btn-danger btn-tone m-r-5 btn-sm" onclick="userCancel(this,event)" data-id="' + x.UserAppointmentId + '"> Huỷ </button>';
+                            button += '<button class="btn btn-danger btn-tone m-r-5 btn-sm" onclick="openModal(this,event)" data-id="' + x.UserAppointmentId + '"> Huỷ </button>';
                             break;
                         case 'RECEIVE':
                             status = '<span class="badge bg-info"> Đã tiếp nhận </span>';
-
+                            button += '<button class="btn btn-danger btn-tone m-r-5 btn-sm" onclick="openModal(this,event)" data-id="' + x.UserAppointmentId + '"> Huỷ </button>';
                             break;
                         case 'CONFIRM_ARRIVE':
-                            status = '<span class="badge bg-secondary"> Đã đến </span>';
-
+                            status = '<span class="badge bg-primary"> Đến hẹn </span>';
+                            button += '<button class="btn btn-danger btn-tone m-r-5 btn-sm" onclick="openModal(this,event)" data-id="' + x.UserAppointmentId + '"> Huỷ </button>';
                             break;
                         case 'DONE':
                             status = '<span class="badge bg-success"> Hoàn thành </span>';
@@ -232,6 +346,10 @@
                             status = '<span class="badge bg-danger"> Hệ thống huỷ </span>';
 
                             break;
+                        case 'OUT_DATE':
+                            status = '<span class="badge bg-secondary"> Quá hẹn </span>';
+                            break;
+
                         default: break;
                     }
 
@@ -248,16 +366,29 @@
         const initPage = async function () {
             await getListAppointment();
         }
-        const userCancel = async function (el, event) {
+        const openDoctorInfo = async function (el, event) {
+            let DoctorId = $(el).data('id');
+            let name = $(el).data('name');
+            var slug = RemoveVietnameseTones(name);
+            window.location.href = '/bac-si/bai-viet/' + slug + '/' + DoctorId;
+            event.stopImmediatePropagation();
+        }
+        const userCancel = async function (event) {
 
             Swal.fire({
                 icon: "question",
                 title: "Xác nhận hủy lịch hẹn này?",
                 preConfirm: async function () {
-                    let id = $(el).data('id');
-                    let rq = await fetch(Enum.ApiUrl + '/api/UserAppointment/UserCancelAppointment?userAppointmentId=' + id, {
-                        method: 'get',
-                        headers: Enum.OptionHeaderDefault
+                    let id = $('#UserAppointmentId').val();
+                    let model = {
+                        UserAppointmentId: id,
+                        Message: $('#ReasonReject').val()
+                    }
+
+                    let rq = await fetch(Enum.ApiUrl + '/api/UserAppointment/UserCancelAppointment', {
+                        method: 'post',
+                        headers: Enum.OptionHeaderDefault,
+                        body: JSON.stringify(model)
                     });
                     let rs = await rq.json();
                     if (CheckErrorResponse(rs) === false) return;

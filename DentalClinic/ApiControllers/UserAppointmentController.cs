@@ -60,6 +60,7 @@ namespace DentalClinic.ApiControllers
                         userAppointment.Month = model.Month;
                         userAppointment.Year = model.Year;
                         userAppointment.Remind = model.Remind;
+                        userAppointment.UserNote = model.UserNote;
                         userAppointment.Status = UserAppointment.EnumStatus.PENDING;
                         userAppointment.CreateTime = HelperProvider.GetSeconds();
 
@@ -171,11 +172,13 @@ namespace DentalClinic.ApiControllers
                 if (user == null) return Unauthorized();
 
                 UserMakeAppointmentService userMakeAppointmentService = new UserMakeAppointmentService();
-                UserAppointment userAppointment = userMakeAppointmentService.GetAppointmentByAppointmentCode(appointmentCode);
+                ReasonRejectService reasonRejectService = new ReasonRejectService();
+                UserAppointmentInfor userAppointment = userMakeAppointmentService.GetAppointmentByAppointmentCode(appointmentCode);
                 if (userAppointment == null) return Error();
 
                 List<UserAppointmentServiceUpdate> listUserAppointmentService = userMakeAppointmentService.GetListUserAppointmentServiceUpdateByUserAppointmentId(userAppointment.UserAppointmentId);
-                return Success(new { userAppointment, listUserAppointmentService });
+                ReasonReject reasonReject = reasonRejectService.GetReasonRejectById(userAppointment.UserAppointmentId);
+                return Success(new { userAppointment, listUserAppointmentService, reasonReject });
             }
             catch (Exception ex)
             {
@@ -183,9 +186,9 @@ namespace DentalClinic.ApiControllers
             }
         }
 
-        [HttpGet]
+        [HttpPost]
         [ApiTokenRequire]
-        public JsonResult UserCancelAppointment(string userAppointmentId)
+        public JsonResult UserCancelAppointment(ReasonReject model)
         {
             try
             {
@@ -197,26 +200,35 @@ namespace DentalClinic.ApiControllers
                         UserService userService = new UserService(connect);
                         UserMakeAppointmentService userMakeAppointmentService = new UserMakeAppointmentService(connect);
                         AppointmentStatusService appointmentStatusService = new AppointmentStatusService(connect);
+                        ReasonRejectService reasonRejectService = new ReasonRejectService(connect);
                         string token = Request.Headers.Authorization.ToString();
                         User user = userService.GetUserByToken(token, transaction);
                         if (user == null) return Unauthorized();
 
                         // Lấy ra 
-                        UserAppointment userAppointment = userMakeAppointmentService.GetUserAppointmentById(userAppointmentId, transaction);
+                        UserAppointment userAppointment = userMakeAppointmentService.GetUserAppointmentById(model.UserAppointmentId, transaction);
                         if (userAppointment == null) throw new Exception("Không tìm thấy lịch hẹn !");
                         if (userAppointment.UserId != user.UserId) throw new Exception("Lịch hẹn này không phải của bạn !");
-                        if (userAppointment.Status != UserAppointment.EnumStatus.PENDING) throw new Exception("Trạng thái lịch hẹn không hợp lệ !");
+                        if ((userAppointment.Status == UserAppointment.EnumStatus.DONE) || (userAppointment.Status == UserAppointment.EnumStatus.USER_CANCEL) || (userAppointment.Status == UserAppointment.EnumStatus.SYSTEM_CANCEL)) throw new Exception("Trạng thái lịch hẹn không hợp lệ !");
 
                         // Set lại trạng thái 
-                        if (!userMakeAppointmentService.UpdateUserAppointmentStatus(userAppointmentId, UserAppointment.EnumStatus.USER_CANCEL, transaction)) throw new Exception();
+                        if (!userMakeAppointmentService.UpdateUserAppointmentStatus(userAppointment.UserAppointmentId, UserAppointment.EnumStatus.USER_CANCEL, transaction)) throw new Exception();
 
                         // Lưu lịch sử status
                         AppointmentStatus appointmentStatus = new AppointmentStatus();
                         appointmentStatus.AppointmentStatusId = Guid.NewGuid().ToString();
-                        appointmentStatus.UserAppointmentId = userAppointmentId;
+                        appointmentStatus.UserAppointmentId = userAppointment.UserAppointmentId;
                         appointmentStatus.Status = UserAppointment.EnumStatus.USER_CANCEL;
                         appointmentStatus.CreateTime = HelperProvider.GetSeconds();
                         if (!appointmentStatusService.CreateAppointmentStatus(appointmentStatus, transaction)) throw new Exception();
+
+                        //Lưu lý do hủy
+                        ReasonReject reasonReject = new ReasonReject();
+                        reasonReject.ReasonRejectId = Guid.NewGuid().ToString();
+                        reasonReject.UserAppointmentId = userAppointment.UserAppointmentId;
+                        reasonReject.Message = model.Message;
+                        reasonReject.CreateTime = HelperProvider.GetSeconds();
+                        if (!reasonRejectService.InsertReasonReject(reasonReject, transaction)) throw new Exception();
 
                         // Thông báo cho người dùng
                         Notification notification = new Notification();
@@ -226,6 +238,8 @@ namespace DentalClinic.ApiControllers
                         notification.IsRead = false;
                         notification.CreateTime = HelperProvider.GetSeconds();
                         if (!NotificationProvider.CreateNotification(notification, connect, transaction)) throw new Exception();
+
+                       
 
                         transaction.Commit();
                         return Success();
@@ -237,6 +251,21 @@ namespace DentalClinic.ApiControllers
                 return Error(ex.Message);
             }
         }
+        [HttpGet]
+        [ApiTokenRequire]
+        public JsonResult GetReasonRejectById(string reasonRejectId)
+        {
+            try
+            {
+                ReasonRejectService reasonRejectService = new ReasonRejectService();
+                return Success(reasonRejectService.GetReasonRejectById(reasonRejectId));
 
+            }
+            catch (Exception ex)
+            {
+                return Error(ex.Message);
+
+            }
+        }
     }
 }
