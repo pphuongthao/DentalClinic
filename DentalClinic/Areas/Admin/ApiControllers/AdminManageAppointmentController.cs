@@ -117,7 +117,20 @@ namespace DentalClinic.Areas.Admin.ApiControllers
                     }
                     return oke && app.Status == "DONE";
                 }).ToList();
+                if (appointments.Any())
+                {
+                    var doctorService = new DoctorService();
+                    var userAppService = new UserMakeAppointmentService();
+                    var listDoctor = doctorService.GetListDoctor();
+                    var listUser = userAppService.GetUserAppointments();
 
+                    appointments = appointments.Select(f =>
+                    {
+                        f.NameDoctor = listDoctor.FirstOrDefault(d => d.DoctorId == f.DoctorId)?.Name ?? string.Empty;
+                        f.NameUser = listUser.FirstOrDefault(d => d.UserAppointmentId == f.UserAppointmentId)?.Name ?? string.Empty;
+                        return f;
+                    }).ToList();
+                }
                 return Success(appointments);
             }
             catch (Exception ex)

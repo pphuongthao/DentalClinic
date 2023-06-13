@@ -2,6 +2,8 @@
 @{
     ViewBag.Title = "Index";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    var docters = (List<DentalClinic.Models.Doctor>)ViewBag.ListDoctor;
+    var userApps = (List<DentalClinic.Models.UserAppointment>)ViewBag.ListUser;
 }
 
 
@@ -10,6 +12,7 @@
     <style>
         #modalReportDate .modal-dialog {
             max-width: calc(100vw - 200px);
+            box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
         }
 
         .main-report {
@@ -260,7 +263,6 @@
     </style>
 }
 
-
 <div class="container-fluid">
     <div class="row">
         <h2>Báo cáo thống kê</h2>
@@ -372,9 +374,10 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                   
+
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer flex justify-content-between">
+                    <div class="modal-footer-left"></div>
                     <button type="button" class="btn btn-secondary" onclick="handleCloseModal()" data-dismiss="modal">Đóng</button>
                 </div>
             </div>
@@ -387,7 +390,7 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
     @* <script src="/Scripts/helper.js"></script>*@
-<script>
+    <script>
         // time
         var now = new Date();
         var prevDay = new Date();
@@ -593,16 +596,40 @@
         }
 
         var handleClickRow = async (data) => {
-            let dates = data.TableId.split("-"),
-                day = dates[0],
-                month = dates[1]-1,
+
+            let dates = '',
+                day = ',',
+                month = '',
+                year = '',
+                type = 'day';
+
+            let dataTime = $('.list-item-sidebar .item.active').attr("data-time");
+
+            if (dataTime == 'thisyear') {
+                month = +data.TableId.at(-1)-1;
+                year = new Date().getFullYear();
+                day = 1;
+                type = 'month';
+            } else if (dataTime == 'prevyear') {
+                month = +data.TableId.at(-1)-1;
+                year = new Date().getFullYear()-1;
+                day = 1;
+                type = 'month';
+            } else {
+                dates = data.TableId.split("-");
+                day = dates[0];
+                month = dates[1] - 1;
                 year = dates[2];
+            }
+
             const date = new Date(year, month, day),
                 body = {
                     Date:date,
                     NumAdd: 1,
-                    Type: "day"
+                    Type: type
                 };
+
+            $('#my-loading').show();
 
             let rq = await fetch('/api/AdminManageAppointment/GetListUserAppointmentByDate', {
                 method: 'post',
@@ -611,7 +638,7 @@
             });
 
             let rs = await rq.json();
-            debugger
+
             //Mã lịch hẹn	Khách hàng	Bác sĩ	Chi phí
             let html = ``,
                 table = `<table class="table">
@@ -626,29 +653,33 @@
                           <tbody class="table-body">
                             {{0}}
                           </tbody>
-                        </table>`;
+                        </table>`,
+                sum = 0;
 
             for (let row of rs.data) {
                 let keys = Object.keys(row);
                 let tr = `<tr>`;
                 let id = row['AppointmentCode'],
-                    customer = row['UserId'],
+                    customer = row['NameUser'],
                     doctor = row['NameDoctor'],
                     total = row['TotalAmount'];
                 tr += `<td>${id}</td>`;
                 tr += `<td>${customer || '---'}</td>`;
                 tr += `<td>${doctor || '---'}</td>`;
-                tr += `<td>${total || '---'}</td>`;
+                tr += `<td><b>${(total ? NumberFormat(total) : 0) + 'đ' || '---'}</b></td>`;
                 tr += `</tr>`;
 
+                sum += isNaN(total) ? 0 : total;
                 html += tr;
             }
 
             table=table.replace("{{0}}", html);
 
             $('#modalReportDate .modal-body').html('');
+            $('#modalReportDate .modal-footer-left').html(`<b>Tổng doanh thu: ${NumberFormat(sum)}đ</b>`);
             $('#modalReportDate .modal-body').html(table);
             $('#modalReportDate').show();
+            $('#my-loading').hide();
         }
 
         // vẽ bảng (document)
@@ -750,6 +781,6 @@
                 alert("File của bạn đang được tải xuống !");
             }
         }
-</script>
+    </script>
 
 }
