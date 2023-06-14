@@ -213,7 +213,6 @@
         }
 
         const Register_OnClick = async function () {
-            console.log($('#Name').val());
             let model = {
                 Name: $('#Name').val(),
                 Account: $('#Account').val(),
@@ -234,9 +233,10 @@
             })
             let rs = await rq.json();
 
-            console.log(rs);
+            if (CheckErrorResponse(rs) === false) {
+                alert(rs.message);
+            };
 
-            if (CheckErrorResponse(rs) === false) return;
             if (GetObjectProperty(rs, 'status') === Enum.ResponseStatus.SUCCESS) {
                 alert('Đăng ký thành công.')
                 window.location.href = '/dang-nhap';

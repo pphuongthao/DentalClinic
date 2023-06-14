@@ -16,6 +16,17 @@
                     background-position: center;
                 }
         */
+
+        .btn-see-doctor-time {
+            white-space: nowrap;
+            display: none;
+        }
+
+        .dropdown-time {
+            padding-left: 24px;
+            padding-top: 24px;
+        }
+
         select, option {
             cursor: pointer;
         }
@@ -174,9 +185,10 @@
             <div>
                 <div class="form-group">
                     <label class="font-weight-semibold"> Bác sĩ</label>
-                    <div>
-                        <select class="form-select" id="DoctorId">
+                    <div class="d-flex gap-1">
+                        <select onchange="handleSelectDoctor(this)" class="form-select" id="DoctorId">
                         </select>
+                        <button type="button" onclick="handleSeeDoctorTime(this)" class="btn-see-doctor-time btn btn-primary">Xem lịch bác sĩ</button>
                     </div>
                 </div>
                 <div class="date-hour-form">
@@ -184,7 +196,6 @@
                         <label class="font-weight-semibold">Ngày khám</label>
                         <div class="date-pick">
                             <input class="form-control" id="date" placeholder="Chọn ngày khám" />
-
                         </div>
                     </div>
                     <div class="form-group">
@@ -273,6 +284,39 @@
             </div>
         </div>
     </div>
+
+
+    <div id="modalDoctorTime" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Chi tiết lịch: <b id="doctorName"></b></h5>
+                    <button onclick="handleCloseModalDoctorTime()" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="dropdown pt-1 dropdown-time">
+                    @*<button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Thời gian
+                    </button>*@
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="#">Hôm nay</a>
+                        <a class="dropdown-item" href="#">Hôm qua</a>
+                        <a class="dropdown-item" href="#">Tuần này</a>
+                        <a class="dropdown-item" href="#">Tuần trước</a>
+                        <a class="dropdown-item" href="#">Tháng này</a>
+                        <a class="dropdown-item" href="#">Tháng trước</a>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    Không có dữ liệu
+                </div>
+                <div class="modal-footer">
+                    <button onclick="handleCloseModalDoctorTime()" type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div><!-- Content Area End-->
  
 @section scripts{
@@ -281,6 +325,68 @@
         $('#date').datepicker({
             format: 'dd-mm-yyyy'
         });
+        const handleSeeDoctorTime = async (element) => {
+            $('#my-loading').show();
+            var doctorid = $("#DoctorId").find(":selected").val();
+            $('#doctorName').html('');
+            $('#doctorName').html($("#DoctorId").find(":selected").text());
+            if (doctorid.trim()) {
+                 let rp = await fetch('/api/UserAppointment/GetListAppointmentByDoctorIDAndReceive?doctorId='+doctorid, {
+                    method: 'get',
+                    headers: Enum.OptionHeaderDefault
+                 });
+                let rs = await rp.json();
+
+                //Mã lịch hẹn | thời gian
+                let html = ``,
+                    table = `<table class="table">
+                    <thead>
+                        <tr>
+                          <th scope="col">Mã lịch hẹn</th>
+                          <th scope="col">Thời gian</th>
+                        </tr>
+                      </thead>
+                          <tbody class="table-body">
+                            {{0}}
+                          </tbody>
+                        </table>`;
+                
+                for (let row of rs.data) {
+                    let tr = `<tr>`;
+                    let id = row['AppointmentCode'],
+                        time = `${row['Day']}-${row['Month']}-${row['Year']} ${row['Hour']}h:${(row['Minute']+'').padStart(2, '0')}`;
+                     
+                    tr += `<td>${id || '---'}</td>`;
+                    tr += `<td>${time || '---'}</td>`;
+                    tr += `</tr>`;
+                    html += tr;
+                }
+                table = table.replace("{{0}}", html);
+                $('#modalDoctorTime .modal-body').html('');
+                //$('#modalDoctorTime .modal-footer-left').html(`<b>Tổng doanh thu: ${NumberFormat(sum)}đ</b>`);
+                if (rs.data && rs.data.length) {
+                    $('#modalDoctorTime .modal-body').html(table);
+                } else {
+                    $('#modalDoctorTime .modal-body').html(`<div>Chưa có lịc hẹn nào</div>`);
+                }
+                
+
+            }
+          
+            $('#my-loading').hide();
+            $("#modalDoctorTime").show();
+        }
+        const handleCloseModalDoctorTime = () => {
+            $("#modalDoctorTime").hide();
+        }
+        const handleSelectDoctor = (element) => {
+            var selected = $(element).find(":selected").val();
+            if (selected.trim()) {
+                $(".btn-see-doctor-time").show();
+            } else { 
+                $(".btn-see-doctor-time").hide();
+            }
+        }
         const GetListDoctor = async function () {
             let rp = await fetch('/api/manageDoctor/GetListDoctor', {
                 method: 'get',

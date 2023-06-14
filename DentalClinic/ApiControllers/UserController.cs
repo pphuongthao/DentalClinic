@@ -98,8 +98,10 @@ namespace DentalClinic.ApiControllers
                         UserService userService = new UserService(connect);
 
                         if (string.IsNullOrEmpty(model.Name)) throw new Exception("Họ và tên người dùng không được để trống.");
-                        if (string.IsNullOrEmpty(model.Account) || userService.CheckDuplicateUser(model.Account, transaction) != null) throw new Exception("Tên đăng nhập không được để trống.");
-                        if (string.IsNullOrEmpty(model.Email) || userService.CheckDuplicateUser(model.Email, transaction) != null) throw new Exception("Email không được để trống.");
+                        if (string.IsNullOrEmpty(model.Account)) throw new Exception("Tên đăng nhập không được để trống.");
+                        if (userService.CheckDuplicateUser(model.Account, transaction) != null) throw new Exception("Tên đăng nhập đã tồn tại.");
+                        if (string.IsNullOrEmpty(model.Email)) throw new Exception("Email không được để trống.");
+                        if (userService.CheckDuplicateUser(model.Email, transaction) != null) throw new Exception("Email đã tồn tại.");
                         if (string.IsNullOrEmpty(model.Password)) throw new Exception("Password không được để trống.");
 
                         User user = new User();
