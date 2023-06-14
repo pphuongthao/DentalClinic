@@ -8,9 +8,10 @@
 
 @section styles {
     <style>
-        #modalReportDate .modal-dialog {
+        /* #modalReportDate .modal-dialog {
             max-width: calc(100vw - 200px);
-        }
+            box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+        }*/
 
         .main-report {
             margin: 15px auto;
@@ -257,6 +258,71 @@
             font-size: 14px;
             margin-top: 15px;
         }
+
+        #modalReportDate.modal {
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.4);
+            display: none;
+            align-items: center !important;
+            justify-content: center !important;
+            flex-direction: column !important;
+        }
+
+       .modal-dialog {
+            background-color: #fff;
+            width: 900px;
+            max-width: calc(100% - 32px);
+            /*min-height: 400px;*/
+            position: relative;
+            animation: modalFadeIn ease 0.5s;
+            transition: top 0.4s, opacity 0.4s;
+        }
+
+        .modal-header {
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center !important;
+            font-size: 20px;
+            border-bottom: solid #ccc 0.5px;
+            text-transform: uppercase;
+        }
+
+        .modal-body {
+            width: 90%;
+            margin: auto;
+        }
+
+        .modal-footer {
+            width: 90%;
+            margin: auto;
+            justify-content: end;
+            display: flex;
+            gap: 10px;
+            /*padding-bottom: 10px;*/
+        }
+
+            .modal-footer .update-btn {
+                width: 100px;
+                padding: 5px 5px;
+                background-color: #435ebe;
+                color: white;
+                border-radius: 5px;
+                cursor: pointer;
+                border: solid #435ebe 1px;
+            }
+
+            .modal-footer .close-modal {
+                width: fit-content;
+                color: black;
+                border: solid #ccc 0.5px;
+                cursor: pointer;
+                border-radius: 5px;
+            }
     </style>
 }
 
@@ -362,32 +428,34 @@
     </div>
 
 
-    <div id="modalReportDate" class="modal" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Chi tiết báo cáo</h5>
-                    <button type="button" onclick="handleCloseModal()" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                   
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="handleCloseModal()" data-dismiss="modal">Đóng</button>
-                </div>
+
+</div>
+
+<div id="modalReportDate" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                Chi tiết báo cáo
+            </div>
+            <div class="modal-body">
+
+            </div>
+            <div class="modal-footer flex justify-content-between">
+                <div class="modal-footer-left"></div>
+                <button type="button" class="btn btn-secondary" onclick="handleCloseModal()" data-dismiss="modal">Đóng</button>
             </div>
         </div>
     </div>
-</div>
+</div>                                
+        
 
+ 
 @section scripts{
     <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
     @* <script src="/Scripts/helper.js"></script>*@
-<script>
+    <script>
         // time
         var now = new Date();
         var prevDay = new Date();
@@ -593,63 +661,72 @@
         }
 
         var handleClickRow = async (data) => {
-            let dates = data.TableId.split("-"),
-                day = dates[0],
-                month = dates[1]-1,
+            let dates = '',
+                day = ',',
+                month = '',
+                year = '',
+                type = 'day';
+            let dataTime = $('.list-item-sidebar .item.active').attr("data-time");
+            if (dataTime == 'thisyear') {
+                month = +data.TableId.at(-1) - 1;
+                year = new Date().getFullYear();
+                day = 1;
+                type = 'month';
+            } else if (dataTime == 'prevyear') {
+                month = +data.TableId.at(-1) - 1;
+                year = new Date().getFullYear() - 1;
+                day = 1;
+                type = 'month';
+            } else {
+                dates = data.TableId.split("-");
+                day = dates[0];
+                month = dates[1] - 1;
                 year = dates[2];
+            }
             const date = new Date(year, month, day),
                 body = {
-                    Date:date,
+                    Date: date,
                     NumAdd: 1,
-                    Type: "day"
+                    Type: type
                 };
-
+            $('#my-loading').show();
             let rq = await fetch('/api/AdminManageAppointment/GetListUserAppointmentByDate', {
                 method: 'post',
                 headers: Enum.OptionAdminHeaderDefault,
                 body: JSON.stringify(body)
             });
-
             let rs = await rq.json();
-            debugger
             //Mã lịch hẹn	Khách hàng	Bác sĩ	Chi phí
             let html = ``,
                 table = `<table class="table">
-                          <thead>
-                            <tr>
-                              <th scope="col">Mã lịch hẹn</th>
-                              <th scope="col">Khách hàng</th>
-                              <th scope="col">Bác sĩ</th>
-                              <th scope="col">Chi phí</th>
-                            </tr>
-                          </thead>
                           <tbody class="table-body">
                             {{0}}
                           </tbody>
-                        </table>`;
-
+                        </table>`,
+                sum = 0;
             for (let row of rs.data) {
                 let keys = Object.keys(row);
                 let tr = `<tr>`;
                 let id = row['AppointmentCode'],
-                    customer = row['UserId'],
+                    customer = row['NameUser'],
                     doctor = row['NameDoctor'],
                     total = row['TotalAmount'];
                 tr += `<td>${id}</td>`;
                 tr += `<td>${customer || '---'}</td>`;
                 tr += `<td>${doctor || '---'}</td>`;
-                tr += `<td>${total || '---'}</td>`;
+                tr += `<td><b>${(total ? NumberFormat(total) : 0) + 'đ' || '---'}</b></td>`;
                 tr += `</tr>`;
-
+                sum += isNaN(total) ? 0 : total;
                 html += tr;
             }
-
-            table=table.replace("{{0}}", html);
-
+            table = table.replace("{{0}}", html);
             $('#modalReportDate .modal-body').html('');
+            $('#modalReportDate .modal-footer-left').html(`<b>Tổng doanh thu: ${NumberFormat(sum)}đ</b>`);
             $('#modalReportDate .modal-body').html(table);
             $('#modalReportDate').show();
+            $('#my-loading').hide();
         }
+
 
         // vẽ bảng (document)
         var paintingdocument = function (datapaint) {
@@ -750,6 +827,6 @@
                 alert("File của bạn đang được tải xuống !");
             }
         }
-</script>
+    </script>
 
 }

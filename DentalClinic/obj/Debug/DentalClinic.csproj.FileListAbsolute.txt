@@ -276,3 +276,4 @@ D:\GitHub\DentalClinic\DentalClinic\obj\Debug\DentalClinic.csproj.CoreCompileInp
 D:\GitHub\DentalClinic\DentalClinic\obj\Debug\DentalClinic.csproj.CopyComplete
 D:\GitHub\DentalClinic\DentalClinic\obj\Debug\DentalClinic.dll
 D:\GitHub\DentalClinic\DentalClinic\obj\Debug\DentalClinic.pdb
+D:\GitHub\DentalClinic\DentalClinic\obj\Debug\DentalClinic.csproj.AssemblyReference.cache

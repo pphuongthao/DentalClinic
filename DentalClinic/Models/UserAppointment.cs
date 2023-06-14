@@ -70,6 +70,7 @@ namespace DentalClinic.Models
             public const string OUT_DATE = "OUT_DATE";
         }
         public string NameDoctor { get; set; }
+        public string NameUser { get; set; }
         public decimal TotalAmount { get; set; }
     }
 

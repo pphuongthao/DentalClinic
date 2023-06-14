@@ -37,6 +37,12 @@ namespace DentalClinic.Services
             string query = "select * from [dbo].[user_appointment] where UserAppointmentId=@userAppointmentId";
             return this._connection.Query<UserAppointment>(query, new { userAppointmentId }, transaction).FirstOrDefault();
         }
+        public List<UserAppointment> GetUserAppointments(IDbTransaction transaction = null)
+        {
+            string query = "select * from [dbo].[user_appointment] where 1=1";
+            var data = this._connection.Query<UserAppointment>(query, transaction: transaction);
+            return data.ToList();
+        }
         public ListUserAppointmentView GetListAppointmentOfUser(int page, string keyword, string userId, IDbTransaction transaction = null)
         {
             ListUserAppointmentView listUserAppointmentView = new ListUserAppointmentView();
