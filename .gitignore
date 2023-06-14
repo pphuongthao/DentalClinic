@@ -1,9 +1,0 @@
-**bin
-**obj
-**.vs
-DentalClinic/DentalClinic.csproj.user
-DentalClinic/Web.Debug.config
-DentalClinic/Web.Release.config
-**/files
-**/file
-**/publish
